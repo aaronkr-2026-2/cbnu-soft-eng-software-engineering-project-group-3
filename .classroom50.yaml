@@ -1,0 +1,12 @@
+schema: "classroom50/repo-config/v1"
+classroom: "cbnu-soft-eng"
+assignment: "software-engineering-project"
+owner:
+  username: "nmka55"
+  id: 25403783
+  accepted_at: "2026-09-10T08:01:32Z"
+source:
+  owner: "aaronkr-2026-2"
+  owner_id: 314234319
+  repo: "software-project"
+  branch: "main"
