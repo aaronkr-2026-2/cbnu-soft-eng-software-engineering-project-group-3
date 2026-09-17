@@ -1,3 +1,5 @@
+Historical concept document: some stack and behavior descriptions below predate implementation. Use [README.md](README.md) and [PROJECT_STATE.md](PROJECT_STATE.md) for current verified behavior; HTTP now uses native fetch, Gemini is unavailable, and no Firebase features are implemented.
+
 ````markdown
 # SRT Translator
 

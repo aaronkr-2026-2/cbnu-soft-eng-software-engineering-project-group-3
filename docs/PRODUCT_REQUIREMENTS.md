@@ -2,13 +2,17 @@
 
 Version: 0.1 draft
 
-Updated: 2026-09-16
+Updated: 2026-09-17
 
 Ownership: one developer (confirmed by the user).
+
+Implementation decisions confirmed 2026-09-17: hide Statistics in the initial React release; require explicit Adult/Children reading-profile selection; accept UTF-8 SRT up to 5 MiB; initially support balanced `<i>`, `<b>`, `<u>` tags without attributes and report all other formatting as unsupported; target current desktop Chrome, Edge, Firefox, and Safari. These qualify FR-001/010/011 and NFR-008 for this increment. Gemini remains unavailable until its real adapter is implemented. See ADR-003-REACT-MIGRATION.md and PROJECT_STATE.md for actual implementation coverage; remaining semester requirements are not claimed complete.
 
 ## 1. Problem
 
 Ordinary machine translation treats subtitle fragments as isolated text and often produces output that is hard to read, poorly segmented, or tedious to correct. The product should translate an English `.srt` file with enough context to preserve meaning while retaining timing and producing readable, editable output.
+
+The intended initial audience is tech-savvy movie viewers who can obtain and use subtitle files but need a translation in their preferred or mother language. The product differentiates itself by preserving the relationship between continuation cues and speaker segments instead of translating a joined conversation and proportionally redistributing target words across original cue boundaries. See the structured product vision in `README.md`. The current Cloud Translation NMT adapter still uses one input/output string per cue; cross-cue semantic context requires a future validated provider.
 
 ## 2. Product goals
 

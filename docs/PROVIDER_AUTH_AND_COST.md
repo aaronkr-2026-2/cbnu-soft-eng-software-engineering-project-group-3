@@ -4,6 +4,12 @@ Status: User-funded provider usage accepted; implementation design accepted for 
 
 Date: 2026-09-16
 
+Development setup guide added 2026-09-17: [Google Cloud Translation key setup](GOOGLE_TRANSLATE_SETUP.md). It covers account setup and the local test flow. The official Basic v2 NMT adapter is implemented; live key/restriction/CORS verification remains pending.
+
+Provider distinction checked 2026-09-17: Cloud Translation offers NMT and Translation LLM, while the general Gemini API used by this project's prompt contract is a separate integration. The [migration plan](REACT_MIGRATION_PLAN.md) proposes Basic v2 NMT first and keeps Gemini unavailable until its adapter is implemented. Keep credentials restricted to their provider. Google currently excludes newly granted $300 welcome credits from Gemini API/AI Studio usage; a shared billing account does not imply credit eligibility. Sources: [Cloud Translation models](https://docs.cloud.google.com/translate/docs/translate-text), [Gemini billing](https://ai.google.dev/gemini-api/docs/billing).
+
+Implementation update 2026-09-17: the React app uses a native uncontrolled credential input, a private in-memory adapter field, header-only credentials, API language lookup plus a six-character translation test, bounded NMT requests, and no fallback. Its cost estimate uses exact encoded input code points and distinguishes automatic retry allowance from manual retries. No developer `.env` value enters Vite. Gemini is still unavailable.
+
 ## 1. Product decision
 
 The project owner will not fund public Google Translate or Gemini calls. A visitor must provide credentials for the selected provider for the current browser-tab session. Ordinary Google Sign-In and consumer Google AI/Gemini subscriptions are not substitutes for API credentials or API billing.

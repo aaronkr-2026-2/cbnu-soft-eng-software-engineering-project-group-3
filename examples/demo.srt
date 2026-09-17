@@ -1,0 +1,11 @@
+7
+00:00:01,000 --> 00:00:05,000
+<i>Hello, my friend.</i>
+
+12
+00:00:05,500 --> 00:00:09,000
+and welcome to our little story.
+
+18
+00:00:10,000 --> 00:00:14,000
+- Are you ready? - Let us begin.

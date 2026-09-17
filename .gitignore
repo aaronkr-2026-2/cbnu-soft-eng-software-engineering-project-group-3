@@ -1,0 +1,13 @@
+# Local credentials and environment overrides
+.env
+.env.*
+!.env.example
+# Protect the alternate spelling mentioned during setup as well.
+.nev
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+*.tsbuildinfo
+.DS_Store

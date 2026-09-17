@@ -42,12 +42,12 @@ Do not infer answers from this document. Record decisions in requirements and an
 
 ## Product and quality decisions
 
-27. Which modern desktop browsers are required? Is mobile a graded target?
-28. What maximum input size should be supported and benchmarked?
+27. Resolved for the initial React release on 2026-09-17: current desktop Chrome, Edge, Firefox, and Safari. Mobile certification remains out of scope for this increment.
+28. Resolved 2026-09-17: 5 MiB per UTF-8 SRT file. Large-file benchmarking remains pending.
 29. Are source subtitles always English, or should auto-detect/manual source language become future scope?
-30. Which subtitle formatting tags must round-trip?
+30. Resolved for this increment on 2026-09-17: balanced i/b/u tags without attributes; unsupported formatting produces an explicit error.
 31. Should automatic retiming/cue splitting ever be included, or only quality warnings/manual edits?
 32. Which language-specific readability profiles are required beyond an English-derived default?
-33. Does the Statistics tab ship empty/placeholder before backend data exists, or remain hidden until implemented?
+33. Resolved 2026-09-17: hide Statistics until implemented.
 34. Which Gemini model is the tested default, and what token/character budget passes the translation fixtures?
-35. Should the subtitle profile default to adult 20 CPS, ask adult/children per job, or infer nothing and expose a setting?
+35. Resolved 2026-09-17: require explicit Adult (20 CPS) or Children (17 CPS) profile selection before translation.

@@ -2,7 +2,7 @@
 
 Version: 0.1 draft
 
-Updated: 2026-09-16
+Updated: 2026-09-17
 
 ## How this plan handles the course documents
 
@@ -66,7 +66,11 @@ Confirmed 2026-09-16: this is a solo project. Recommendation: prioritize telemet
 
 ## Initial 10-issue backlog
 
+Implementation update 2026-09-17: the requested React/official-provider increment and local Week 5 process documents are ready for review. See [Week 5 sprint](sprints/WEEK_05.md), [Agile workflow](AGILE_WORKFLOW.md), and [build evidence](../BUILD_LOG.md). Live-key testing, remote issues/CI/Pages, and human review remain pending; this does not change course deadlines or mark the milestone complete.
+
 These issue titles are drafts and should be reconciled with the repository rather than duplicated blindly.
+
+The [React migration and official Translate implementation plan](REACT_MIGRATION_PLAN.md) breaks the requested working-app migration into verified slices. It starts with the Week 5 workflow/scaffold and brings necessary provider/tests work forward. These proposed issues may span multiple sprints; the course deadlines above are unchanged.
 
 1. Preserve, document, tag, and deploy the MVP baseline.
 2. Add product vision, project state, AI log, and open decisions.
