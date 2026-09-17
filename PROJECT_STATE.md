@@ -16,6 +16,8 @@ The product vision is now documented in `README.md`: the intended audience is te
 
 The React client is implemented and published for review on branch `feat/react-official-translate`. The original `srt-translator-beta-3.html` remains unchanged; local annotated tag `mvp-baseline` points to `b64bc59`. Existing documentation/setup changes were preserved. No live deployment is claimed for this implementation task.
 
+Maintenance update 2026-09-17: `.gitignore` now excludes local credentials, dependencies, build/test artifacts, tool caches, logs, and editor/OS files while preserving a shareable `.env.example` and optional VS Code recommendation/settings files. `AI_LOG.md` now places a blank Markdown line between every required field so GitHub renders each field separately.
+
 Current code includes a compatible locked React/TypeScript/Vite/Ant Design scaffold; pure SRT/markup/quality modules; an official Cloud Translation Basic v2 NMT adapter; temporary credential testing; provider-supported language lookup; local file preview; progress, timer, retry/cancellation; protected edits; grouping and scroll-follow; and validated downloads. A native uncontrolled password input and private adapter field keep keys out of serializable React state. Vite env loading is disabled. Statistics is hidden and Gemini is unavailable.
 
 The user confirmed the initial 5 MiB UTF-8 limit, balanced i/b/u-only formatting, explicit Adult/Children selection, and current desktop Chrome/Edge/Firefox/Safari targets. Unsupported input produces errors. Historical parser renumbering and silent malformed-block skipping are corrected, with characterization and round-trip tests.
