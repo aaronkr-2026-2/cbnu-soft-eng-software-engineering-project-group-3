@@ -29,8 +29,8 @@ The project should be evaluated through the engineering changes made to the same
 - React/TypeScript/Ant Design migration.
 - Component/domain/provider separation.
 - official translation-provider adapters;
-- Gemini structured translation;
-- visitor-funded, session-only credential handling and its documented browser risk;
+- official Cloud Translation NMT/TLLM model selection and benchmark evidence;
+- owner-funded gateway, secret handling, budget, rate-limit, and abuse-control evidence;
 - exact continuation-group, speaker-boundary, line-breaking, and CPS quality checks;
 - elapsed-time and page-lifecycle behavior;
 - editable cues and scroll-follow control;

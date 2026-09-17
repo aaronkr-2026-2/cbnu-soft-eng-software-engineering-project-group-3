@@ -93,10 +93,10 @@ Never claim a command passed unless it was run successfully in the current sourc
 ## 7. Security and privacy
 
 - Non-negotiable: never hard-code, commit, print, log, analyze, place in URLs, send to telemetry, or persist API keys, passwords, service-account files, database credentials, OAuth tokens, or private tokens.
-- Visitor-entered provider keys are volatile tab-memory only. Never place them in localStorage, sessionStorage, IndexedDB, cookies, Cache Storage, Firebase, checkpoints, downloads, or autofill-enabled application state. Clear references on provider change/reload and when the job no longer needs them.
+- The browser must never receive a provider key. The owner-funded gateway reads local development secrets from gitignored `.env` and production secrets from its secret manager. Never place either in browser storage, URLs, logs, telemetry, downloads, or autofill-enabled application state.
 - Developer-owned local server secrets belong in a gitignored `.env`. Commit only `.env.example` with placeholders. Production secrets belong in the deployment platform's secret manager/environment configuration.
 - Public Vite `VITE_*` environment variables are compiled into the browser bundle and are never secret.
-- Production Gemini/Cloud Translation secrets belong behind a backend/secret manager.
+- Production Cloud Translation secrets belong behind the gateway's secret manager.
 - Validate file size/type/content and provider response shape.
 - Escape/render subtitle text as text, not trusted HTML.
 - Use least-privilege Firebase/Cloud rules, quotas, rate limits, and App Check where applicable.
@@ -121,7 +121,7 @@ After every material code, configuration, dependency, test, architecture, deploy
 
 1. update `PROJECT_STATE.md` to reflect what is now true;
 2. update requirements/architecture/ADR when behavior or a decision changed;
-3. append an honest `AI_LOG.md` entry using the exact course template;
+3. append an honest one-line `AI_LOG.md` entry and the supporting detail/evidence in `docs/AI_DETAILED_LOG.md`;
 4. do not fabricate human reflections - use `TBD - human review required` for anything only the team can answer.
 
 The course requires the AI log at every milestone; this project intentionally applies the same format to every material change so no AI-assisted work is lost between milestones.

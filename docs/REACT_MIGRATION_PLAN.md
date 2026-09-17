@@ -4,19 +4,21 @@ Date: 2026-09-17
 
 Status: Local React/official Translate implementation completed for review on 2026-09-17. Live Google verification, remote CI/Pages deployment, full language-specific grammatical formatting, and human review remain pending. See PROJECT_STATE.md and BUILD_LOG.md for evidence.
 
+Follow-up 2026-09-18: this increment did not implement conversation-aware provider context or semantic cue redistribution. ADR-004 now supersedes every visitor-key and Gemini statement below. The next increment is an owner-funded NMT/TLLM gateway; the browser never receives a key. See [ADR-004](ADR-004-OWNER-FUNDED-CLOUD-TRANSLATION.md).
+
 ## Outcome and scope
 
-Deliver a React + TypeScript + Vite + Ant Design application that loads an English SRT locally, accepts a visitor's temporary Cloud Translation credential, validates configuration, estimates usage, translates with visible progress, and downloads a validated SRT with preserved cue identities and timing.
+Deliver a React + TypeScript + Vite + Ant Design application that loads an English SRT locally, checks the owner-funded gateway, estimates usage, translates with visible progress, and downloads a validated SRT with preserved cue identities and timing.
 
-Keep the original HTML as historical evidence in Git. The new deployment must not ship it as an executable alternative or include its undocumented endpoint. Gemini remains explicitly unavailable until a real adapter exists. Telemetry, movie lookup, lives, cloud storage, and closed-tab execution are outside this migration. Local checkpoint/resume remains a separate semester milestone; do not claim it exists in this increment.
+Keep the original HTML as historical evidence in Git. The new deployment must not ship it as an executable alternative or include its undocumented endpoint. The product offers NMT/TLLM only. Telemetry, movie lookup, lives, cloud storage, and closed-tab execution are outside this migration. Local checkpoint/resume remains a separate semester milestone; do not claim it exists in this increment.
 
 ## Provider distinction
 
-Cloud Translation Basic v2 supports API keys. Current Cloud Translation documentation describes standard NMT and Translation LLM models. The proposed initial adapter explicitly uses NMT so batching, languages, and cost estimates refer to one known model. Translation LLM is not the general Gemini prompt/structured-output API used by the project's Gemini design.
+Cloud Translation Basic v2 supports API keys. Current Cloud Translation documentation describes standard NMT and Translation LLM models. The gateway offers both and keeps the key server-side. NMT has a character-only estimate; TLLM pricing includes input and output characters, so it needs a separate estimate before a cost quote is shown.
 
-Gemini requires a separate adapter, supported model, authentication setup, response validation, and pricing review. Keep the developer's key restricted to Cloud Translation. Do not broaden it or route the Gemini selector through Translate. A separate Gemini credential is the planned approach. Google currently excludes newly granted $300 welcome credits from Gemini API/AI Studio usage; do not infer coverage from a shared billing account.
+TLLM requires the configured Cloud project ID/location and model-specific response, language, pricing, and quality validation. The gateway keeps the developer key restricted to Cloud Translation and outside the browser.
 
-Sources checked 2026-09-17: [Cloud Translation models](https://docs.cloud.google.com/translate/docs/translate-text), [Translation authentication](https://docs.cloud.google.com/translate/docs/authentication), [Gemini keys](https://ai.google.dev/gemini-api/docs/api-key), [Gemini billing](https://ai.google.dev/gemini-api/docs/billing).
+Sources checked 2026-09-18: [Cloud Translation models](https://docs.cloud.google.com/translate/docs/advanced/compare-models), [Translation LLM](https://docs.cloud.google.com/translate/docs/translation-llm), [Translation authentication](https://docs.cloud.google.com/translate/docs/authentication), and [Cloud Translation pricing](https://cloud.google.com/products/translate/pricing).
 
 ## Small implementation issues and acceptance checks
 

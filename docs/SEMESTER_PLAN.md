@@ -13,14 +13,14 @@ The project guide supplies the graded Week 2-15 deliverables. The introductory l
 | Week | Lecture topic shown in intro deck | Project-guide deliverable | SRT Translator milestone and evidence |
 | --- | --- | --- | --- |
 | 2 | Git & GitHub / project kickoff | Team formed, idea pitched, stack chosen | Record confirmed solo ownership; commit idea and stack; create roughly 5-10 initial issues; add `AI_LOG.md`; preserve the supplied prototype. |
-| 3 | Ch. 1 Software Products | Vibe-coded MVP live + product vision | Deploy the standalone MVP without waiting for the React rewrite; add the product vision; tag the baseline; demo upload -> translate -> progress -> download; disclose that Gemini is still a placeholder and that the endpoint is unofficial. |
+| 3 | Ch. 1 Software Products | Vibe-coded MVP live + product vision | Deploy the standalone MVP without waiting for the React rewrite; add the product vision; tag the baseline; demo upload -> translate -> progress -> download; disclose that its consumer endpoint is unofficial. |
 | 4 | Chuseok break in intro deck | Retrofit personas and user stories | Interview/validate intended users; write personas and prioritized user stories with acceptance criteria. Do not invent personas solely with AI. Revisit whether the primary user is a personal subtitle translator, a language learner, or another audience. |
 | 5 | Ch. 2 Agile Software Engineering | Retrofit lightweight Agile/Scrum | Create one-week backlog/sprint cadence, Definition of Done, issue labels, owners, review policy, and build log. Start React + TypeScript + Vite + Ant Design scaffold and port the shell/file parsing in small issues. |
 | 6 | Ch. 3 Features, Scenarios, Stories | Architecture diagram + critique | Finish feature scenarios and acceptance criteria; produce current/target diagrams; critique the single-file MVP using the verified debt list; add characterization tests around parser/serializer/grouper before replacing them. |
 | 7 | Ch. 4 Software Architecture | Redeploy to a proper cloud host; midterm review | Complete behavior-preserving React port; add connected-group spacing/labels, paired-card hover/edit states, elapsed timer, and active-job warning; deploy `dist` via GitHub Actions/Pages with correct Vite base; explain provider/domain/UI boundaries and why microservices are not needed. Demonstrate before/after architecture. |
 | 8 | Midterm | Midterm | Freeze a stable review tag; present progress, unresolved decisions, failures, and AI log; use feedback to reprioritize. Avoid risky feature expansion this week. |
 | 9 | Ch. 5 Cloud-based Software | Microservices/decomposition discussion (if it fits) | Evaluate client-only versus serverless job architecture. Record an ADR: modular monolith/provider adapters fit; independent microservices do not currently fit. Implement local checkpoint/resume and lifecycle-safe state saving. |
-| 10 | Ch. 6 Microservices Architecture | Security audit | Produce data-flow/threat model; replace/contain undocumented API use; implement ADR-002's visitor-funded provider boundary; audit session-only keys, browser exposure, file parsing, XSS, dependencies, quotas/cost, Firebase rules, telemetry, and metadata access. Verify that no key reaches storage, logs, URLs, analytics, source, build output, or `VITE_*`. |
+| 10 | Ch. 6 Microservices Architecture | Security audit | Produce data-flow/threat model; replace/contain undocumented API use; implement ADR-004's owner-funded gateway; audit server secret handling, file parsing, XSS, dependencies, quotas/cost, rate limits, Firebase rules, telemetry, and metadata access. Verify that no key reaches storage, logs, URLs, analytics, source, build output, or `VITE_*`. |
 | 11 | Ch. 7 Security & Privacy | Code style pass | Fix high-risk security findings; configure moderate ESLint + typescript-eslint + React Hooks + Prettier; remove duplicates/dead code; make error and job states explicit. Implement real provider response validation. |
 | 12 | Ch. 8 Reliable Programming + Style Guides | Real test suite + peer code review | Add fixtures and tests for round trips, continuation groups, mandatory speaker breaks, 42-grapheme/two-line/CPS checks, batching, retries, cancellation, editing, and resume. Implement/finish user-edit mode, protected edits, quality warnings, and scroll-follow/FAB behavior. Conduct and record peer review. |
 | 13 | Ch. 9 Testing + Code Review | Documentation pass + CI setup | Complete README, API docs, ADRs, architecture, contributor guide, and troubleshooting. CI runs typecheck/lint/test/build on PRs; `main` deploys only after gates pass. Add Pages smoke check. |
@@ -39,7 +39,7 @@ The project guide supplies the graded Week 2-15 deliverables. The introductory l
 - resilient progress/checkpoint/resume;
 - scroll-follow control;
 - security audit and safe credential plan;
-- visitor-funded Gemini and Cloud Translation adapters with session-only credential handling;
+- owner-funded Cloud Translation NMT and TLLM adapters behind a server-side gateway;
 - style, tests, review, documentation, CI/CD, and AI log.
 
 ### Conditional stretch track
@@ -80,7 +80,7 @@ The [React migration and official Translate implementation plan](REACT_MIGRATION
 6. Define translation provider contract and isolate the legacy provider.
 7. Port job progress, elapsed timer, active-tab warning, connected-group/hover/edit states, errors, and download.
 8. Add automated checks and GitHub Pages workflow.
-9. Implement visitor-funded providers and context-aware Gemini batching with validated cue mapping.
+9. Implement the owner-funded NMT/TLLM gateway and context-aware grouped translation with validated cue mapping.
 10. Replace proportional word splitting/six-word wrapping with the exact formatting specification and editable cues.
 
 ## Milestone evidence checklist

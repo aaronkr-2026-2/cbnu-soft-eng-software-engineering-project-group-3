@@ -5,10 +5,10 @@ Do not infer answers from this document. Record decisions in requirements and an
 ## Blocking before production API implementation
 
 1. Resolved 2026-09-16: one developer; this is a solo project. The developer must be able to explain all shipped work.
-2. Resolved 2026-09-16: each visitor owns provider credentials and cost; no project-funded public calls.
-3. Is a billing-enabled Google Cloud/Firebase project acceptable for the semester, and what monthly budget is acceptable? Researching the free tier does not answer this.
-4. Resolved 2026-09-16: no. Google Translate requires the visitor's session-only Cloud Translation Basic key.
-5. Resolved for the current release: Gemini uses a visitor's session-only AI Studio API key. Consumer subscription login is not an API billing mechanism; OAuth is deferred.
+2. Superseded 2026-09-18: the project owner funds Cloud Translation through a gateway; visitors provide no credential.
+3. What monthly translation budget and public allowance are acceptable? Researching a free tier does not answer this.
+4. What production gateway host, rate limits, and abuse controls will be used?
+5. Which NMT/TLLM quality, latency, and cost evidence selects the default model?
 
 ## Telemetry decisions and deferred file questions
 
@@ -49,5 +49,5 @@ Do not infer answers from this document. Record decisions in requirements and an
 31. Should automatic retiming/cue splitting ever be included, or only quality warnings/manual edits?
 32. Which language-specific readability profiles are required beyond an English-derived default?
 33. Resolved 2026-09-17: hide Statistics until implemented.
-34. Which Gemini model is the tested default, and what token/character budget passes the translation fixtures?
+34. Which Cloud Translation model is the tested default, and what grouped-input/cue-alignment benchmark passes the translation fixtures?
 35. Resolved 2026-09-17: require explicit Adult (20 CPS) or Children (17 CPS) profile selection before translation.

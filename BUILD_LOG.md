@@ -11,7 +11,7 @@ Local branch: `feat/react-official-translate`. Node 24.19.0 / npm 11.17.0. This 
 | `npm run format:check` | Passed. |
 | `GITHUB_ACTIONS=true npm run test:e2e` | Passed: four Chromium browser workflows against the production build under the repository subpath; final run 7.6 seconds. Light/dark screenshots inspected in test-results. |
 | `npm run check:build` | Passed: no legacy endpoint, environment-key marker, key-shaped literal, source maps, or historical HTML in dist. This is a targeted artifact check, not a comprehensive security audit. |
-| `git diff --exit-code b64bc59 -- srt-translator-beta-3.html` | Passed: original MVP unchanged. Local annotated mvp-baseline tag preserves b64bc59. |
+| `git diff --exit-code b64bc59 -- archive/mvp/srt-translator-beta-3.html` | Passed before the file was moved: original MVP unchanged. Local annotated mvp-baseline tag preserves b64bc59. |
 | `git check-ignore .env .nev` / tracked-file query | Both ignored; .env is untracked. No secret file content read. |
 | `git diff --check` | Passed. |
 
@@ -28,6 +28,10 @@ Failures found and corrected during implementation:
 - ESLint initially omitted Node globals for the new .mjs artifact checker; the configuration now includes that extension.
 - The first Pages-subpath run could not load assets because build and preview used different base paths. Vite now uses the same CI base for both; all four browser tests pass with that configuration.
 
-Live provider verification remains user-operated: run npm run dev, enter a website-restricted key in the app, Test key, then translate examples/demo.srt. Check billing/quota and downloaded timing/text. Actual browser CORS, key restrictions, Google responses, human translation quality, Firefox/Safari/Edge behavior, and remote CI/Pages are not proven by mocks. The reviewed feature branch is published to origin; no real credential use or deployment occurred in this task.
+Historical note: the earlier direct-browser key test is superseded by ADR-004. The new local flow is `npm run dev:gateway` plus `npm run dev`, followed by **Check service** in the app. A live gateway/provider result, human translation-quality review, Firefox/Safari/Edge verification, and production deployment remain unproven.
 
 Human walkthrough / external review / retrospective: TBD - human review required.
+
+## 2026-09-18 — Owner-funded NMT/TLLM gateway refactor
+
+`npm run check`, `npm run format:check`, `node --check server/index.mjs`, and `GITHUB_ACTIONS=true npm run test:e2e` passed. Unit tests use mocked gateway responses; browser tests intercept `/api` and do not start the local gateway or read `.env`. No real API key was read and no billable Google request was made. The production gateway host, rate limits, abuse controls, live-provider smoke test, and NMT/TLLM quality benchmark remain pending.

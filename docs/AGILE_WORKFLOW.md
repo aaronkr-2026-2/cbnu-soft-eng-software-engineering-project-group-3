@@ -3,7 +3,7 @@
 Adopted for the migration implementation on 2026-09-17. One developer owns implementation, verification, documentation, and operations. External peer review remains a separate course requirement; reviewer TBD.
 
 - Use one-week sprints. Spend about 30 minutes at the start selecting a goal and ready issues against available hours.
-- At each work session, update BUILD_LOG.md with the change, actual commands/results, blockers, and next step.
+- At each work session, update BUILD_LOG.md with the change, actual commands/results, blockers, and next step. For material changes, also update the one-line AI_LOG.md and detailed docs/AI_DETAILED_LOG.md record.
 - Review scope midweek; move unfinished work back to the backlog rather than claiming completion.
 - End each sprint with a demonstrable increment, check results, carryover, and one human-authored retrospective improvement.
 

@@ -1,5 +1,7 @@
 # Architecture
 
+> **2026-09-18 update:** ADR-004 supersedes any Gemini or visitor-key design described below. The target architecture has one owner-funded Cloud Translation gateway offering NMT and TLLM. The browser never receives the project key. Historical sections remain as before-state evidence until the gateway is implemented.
+
 Version: 0.1 draft
 
 Date: 2026-09-17
@@ -10,7 +12,7 @@ The React client now implements local SRT parsing, cue display/editing, an expli
 
 `useTranslator` owns UI/job state and file/credential cancellation; `runJob` orchestrates batches through `TranslationProvider`; SRT and formatting functions remain under `src/core`. Request IDs protect mapping, and aborted/stale file or provider work is ignored. Download requires complete output. Retry preserves completed results and edits in the current tab.
 
-The checkpoint store, general Gemini integration, metadata, Statistics, and backend diagrams below describe future architecture, not current code. Statistics is hidden. There is no persistent subtitle/credential store or project telemetry in this implementation. Production deployment is configured but not verified live.
+The checkpoint store, metadata, Statistics, and production-backend diagrams below describe future architecture, not current code. Statistics is hidden. There is no persistent subtitle/credential store or project telemetry in this implementation. Production deployment is configured but not verified live.
 
 ## 1. Architecture objectives
 
@@ -69,7 +71,7 @@ A Spark-only prototype can collect client-reported events under restrictive rule
 10. Allow user edits and mark them as protected.
 11. Validate and serialize the final `.srt`.
 
-Retire the legacy "merge sentence, translate once, split by original word ratio" algorithm during the React port. It corrupts boundaries when target-language word order differs. Gemini receives complete continuation groups and neighboring context but returns structured per-cue/per-speaker IDs. Standard Google NMT receives one string per cue, batched in one official request for efficiency; separate strings do not promise document context. In both paths, every provider result maps one-to-one before formatting.
+Retire the legacy "merge sentence, translate once, split by original word ratio" algorithm during the React port. It corrupts boundaries when target-language word order differs. NMT currently receives one string per cue, batched for efficiency; separate strings do not promise document context. TLLM context/grouping and cue alignment remain a future validated gateway feature. In both paths, every provider result maps one-to-one before formatting.
 
 ## 4. Core domain model
 
@@ -102,7 +104,7 @@ interface TranslationProvider {
 
 The exact types belong in code and may evolve. Required invariants are stable input IDs, validated output IDs, explicit language capability, cancellation, categorized errors, and no provider-specific branching in React components.
 
-ADR-002 makes both providers visitor-funded. The credential control constructs the selected adapter in memory, validates it, and never passes the raw value into the reducer, persistence layer, telemetry, URL, or logger. Cloud Translation Basic is the current browser BYOK target. Gemini uses the current official SDK/API with `store=false` and the versioned prompt contract.
+ADR-004 makes Cloud Translation owner-funded. The gateway holds the server-only credential and validates NMT/TLLM requests; the browser never passes or receives a raw key. Cloud Translation Basic v2 is the local gateway target.
 
 ## 6. Suggested frontend structure
 
@@ -202,7 +204,7 @@ Matching should be confidence-based and visible to the user. Cross-user subtitle
 
 Use `docs/ADR_TEMPLATE.md` for decisions that alter boundaries, data, security, deployment, or dependencies. Required likely decisions include:
 
-- tested Gemini model and batch budget;
+- tested NMT/TLLM model, grouping, and batch budget;
 - local-only versus backend job execution;
 - telemetry location acquisition method, retention, and deletion;
 - metadata provider;

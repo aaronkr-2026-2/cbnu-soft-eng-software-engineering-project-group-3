@@ -10,19 +10,20 @@ import {
   type TranslationResult,
 } from './provider';
 
-export const TRANSLATE_ENDPOINT =
-  'https://translation.googleapis.com/language/translate/v2';
+export const TRANSLATE_ENDPOINT = '/api/translation';
+export type TranslationModel = 'nmt' | 'tllm';
 export const MAX_REQUEST_BYTES = 90000; // Margin beneath Basic's documented 100 KB limit.
 export function translationBody(
   inputs: TranslationInput[],
   target: string,
+  model: TranslationModel = 'nmt',
 ): string {
   return JSON.stringify({
     q: inputs.map((input) => input.text),
     source: 'en',
     target,
     format: 'html',
-    model: 'nmt',
+    model,
   });
 }
 
@@ -56,18 +57,16 @@ function sleep(ms: number, signal: AbortSignal): Promise<void> {
   });
 }
 
-/** The private key is not enumerable/serializable and is never placed in app job state. */
+/** Calls the owner-funded gateway. The browser never receives the Cloud API key. */
 export class GoogleTranslate implements TranslationProvider {
-  #key: string;
+  private readonly model: TranslationModel;
   constructor(
-    key: string,
+    model: TranslationModel | string,
     private readonly timeoutMs = 15000,
   ) {
-    this.#key = key.trim();
+    this.model = model === 'tllm' ? 'tllm' : 'nmt';
   }
-  clear(): void {
-    this.#key = '';
-  }
+  clear(): void {}
 
   private async request(
     url: string,
@@ -77,7 +76,6 @@ export class GoogleTranslate implements TranslationProvider {
   ): Promise<unknown> {
     for (let attempt = 0; attempt < 3; attempt++) {
       checkAbort(signal);
-      if (!this.#key) throw new ProviderError('Enter and test your key again.');
       const controller = new AbortController();
       const cancel = () => controller.abort();
       signal.addEventListener('abort', cancel, { once: true });
@@ -93,7 +91,6 @@ export class GoogleTranslate implements TranslationProvider {
           ...init,
           headers: {
             'Content-Type': 'application/json',
-            'x-goog-api-key': this.#key,
           },
           signal: controller.signal,
           credentials: 'omit',
@@ -103,7 +100,7 @@ export class GoogleTranslate implements TranslationProvider {
         if (!response.ok) {
           if (response.status === 401 || response.status === 403)
             throw new ProviderError(
-              'Google denied access. Check the key, website/API restrictions, billing, and daily quota.',
+              'Google denied the project gateway request. Check API access, billing, server key restrictions, and quota.',
             );
           if (response.status === 400)
             throw new ProviderError(
@@ -132,7 +129,7 @@ export class GoogleTranslate implements TranslationProvider {
             : new ProviderError(
                 timedOut
                   ? 'Google request timed out.'
-                  : 'Could not reach Google. Check your connection and browser/API restrictions.',
+                  : 'Could not reach the translation gateway. Start it locally or check the deployed service.',
                 true,
               );
       } finally {
@@ -147,7 +144,7 @@ export class GoogleTranslate implements TranslationProvider {
 
   async getLanguages(signal: AbortSignal): Promise<Language[]> {
     const data = await this.request(
-      `${TRANSLATE_ENDPOINT}/languages?target=en&model=nmt`,
+      `${TRANSLATE_ENDPOINT}/languages?model=${this.model}`,
       { method: 'GET' },
       signal,
     );
@@ -179,7 +176,7 @@ export class GoogleTranslate implements TranslationProvider {
     signal: AbortSignal,
     onRequest?: () => void,
   ): Promise<TranslationResult[]> {
-    const body = translationBody(inputs, target);
+    const body = translationBody(inputs, target, this.model);
     if (
       !inputs.length ||
       inputs.length > 128 ||

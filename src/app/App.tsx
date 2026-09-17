@@ -26,6 +26,7 @@ import { useTranslator } from '../features/translator/useTranslator';
 import { CueRow } from '../features/translator/CueRow';
 import { continuationGroups, type Profile } from '../core/subtitles/subtitles';
 import { PRICE_DATE } from '../services/translation/batches';
+import type { TranslationModel } from '../services/translation/googleTranslate';
 
 function Elapsed({
   startedAt,
@@ -60,14 +61,13 @@ function Translator({
   dark: boolean;
   setDark: (value: boolean) => void;
 }) {
-  const app = useTranslator();
+  const [engine, setEngine] = useState<TranslationModel>('nmt');
+  const app = useTranslator(engine);
   const { token } = theme.useToken();
-  const keyInput = useRef<HTMLInputElement>(null);
   const fileInput = useRef<HTMLInputElement>(null);
   const viewport = useRef<HTMLElement>(null);
   const [follow, setFollow] = useState(true);
   const [dragging, setDragging] = useState(false);
-  const [engine, setEngine] = useState('google-translate');
   const groups = useMemo(() => continuationGroups(app.cues), [app.cues]);
   const translatedCount = Object.keys(app.translations).length;
   const configuredLock = app.busy || translatedCount > 0;
@@ -98,18 +98,6 @@ function Translator({
     '--gap': `${token.marginXS}px`,
     '--group-gap': `${token.marginLG}px`,
   } as CSSProperties;
-
-  function clearKey() {
-    if (keyInput.current) keyInput.current.value = '';
-    app.invalidateCredential();
-  }
-  function testKey() {
-    const input = keyInput.current;
-    if (!input) return;
-    const key = input.value;
-    input.value = '';
-    void app.testKey(key);
-  }
 
   return (
     <div className="app" style={styles}>
@@ -196,74 +184,52 @@ function Translator({
               value={engine}
               disabled={app.busy}
               onChange={(value) => {
-                clearKey();
-                setEngine(value);
+                app.invalidateCredential();
+                setEngine(value as TranslationModel);
               }}
               options={[
                 {
-                  value: 'google-translate',
-                  label: 'Google Translate · official API',
+                  value: 'nmt',
+                  label: 'NMT · fast general translation',
                 },
                 {
-                  value: 'google-gemini',
-                  label: 'Google Gemini · not available',
-                  disabled: true,
+                  value: 'tllm',
+                  label: 'TLLM · higher-quality contextual translation',
                 },
               ]}
             />
           </div>
           <section
             className="credential-panel"
-            aria-label="Provider credential"
+            aria-label="Translation service"
           >
-            <label htmlFor="provider-key">Your Cloud Translation key</label>
-            <input
-              className="key-input"
-              type="password"
-              id="provider-key"
-              ref={keyInput}
-              autoComplete="off"
-              spellCheck={false}
-              disabled={app.busy}
-              placeholder="Paste key for this tab"
-              onChange={() => app.invalidateCredential()}
-            />
             <div className="credential-actions">
               <Button
-                onClick={testKey}
+                onClick={() => void app.testService()}
                 disabled={app.busy || app.credentialStatus === 'testing'}
                 loading={app.credentialStatus === 'testing'}
               >
-                Test key
+                Check service
               </Button>
-              <Button onClick={clearKey}>Clear key</Button>
             </div>
             <p className="credential-status" role="status">
               {app.credentialStatus === 'ready'
-                ? 'Key verified · ready to translate'
+                ? 'Translation service ready'
                 : app.credentialStatus === 'testing'
-                  ? 'Checking key with Google…'
-                  : 'Enter and test a key to enable translation.'}
+                  ? 'Checking translation service…'
+                  : 'Check the service to enable translation.'}
             </p>
             <p className="help-text">
-              Memory only; cleared on reload and successful completion. Browser
-              extensions and developer tools can observe it. Test key translates
-              “Hello.” (6 characters; retries may add usage).
+              This app uses the project gateway. Your API key stays on the
+              server. The service check translates “Hello.” and may add usage.
             </p>
-            <a
-              href="https://docs.cloud.google.com/translate/docs/setup"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Get a Cloud Translation key ↗
-            </a>
           </section>
           <div className="field">
             <label htmlFor="language">Translate to</label>
             <Select
               id="language"
               showSearch={{ optionFilterProp: 'label' }}
-              placeholder="Test your key to load languages"
+              placeholder="Check the service to load languages"
               value={app.language || undefined}
               disabled={configuredLock || !app.languages.length}
               onChange={app.setLanguage}
@@ -294,16 +260,27 @@ function Translator({
                 {app.estimate.value.characters.toLocaleString()} characters ·{' '}
                 {app.estimate.value.batches.length} remaining batches
               </span>
-              <span>
-                Estimated list cost: ${app.estimate.value.usd.toFixed(4)} USD
-              </span>
-              <span>
-                With automatic retries: up to $
-                {app.estimate.value.retryCeilingUsd.toFixed(4)} USD per attempt
-              </span>
+              {engine === 'nmt' ? (
+                <>
+                  <span>
+                    Estimated NMT list cost: $
+                    {app.estimate.value.usd.toFixed(4)} USD
+                  </span>
+                  <span>
+                    With automatic retries: up to $
+                    {app.estimate.value.retryCeilingUsd.toFixed(4)} USD per
+                    attempt
+                  </span>
+                </>
+              ) : (
+                <span>
+                  TLLM bills input and output characters; this NMT estimate is
+                  not a TLLM quote.
+                </span>
+              )}
               <small>
                 Includes provider-bound markup. Remaining credits are unknown;
-                manual retries/test calls add usage. NMT price checked{' '}
+                Manual retries/service checks add usage. NMT price checked{' '}
                 {PRICE_DATE}.{' '}
                 <a
                   href="https://cloud.google.com/products/translate/pricing"
@@ -337,8 +314,9 @@ function Translator({
             </Button>
           )}
           <p className="help-text">
-            Translation sends subtitle text to Google using your account. No
-            subtitle files or usage telemetry are uploaded to this project.
+            Translation sends subtitle text to Google through this project's
+            gateway. No subtitle files or usage telemetry are uploaded to this
+            project.
           </p>
           <div className="job-summary" aria-live="polite">
             <div>

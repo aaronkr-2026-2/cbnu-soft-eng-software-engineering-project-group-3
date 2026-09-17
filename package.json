@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "dev:gateway": "node --env-file=.env server/index.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings 0",
     "format": "prettier --write src index.html package.json tsconfig.json vite.config.ts eslint.config.js .github/workflows/ci.yml playwright.config.ts e2e scripts",

@@ -14,9 +14,8 @@ Before changing anything, read:
 6. `docs/COURSE_ALIGNMENT.md`
 7. `docs/SUBTITLE_FORMATTING_SPEC.md`
 8. `docs/PROVIDER_AUTH_AND_COST.md`
-9. `docs/GEMINI_TRANSLATION_PROMPT.md`
-10. accepted ADRs, then `docs/OPEN_QUESTIONS.md`
-11. recent entries in `AI_LOG.md`
+9. accepted ADRs, then `docs/OPEN_QUESTIONS.md`
+10. recent entries in `AI_LOG.md` and `docs/AI_DETAILED_LOG.md`
 
 ## Non-negotiable rules
 
@@ -26,12 +25,11 @@ Before changing anything, read:
 - Preserve the original MVP and working behavior. Do not erase or rewrite code without a focused reason, acceptance criteria, and tests.
 - Keep changes small, understandable, and junior-developer-friendly.
 - Keep SRT/subtitle domain logic independent of React and network providers.
-- Keep Google Translate/Gemini details behind the translation-provider interface.
-- Never present the Gemini placeholder as a real Gemini implementation.
+- Keep Cloud Translation model details behind the translation-provider interface.
 - Never use or describe the MVP's undocumented Google consumer endpoint as production-ready.
 - Never expose, commit, persist, log, or place secrets in public Vite environment variables.
-- Translation is user-funded. Never call Google Translate or Gemini using a project-owner credential for public traffic and never add an undocumented free fallback.
-- Visitor provider keys exist only in volatile memory for the current tab. Never put them in browser persistence, autofill-enabled application state, telemetry, checkpoints, URLs, logs, or downloaded files.
+- Translation is owner-funded through a server-side gateway. Never expose, commit, persist in browser storage, log, or place the project-owner key in URLs, downloaded files, public Vite variables, or frontend source.
+- The browser must call only the project gateway. The gateway reads its local development credential from gitignored `.env`; production uses the deployment secret manager. Enforce a documented cost/abuse limit before public deployment.
 - Developer-owned local server secrets belong in a gitignored `.env`; production secrets belong in the deployment secret manager. `VITE_*` values are public and must never contain secrets. Commit only placeholder names in `.env.example`.
 - Never claim frontend translation is guaranteed to continue after a tab is frozen, discarded, or closed.
 - Current cloud scope is telemetry only: location, target language, and movie identity. Never upload source/translated subtitle text, completed SRT files, raw filenames, or API keys as telemetry. Sending required subtitle text to the chosen translation provider is a separate translation operation.
@@ -39,7 +37,7 @@ Before changing anything, read:
 - Location precision is confirmed as country and city. Acquisition method and telemetry retention/notice remain TBD; do not silently add GPS, an IP lookup service, raw IP storage, or persistent user tracking.
 - Do not implement microservices merely to match a lecture topic. Discuss and document why they fit or do not fit.
 - Run relevant typecheck, lint, tests, and build. Never claim they passed without current successful output.
-- After every material change, update `PROJECT_STATE.md` and affected documentation, then append `AI_LOG.md` in the exact course format.
+- After every material change, update `PROJECT_STATE.md` and affected documentation, append a one-line plain-language entry to `AI_LOG.md`, and append the evidence/detail to `docs/AI_DETAILED_LOG.md`.
 - Never fabricate the human-only `kept`, `changed/rejected`, or `AI got wrong` reflection. Use `TBD - human review required` when necessary.
 - Work must satisfy the Definition of Done in `docs/PRODUCT_REQUIREMENTS.md`.
 
@@ -55,7 +53,7 @@ Before changing anything, read:
 ## Ownership and cost decisions
 
 - Confirmed 2026-09-16: this is a solo project. Do not allocate work to assumed teammates.
-- Confirmed 2026-09-16: visitors fund both translation engines using their own session-only provider credential. Consumer Google/Gemini sign-in is not an API billing mechanism. See ADR-002.
+- Confirmed 2026-09-18: use only Cloud Translation NMT and TLLM through an owner-funded server-side gateway. Gemini Developer API is removed from product scope. See ADR-004.
 - Telemetry-only scope supersedes prior Firebase/R2 file-storage proposals. Do not provision an object bucket or add upload credentials for this scope. Billing acceptance and telemetry lifecycle remain open. Read `docs/ADR-001-TELEMETRY-ONLY.md`.
 - Recheck dated pricing before implementation; distinguish a no-cost quota from a no-billing account.
 
@@ -63,8 +61,8 @@ Before changing anything, read:
 
 1. Reconcile actual repository state with `PROJECT_STATE.md`.
 2. Preserve/tag/deploy the standalone MVP as the before-state.
-3. Port behavior to React/TypeScript in small verified slices, including grouped-cue spacing, hover/edit states, elapsed time, and the active-tab warning.
-4. Add provider, reliability, formatting, editing, tests, security, documentation, and CI according to the semester plan.
+3. Replace the temporary direct-browser adapter with a server-side NMT/TLLM gateway, including a cost/abuse limit and a deployment host before public release.
+4. Port contextual group handling, reliability, formatting, editing, tests, security, documentation, and CI according to the semester plan.
 5. Implement the confirmed telemetry-only feature after its open data decisions are resolved; movie matching/lives remain conditional. File storage/reuse are deferred, not active stretch milestones.
 
 ## Task completion report

@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 
 const fixture =
   '7\n00:00:01,000 --> 00:00:05,000\n<i>Hello.</i>\n\n12\n00:00:06,000 --> 00:00:09,000\n- Hello. - Goodbye.\n';
-const endpoint = 'https://translation.googleapis.com/language/translate/v2';
+const endpoint = '**/api/translation';
 
 async function configure(page: Page, text = fixture) {
   await page.goto('./');
@@ -13,12 +13,9 @@ async function configure(page: Page, text = fixture) {
     buffer: Buffer.from(text),
   });
   await page
-    .getByLabel('Your Cloud Translation key', { exact: true })
-    .fill('fake-browser-test-key');
-  await page.getByRole('button', { name: 'Test key', exact: true }).click();
-  await expect(
-    page.getByText('Key verified · ready to translate'),
-  ).toBeVisible();
+    .getByRole('button', { name: 'Check service', exact: true })
+    .click();
+  await expect(page.getByText('Translation service ready')).toBeVisible();
   await page.locator('#language').click();
   await page.getByTitle('Mongolian (mn)', { exact: true }).click();
   await page.locator('#profile').click();
@@ -29,8 +26,8 @@ async function configure(page: Page, text = fixture) {
 
 test.beforeEach(async ({ page }) => {
   // All provider calls are local fixtures. Never load .env or contact a paid API.
-  await page.route('https://**/*', async (route) => {
-    if (route.request().url().startsWith(`${endpoint}/languages`)) {
+  await page.route('**/api/**', async (route) => {
+    if (route.request().url().includes('/api/translation/languages')) {
       await route.fulfill({
         json: {
           data: {
@@ -42,7 +39,7 @@ test.beforeEach(async ({ page }) => {
           },
         },
       });
-    } else if (route.request().url() === endpoint) {
+    } else if (route.request().url().endsWith('/api/translation')) {
       const body = route.request().postDataJSON() as { q: string[] };
       await route.fulfill({
         json: {
@@ -59,7 +56,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test('upload → official adapter → edit → download, theme and credential lifecycle', async ({
+test('upload → official gateway → edit → download and theme lifecycle', async ({
   page,
 }) => {
   const consoleErrors: string[] = [];
@@ -77,9 +74,6 @@ test('upload → official adapter → edit → download, theme and credential li
   await expect(
     page.getByRole('button', { name: 'Download translated SRT' }),
   ).toBeEnabled();
-  await expect(
-    page.getByLabel('Your Cloud Translation key', { exact: true }),
-  ).toHaveValue('');
   await page.getByRole('button', { name: 'Edit cue 7', exact: true }).click();
   await page
     .getByLabel('Edit translation 7', { exact: true })
@@ -94,7 +88,6 @@ test('upload → official adapter → edit → download, theme and credential li
     '7\n00:00:01,000 --> 00:00:05,000\n<b>Миний засвар.</b>',
   );
   expect(output).toContain('- Сайн уу.\n- Баяртай.');
-  expect(output).not.toContain('fake-browser-test-key');
   await page.getByRole('switch', { name: 'Dark theme' }).click();
   await expect(page.getByRole('switch', { name: 'Dark theme' })).toBeChecked();
   await page.locator('.sidebar').evaluate((element) => (element.scrollTop = 0));
@@ -170,7 +163,9 @@ test('partial failure retries only pending cues and preserves edits', async ({
     .getByRole('button', { name: 'Start translation', exact: true })
     .click();
   await expect(
-    page.getByText('Google denied access.', { exact: false }),
+    page.getByText('Google denied the project gateway request.', {
+      exact: false,
+    }),
   ).toBeVisible();
   await expect(
     page.getByRole('button', { name: 'Download translated SRT' }),
@@ -224,9 +219,5 @@ test('cancellation stops a pending request and disables download', async ({
   release();
   await expect(
     page.getByRole('button', { name: 'Download translated SRT' }),
-  ).toBeDisabled();
-  await page.getByRole('button', { name: 'Clear key', exact: true }).click();
-  await expect(
-    page.getByRole('button', { name: 'Start translation', exact: true }),
   ).toBeDisabled();
 });

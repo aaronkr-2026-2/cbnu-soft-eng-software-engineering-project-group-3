@@ -8,7 +8,10 @@ import {
   type Cue,
 } from '../../core/srt/srt';
 import type { Profile } from '../../core/subtitles/subtitles';
-import { GoogleTranslate } from '../../services/translation/googleTranslate';
+import {
+  GoogleTranslate,
+  type TranslationModel,
+} from '../../services/translation/googleTranslate';
 import { estimateTranslation } from '../../services/translation/batches';
 import {
   safeError,
@@ -20,7 +23,7 @@ import { runJob } from './job';
 export type JobStatus =
   'idle' | 'running' | 'completed' | 'cancelled' | 'failed';
 
-export function useTranslator() {
+export function useTranslator(model: TranslationModel) {
   const [cues, setCues] = useState<Cue[]>([]);
   const [filename, setFilename] = useState('');
   const [language, setLanguage] = useState('');
@@ -68,17 +71,13 @@ export function useTranslator() {
     setCredentialStatus('empty');
   }, []);
 
-  async function testKey(key: string) {
+  async function testService() {
     invalidateCredential();
-    if (!key.trim()) {
-      setError('Enter your Cloud Translation API key.');
-      return;
-    }
     setError('');
     setCredentialStatus('testing');
     const controller = new AbortController();
     testAbort.current = controller;
-    const candidate = new GoogleTranslate(key);
+    const candidate = new GoogleTranslate(model);
     try {
       const supported = await candidate.getLanguages(controller.signal);
       const target =
@@ -104,6 +103,12 @@ export function useTranslator() {
       setCredentialStatus('empty');
       setError(safeError(failure));
     }
+  }
+
+  // Compatibility for existing hook tests; the browser no longer accepts a key.
+  async function testKey(_ignored?: string) {
+    void _ignored;
+    await testService();
   }
 
   const resetOutput = () => {
@@ -285,6 +290,7 @@ export function useTranslator() {
     setProfile,
     languages,
     credentialStatus,
+    testService,
     testKey,
     invalidateCredential,
     translations,

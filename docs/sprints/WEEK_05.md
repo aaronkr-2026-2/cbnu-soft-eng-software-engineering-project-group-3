@@ -4,7 +4,7 @@ Sprint dates / capacity: TBD — confirm against the course calendar and persona
 
 Goal: establish a weekly workflow and implement a local, verified React upload-to-download increment using official Cloud Translation. The expanded provider/editing work may span multiple sprints.
 
-Owner for every item: project owner (solo developer). Current branch: `feat/react-official-translate`. Baseline: local `mvp-baseline` tag at `b64bc59`. The original HTML is unchanged and excluded from the production artifact.
+Owner for every item: project owner (solo developer). Current branch: `main`. Baseline: local `mvp-baseline` tag at `b64bc59`; its HTML now lives in `archive/mvp/` and is excluded from the production artifact.
 
 | Local ID | Work and acceptance | State |
 | --- | --- | --- |
@@ -14,7 +14,7 @@ Owner for every item: project owner (solo developer). Current branch: `feat/reac
 | W5-04 | Characterize historical parser/serializer; expose renumbering/skipping debt | Review — automated characterization fixtures pass |
 | W5-05 | Pure SRT domain with explicit errors and preserved identities/timing | Review — round-trip and validation fixtures pass |
 | W5-06 | Responsive themed shell and local file preview | Review — Statistics hidden, profile choice required |
-| W5-07 | Official provider, credential lifecycle, complete job/download/edit flow | Review — mocked unit/browser checks; live restricted-key test still required |
+| W5-07 | Owner-funded NMT/TLLM gateway and complete job/download/edit flow | In progress — local gateway reads ignored `.env`; live provider test, production host, limits, and context alignment remain required |
 | W5-08 | CI/Pages configuration, docs and final evidence | Review — workflow prepared; remote CI/deployment and human walkthrough pending |
 
 These IDs are local draft issues, not GitHub issue numbers. Query existing issues before publishing them. Evidence: BUILD_LOG.md, tests under src/ and e2e/, and AI_LOG.md. No item is marked Done merely because AI implemented it.

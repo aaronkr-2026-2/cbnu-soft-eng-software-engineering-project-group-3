@@ -2,6 +2,8 @@
 
 Status: Accepted for the requested implementation
 
+Superseded in its provider/credential portions by ADR-004 on 2026-09-18. The React/SRT/testing decisions remain historical implementation evidence.
+
 Date: 2026-09-17
 
 Decision owner: project owner (solo developer); implementation details selected within the requested migration.

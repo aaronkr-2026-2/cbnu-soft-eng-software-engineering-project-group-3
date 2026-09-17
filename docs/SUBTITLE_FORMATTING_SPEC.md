@@ -26,7 +26,7 @@ This specification replaces the MVP's universal six-word wrapping and proportion
 - Preserve the input cue count, order, indexes, and timecodes.
 - Do not merge several SRT cues into one output cue.
 - Do not translate a whole group and divide the target text by source word-count ratios.
-- Gemini receives a continuation group and bounded neighboring context but must return one structured result for each requested cue ID.
+- The selected Cloud Translation model receives bounded continuation-group context only when the gateway grouping/alignment implementation supports it, and every result must remain associated with requested cue IDs.
 - Google Cloud Translation NMT receives one translatable string per cue, batched in one request where possible. This preserves alignment; batching must not be described as cross-cue context.
 - If provider output cannot be mapped one-to-one to every requested cue, reject that batch instead of guessing boundaries.
 
@@ -66,9 +66,9 @@ The user's dialogue rule is mandatory:
 - A two-speaker cue has exactly one speaker per line; the forced boundary cannot be moved by balancing logic.
 - More than two detected speakers cannot satisfy the two-line baseline. Preserve the content and flag the cue for review instead of silently discarding a speaker or generating unlimited lines.
 
-## 6. Context-aware Gemini repair
+## 6. Context-aware translation repair
 
-Gemini receives per-cue capacities, durations, speaker segments, and stable cue IDs. It may phrase the translation so a continuing utterance flows naturally across the existing cues, but it must keep semantic order, return every ID once, and omit nothing plot-relevant. If the first response violates cue capacity, the application may make one bounded repair request containing the group, violations, and limits. A remaining violation becomes `needs-review`.
+The selected Cloud Translation model receives per-cue capacities, durations, speaker segments, and stable cue IDs only after the grouped-input implementation is validated. It may phrase a continuing utterance naturally across existing cues, but must preserve semantic order, return every ID once, and omit nothing plot-relevant. A remaining violation becomes `needs-review`.
 
 ## 7. Acceptance fixtures
 

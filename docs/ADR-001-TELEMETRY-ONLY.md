@@ -16,7 +16,7 @@ The user reviewed Firebase/R2 file-storage options and explicitly decided to rem
 
 - Benefit: enables future cross-user subtitle reuse.
 - Cost: adds file hosting, access/deletion, and billing responsibilities.
-- Evidence: historical feasibility comparison in section 10 of `FEASIBILITY_RESEARCH.md`.
+- Evidence: retained architecture and cost rationale in ADR-004 and docs/PROVIDER_AUTH_AND_COST.md.
 
 ### Option B — telemetry only
 

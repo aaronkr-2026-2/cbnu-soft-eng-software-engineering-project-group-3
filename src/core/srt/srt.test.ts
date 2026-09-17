@@ -8,7 +8,7 @@ const source =
   '7\n00:00:01,000 --> 00:00:04,000\n<i>Hello there.</i>\nSecond line.\n\n12\n00:00:05,000 --> 00:00:06,500\nGoodbye.\n';
 
 describe('baseline characterization (historical HTML remains unchanged)', () => {
-  const html = readFileSync('srt-translator-beta-3.html', 'utf8');
+  const html = readFileSync('archive/mvp/srt-translator-beta-3.html', 'utf8');
   const parserSource = html.slice(
     html.indexOf('const SRTParser ='),
     html.indexOf('const SentenceGrouper ='),

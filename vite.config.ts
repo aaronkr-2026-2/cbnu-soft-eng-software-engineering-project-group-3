@@ -3,7 +3,7 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [react()],
-  // Keep local developer credential files entirely outside Vite's env loading.
+  // The private key is read only by `npm run dev:gateway`, never by Vite.
   envDir: false,
   optimizeDeps: { entries: ['index.html'] },
   base:
@@ -14,14 +14,11 @@ export default defineConfig({
     host: 'localhost',
     port: 5173,
     strictPort: true,
+    proxy: {
+      '/api': 'http://localhost:8787',
+    },
     fs: {
-      deny: [
-        '.env',
-        '.env.*',
-        '.nev',
-        '**/.git/**',
-        '**/srt-translator-beta-3.html',
-      ],
+      deny: ['.env', '.env.*', '.nev', '**/.git/**', '**/archive/mvp/**'],
     },
   },
   test: {

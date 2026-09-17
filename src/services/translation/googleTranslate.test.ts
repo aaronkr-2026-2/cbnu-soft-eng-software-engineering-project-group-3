@@ -10,21 +10,20 @@ const response = (data: unknown, status = 200) =>
   new Response(JSON.stringify(data), { status });
 afterEach(() => vi.useRealTimers());
 describe('official Google adapter', () => {
-  it('sends the key only in a header and uses NMT POST with stable local mapping', async () => {
+  it('uses the owner-funded gateway and NMT POST with stable local mapping', async () => {
     const fetcher = vi.fn().mockResolvedValue(
       response({
         data: { translations: [{ translatedText: 'Hola &amp; adiós.' }] },
       }),
     );
     vi.stubGlobal('fetch', fetcher);
-    const provider = new GoogleTranslate('test-only-not-a-real-key');
-    expect(JSON.stringify(provider)).not.toContain('test-only');
+    const provider = new GoogleTranslate('nmt');
     expect(await provider.translateBatch(input, 'es', signal())).toEqual([
       { id: 'cue-7:0', text: 'Hola & adiós.' },
     ]);
     const [url, options] = fetcher.mock.calls[0];
     expect(url).toBe(TRANSLATE_ENDPOINT);
-    expect(options.headers['x-goog-api-key']).toBe('test-only-not-a-real-key');
+    expect(options.headers['x-goog-api-key']).toBeUndefined();
     expect(JSON.parse(options.body)).toEqual({
       q: ['Hello &amp; goodbye.'],
       source: 'en',
@@ -75,7 +74,7 @@ describe('official Google adapter', () => {
     vi.stubGlobal('fetch', fetcher);
     await expect(
       new GoogleTranslate('fake').translateBatch(input, 'es', signal()),
-    ).rejects.toThrow('denied access');
+    ).rejects.toThrow('denied the project gateway request');
     expect(fetcher).toHaveBeenCalledTimes(1);
     expect(safeError(new Error('secret-key-in-error'))).not.toContain('secret');
   });
@@ -149,9 +148,6 @@ describe('official Google adapter', () => {
       { code: 'mn', name: 'Mongolian' },
     ]);
     provider.clear();
-    await expect(provider.getLanguages(signal())).rejects.toThrow(
-      'Enter and test',
-    );
   });
 });
 

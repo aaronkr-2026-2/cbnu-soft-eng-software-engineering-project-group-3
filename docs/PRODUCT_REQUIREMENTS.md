@@ -2,11 +2,11 @@
 
 Version: 0.1 draft
 
-Updated: 2026-09-17
+Updated: 2026-09-18
 
 Ownership: one developer (confirmed by the user).
 
-Implementation decisions confirmed 2026-09-17: hide Statistics in the initial React release; require explicit Adult/Children reading-profile selection; accept UTF-8 SRT up to 5 MiB; initially support balanced `<i>`, `<b>`, `<u>` tags without attributes and report all other formatting as unsupported; target current desktop Chrome, Edge, Firefox, and Safari. These qualify FR-001/010/011 and NFR-008 for this increment. Gemini remains unavailable until its real adapter is implemented. See ADR-003-REACT-MIGRATION.md and PROJECT_STATE.md for actual implementation coverage; remaining semester requirements are not claimed complete.
+Implementation decisions confirmed 2026-09-17/18: hide Statistics in the initial React release; require explicit Adult/Children reading-profile selection; accept UTF-8 SRT up to 5 MiB; initially support balanced `<i>`, `<b>`, `<u>` tags without attributes and report all other formatting as unsupported; target current desktop Chrome, Edge, Firefox, and Safari. Translation options are official Cloud Translation NMT and TLLM only. Gemini Developer API and visitor-provided keys are removed from scope. The project owner funds calls through a server-side gateway; see ADR-004 and PROJECT_STATE.md. Remaining semester requirements are not claimed complete.
 
 ## 1. Problem
 
@@ -54,9 +54,9 @@ The last four may be reconsidered only through an explicit architecture/security
 | FR-010 | The user can choose or drop one English `.srt` file. | Valid `.srt` loads; wrong extension, empty input, unreadable input, and zero valid cues produce clear errors. |
 | FR-011 | Parsing preserves cue order, timecodes, multiline text, and supported inline formatting needed for round-trip output. | Parse/serialize fixture tests prove no unintended cue loss. |
 | FR-012 | The target-language picker is searchable and shows languages supported by the active provider configuration. | Searching by label/code works; unsupported combinations cannot start. |
-| FR-013 | The translation-engine selector has Google Translate and Google Gemini. | Each option resolves to a distinct provider implementation before it can be called production-ready. |
+| FR-013 | The translation-engine selector offers Cloud Translation NMT and TLLM with short, accurate difference text. | Each option resolves through the owner-funded gateway; benchmark evidence records the chosen default. |
 | FR-014 | Start is disabled until file, target language, engine, and engine-specific configuration are valid. | State tests cover every prerequisite. |
-| FR-015 | The selected engine requires the visitor's provider credential for the current tab. The masked field provides setup, Test key, and Clear key actions and must not persist or autofill the value. | Reload clears the key; browser stores/checkpoints/telemetry/logs contain no credential; Start remains disabled until validation succeeds. |
+| FR-015 | The browser never asks for or receives a provider credential. It has a Check service action for the selected owner-funded gateway. | Browser source/storage/telemetry/logs contain no key; Start remains disabled until service validation succeeds. |
 | FR-016 | Before starting Google Translate, show exact provider-bound character count, estimated batches, and current list-price estimate without claiming the user's remaining credit is known. | The estimate matches the request builder and links to current official pricing/quota information. |
 
 ### 4.3 Translation job
@@ -96,7 +96,7 @@ The last four may be reconsidered only through an explicit architecture/security
 
 The baseline reference profile is Netflix's English guidance: 42 characters per line, at most two lines, and up to 20 CPS for adult or 17 CPS for children's content. These are configurable reference values, not a claim of a universal or medically defined "nausea-safe" standard.
 
-`docs/SUBTITLE_FORMATTING_SPEC.md` is normative. Line wrapping does not reduce CPS or create reading time. Text that cannot meet capacity is flagged for editing; the core does not silently omit meaning, add a third line, or alter timecodes. Provider output remains mapped to existing cue IDs: Gemini returns structured per-cue results with group context, while Google NMT preserves one input/output string per cue rather than merging and proportionally redistributing translated words.
+`docs/SUBTITLE_FORMATTING_SPEC.md` is normative. Line wrapping does not reduce CPS or create reading time. Text that cannot meet capacity is flagged for editing; the core does not silently omit meaning, add a third line, or alter timecodes. Provider output remains mapped to existing cue IDs. NMT and TLLM grouping/alignment behavior must be validated before the product claims cross-cue context.
 
 ### 4.6 Output
 
@@ -112,7 +112,7 @@ The baseline reference profile is Netflix's English guidance: 42 characters per 
 
 Both providers must accept a normalized batch of stable cue/group identifiers, source text, target language, optional context metadata, and an abort signal. Both must return validated results mapped to the same identifiers. The application layer must not know provider-specific HTTP details.
 
-Both providers are visitor-funded under ADR-002. There is no project-funded public fallback. Credentials are session-memory-only and follow `docs/PROVIDER_AUTH_AND_COST.md`.
+Both Cloud Translation models are owner-funded under ADR-004. The gateway owns the credential; browser clients receive no key and follow `docs/PROVIDER_AUTH_AND_COST.md`.
 
 ### 5.2 Google Translate
 
@@ -121,20 +121,16 @@ Both providers are visitor-funded under ADR-002. There is no project-funded publ
 - Batching must not be described as guaranteed cross-segment context unless evidence from the selected model/API proves it.
 - Supported languages should come from official provider data or a generated, source-dated capability file.
 - Credentials must not be committed or embedded in a public production bundle.
-- Use Cloud Translation Basic for the current BYOK browser design because its documented methods accept API keys. Ordinary Google Sign-In is not a billed Translation project.
+- Use Cloud Translation Basic behind the owner-funded gateway for its documented API-key support. The gateway, not the browser, owns the key.
 - Preserve one input/output string per cue. Do not revive proportional target-word splitting.
 
-### 5.3 Google Gemini
+### 5.3 Cloud Translation model selection
 
-- Use the current official Google Gen AI SDK or documented REST API at implementation time.
-- Use structured output with stable cue IDs and validate the returned schema.
-- The translation instruction must specify source/target language, meaning and tone preservation, names/terms, profanity severity, dialogue markers, formatting constraints, and "translation only" output.
+- The browser offers NMT and TLLM only, with accurate short descriptions.
+- The owner-funded gateway validates the requested model and constructs the configured TLLM model resource server-side.
+- Context must be supplied through bounded connected-dialogue input groups and validated cue alignment; batching alone is not evidence of context.
 - Movie title, year, genre, short synopsis, and a small proper-name glossary are optional context. They are not mandatory to translate a file.
-- A pasted IMDb/Rotten Tomatoes page is not automatically trusted as prompt content.
-- The current public design is visitor BYOK. Use a current AI Studio authorization key, hold it only in memory, and clearly explain browser exposure limits.
-- Consumer Google AI Pro/Ultra subscriptions do not fund direct API calls from this app; do not offer a misleading subscription-login button.
-- Use bounded requests with `store=false`, a fixed versioned prompt, structured cue/segment IDs, and neighboring context. Do not maintain one unbounded movie-long chat.
-- Gemini Batch API is not the interactive default because its documented service objective can be up to 24 hours. Use synchronous, bounded batches for the live translator.
+- Benchmark representative fixtures with human review before choosing a default model.
 
 ## 6. Conditional future requirements
 
@@ -178,7 +174,7 @@ User decision on 2026-09-16: remove completed SRT cloud upload/storage for now. 
 | NFR-002 | Correctness | Parser, serializer, segmentation, response mapping, formatting, editing, and resume logic require automated tests. |
 | NFR-003 | Performance | Keep scrolling/editing responsive; virtualize the cue list if measured performance with realistic files requires it. |
 | NFR-004 | Reliability | Use stable IDs, idempotent checkpoints, bounded retries, cancellation, and explicit partial-failure state. |
-| NFR-005 | Security | No secret is hard-coded, committed, logged, placed in `VITE_*`, browser-persisted, autofilled by application design, or sent to telemetry. Visitor keys are memory-only. Developer local server secrets use gitignored `.env`; production uses the platform secret manager. |
+| NFR-005 | Security | No secret is hard-coded, committed, logged, placed in `VITE_*`, browser-persisted, autofilled by application design, or sent to telemetry. The browser receives no provider key. Local gateway secrets use gitignored `.env`; production uses the platform secret manager. |
 | NFR-006 | Privacy | Minimize data, disclose collection, obtain consent where required, and define telemetry retention/deletion before collecting location. |
 | NFR-007 | Accessibility | Keyboard operation, visible focus, semantic controls, labels, non-color statuses, sufficient contrast, and reduced-motion behavior. |
 | NFR-008 | Compatibility | Support a documented set of modern desktop browsers; exact versions are TBD. |
