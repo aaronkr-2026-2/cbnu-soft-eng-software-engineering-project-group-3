@@ -17,7 +17,7 @@ Gemini Developer API is not part of this project.
 
 ## Security and cost
 
-Visitors never enter API keys. The project owner funds translation through a server-side gateway. The local gateway reads `GOOGLE_TRANSLATE_API_KEY` from ignored `.env`; production must use a hosting secret manager. The React/Vite browser client must never receive the key.
+Visitors never enter API keys. The project owner funds translation through a server-side gateway. The local gateway reads `GOOGLE_CLOUD_API_KEY` from ignored `.env`; production must use a hosting secret manager. The React/Vite browser client must never receive the key.
 
 The public release is blocked until the gateway host, monthly budget, rate limits, and abuse controls are selected. See [ADR-004](docs/ADR-004-OWNER-FUNDED-CLOUD-TRANSLATION.md) and [provider/cost details](docs/PROVIDER_AUTH_AND_COST.md).
 

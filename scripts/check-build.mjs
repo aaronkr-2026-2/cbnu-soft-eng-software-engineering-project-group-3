@@ -19,7 +19,7 @@ async function inspect(directory) {
     if (!/\.(js|html|css)$/.test(entry.name)) continue;
     const content = await readFile(path, 'utf8');
     if (
-      /translate_a\/single|client=gtx|GOOGLE_TRANSLATE_API_KEY|AIza[\w-]{30,}/.test(
+      /translate_a\/single|client=gtx|GOOGLE_(TRANSLATE|CLOUD)_API_KEY|AIza[\w-]{30,}/.test(
         content,
       )
     )

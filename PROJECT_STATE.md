@@ -13,7 +13,7 @@ The product will offer two official Cloud Translation choices:
 
 Gemini Developer API is removed from product scope. The app will not show a Gemini option, prompt contract, or visitor key field.
 
-Translation is owner-funded. The React browser app must call a server-side translation gateway; the gateway reads `GOOGLE_TRANSLATE_API_KEY` from ignored `.env` during local development and from a secret manager in production. The key is never bundled by Vite, committed, logged, sent to telemetry, or stored in the browser. Public deployment also needs a hosting decision plus a defined budget, rate limit, and abuse-control policy. See [ADR-004](docs/ADR-004-OWNER-FUNDED-CLOUD-TRANSLATION.md).
+Translation is owner-funded. The React browser app must call a server-side translation gateway; the gateway reads `GOOGLE_CLOUD_API_KEY` from ignored `.env` during local development and from a secret manager in production. The key is never bundled by Vite, committed, logged, sent to telemetry, or stored in the browser. On 2026-09-18, the developer configured this key name and `GOOGLE_CLOUD_PROJECT_ID` locally; values were not read. The requested TLLM default is `asia-northeast3` (Seoul); live TLLM availability in that region remains unverified. Public deployment also needs a hosting decision plus a defined budget, rate limit, and abuse-control policy. See [ADR-004](docs/ADR-004-OWNER-FUNDED-CLOUD-TRANSLATION.md).
 
 Cloud scope remains telemetry only: country/city, target language, and movie identity after its open privacy decisions are resolved. Completed subtitle storage, sharing, cloud checkpoints, and cross-user reuse remain deferred.
 

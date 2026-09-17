@@ -221,3 +221,29 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** Added ADR-004, a local Node gateway that reads `GOOGLE_TRANSLATE_API_KEY` outside Vite, NMT/TLLM UI selection, gateway tests/mocks, `.env.example`, and gateway setup documentation. Moved the detailed AI history to this file and replaced the root AI log with short entries. Removed tracked `.DS_Store`, obsolete PROJECT.md, and the Gemini prompt contract; moved the MVP from the repository root. Updated current-state, requirements, architecture, plan, course, sprint, setup, and provider records. `npm run check`, formatting, Node syntax check, and four mocked Chromium flows passed. No `.env` value was read or used.
 
 **Something the AI got wrong that I had to catch:** The earlier direct-browser implementation did not meet the requested owner-funded design. The new gateway keeps the key out of the browser, but it has not yet been live-tested or deployed. Human review of model quality, budget, rate limiting, abuse controls, and production host is TBD - human review required.
+
+
+## Local gateway environment-name alignment — 2026-09-18
+
+**Tool(s) used:** ChatGPT/Codex; redacted local environment-variable-name inspection; local source/documentation checks.
+
+**What I asked for:** Reflect the updated local `.env` configuration.
+
+**What I kept as-is:** TBD - human review required. `.env` remains ignored, no value was printed, and the browser key-exposure boundary remains unchanged.
+
+**What I changed or rejected, and why:** Changed the local gateway and current setup/state/provider documentation to use the configured `GOOGLE_CLOUD_API_KEY` name instead of the obsolete `GOOGLE_TRANSLATE_API_KEY` name. Confirmed the non-secret project-ID variable is present. The TLLM location is not configured in `.env`, so the documented/server default `us-central1` remains in use. Updated the build artifact check to detect either key-name marker.
+
+**Something the AI got wrong that I had to catch:** The earlier gateway configuration expected a different variable name from the developer's actual `.env`. No credential value, live API result, or billing result was inspected; human review is TBD - human review required.
+
+
+## Seoul TLLM-location default — 2026-09-18
+
+**Tool(s) used:** ChatGPT/Codex; official Google Cloud documentation and local configuration/source inspection.
+
+**What I asked for:** Make the TLLM location close to Seoul and push the changes.
+
+**What I kept as-is:** TBD - human review required. The configured key/project values remain private and no live provider request was made.
+
+**What I changed or rejected, and why:** Set the local gateway and `.env.example` default to `asia-northeast3`, Google's Seoul Cloud region. Updated setup/current-state records and the short log. Google's TLLM guide uses a configurable technical region but does not publish a Seoul-specific availability assertion in the reviewed page, so this is a requested default, not a verified TLLM-availability claim.
+
+**Something the AI got wrong that I had to catch:** TBD - human review required. The live Check service result remains required to confirm this model/region/project combination.

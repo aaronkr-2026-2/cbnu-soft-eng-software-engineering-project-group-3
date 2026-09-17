@@ -9,7 +9,7 @@ The product uses only official Google Cloud Translation models. Gemini Developer
 | NMT | Fast general-purpose translation of the supplied text. It translates sentences/text, not individual dictionary words. | `nmt` |
 | TLLM | Google's specialized Translation LLM. Google positions it for higher quality and it can make better use of supplied context. Test language coverage, quality, speed, and cost before making it the default. | `projects/PROJECT_ID/locations/REGION/models/general/translation-llm` |
 
-The project owner pays Cloud Translation costs. A visitor never creates, enters, or sees an API key. The browser sends only an authenticated job request to the project's gateway. The gateway sends the chosen model request to Google using `GOOGLE_TRANSLATE_API_KEY` from a local ignored `.env` or production secret manager.
+The project owner pays Cloud Translation costs. A visitor never creates, enters, or sees an API key. The browser sends only an authenticated job request to the project's gateway. The gateway sends the chosen model request to Google using `GOOGLE_CLOUD_API_KEY` from a local ignored `.env` or production secret manager.
 
 Never pass the key through `VITE_*`, browser storage, URLs, logs, telemetry, downloaded files, source code, or Git. GitHub Pages alone cannot host this private gateway.
 
@@ -28,7 +28,7 @@ The current NMT UI estimate is historical implementation evidence only: it count
 The local gateway needs these values in ignored `.env`:
 
 ```text
-GOOGLE_TRANSLATE_API_KEY=replace-with-your-key
+GOOGLE_CLOUD_API_KEY=replace-with-your-key
 GOOGLE_CLOUD_PROJECT_ID=replace-with-your-project-id
 GOOGLE_TRANSLATE_TLLM_LOCATION=us-central1
 ```

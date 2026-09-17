@@ -7,7 +7,7 @@ The product owner funds translation. Visitors never need a Google account or API
 1. Enable **Cloud Translation API** and billing in your Google Cloud project.
 2. Create a Cloud Translation-restricted API key.
 3. Copy `.env.example` to `.env` without committing it.
-4. Set `GOOGLE_TRANSLATE_API_KEY` and the non-secret `GOOGLE_CLOUD_PROJECT_ID`. Keep the default TLLM location unless your Cloud setup requires another supported location.
+4. Set `GOOGLE_CLOUD_API_KEY` and the non-secret `GOOGLE_CLOUD_PROJECT_ID`. The gateway defaults TLLM to `asia-northeast3` (Seoul); set `GOOGLE_TRANSLATE_TLLM_LOCATION` only to override it after confirming TLLM availability in that region.
 5. In one terminal run `npm run dev:gateway`.
 6. In another terminal run `npm run dev`.
 7. Open `http://localhost:5173`, choose NMT or TLLM, and click **Check service**.

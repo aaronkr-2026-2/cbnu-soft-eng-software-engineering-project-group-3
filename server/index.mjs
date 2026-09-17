@@ -2,10 +2,10 @@ import { createServer } from 'node:http';
 
 const port = 8787;
 const endpoint = 'https://translation.googleapis.com/language/translate/v2';
-const key = process.env.GOOGLE_TRANSLATE_API_KEY?.trim();
+const key = process.env.GOOGLE_CLOUD_API_KEY?.trim();
 const projectId = process.env.GOOGLE_CLOUD_PROJECT_ID?.trim();
 const location =
-  process.env.GOOGLE_TRANSLATE_TLLM_LOCATION?.trim() || 'us-central1';
+  process.env.GOOGLE_TRANSLATE_TLLM_LOCATION?.trim() || 'asia-northeast3';
 const maxBodyBytes = 100_000;
 
 function send(response, status, body) {
@@ -29,7 +29,7 @@ function modelName(model) {
 async function google(path, options = {}) {
   if (!key)
     throw new Error(
-      'Gateway configuration is missing GOOGLE_TRANSLATE_API_KEY.',
+      'Gateway configuration is missing GOOGLE_CLOUD_API_KEY.',
     );
   const response = await fetch(`${endpoint}${path}`, {
     ...options,

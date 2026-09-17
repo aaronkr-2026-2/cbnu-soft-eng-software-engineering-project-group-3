@@ -8,7 +8,7 @@ Date: 2026-09-18
 
 The product offers only two official Cloud Translation models: NMT and Translation LLM (TLLM). Gemini Developer API is outside product scope.
 
-Visitors never enter or supply an API key. A backend gateway holds the project-owner credential, reads `GOOGLE_TRANSLATE_API_KEY` from a gitignored local `.env` during development, and uses a deployment secret manager in production. The React client sends subtitle text only to that gateway; it never receives the key.
+Visitors never enter or supply an API key. A backend gateway holds the project-owner credential, reads `GOOGLE_CLOUD_API_KEY` from a gitignored local `.env` during development, and uses a deployment secret manager in production. The React client sends subtitle text only to that gateway; it never receives the key.
 
 NMT is the fast general translation option. TLLM is the higher-quality, context-oriented translation option. The product describes these as provider positions, not a guarantee that TLLM wins for every language or subtitle.
 
