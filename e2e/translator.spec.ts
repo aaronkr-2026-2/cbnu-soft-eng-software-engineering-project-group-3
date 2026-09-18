@@ -69,13 +69,20 @@ test('upload → official gateway → edit → download and theme lifecycle', as
   await expect(
     page.getByText('Upload an English UTF-8 SRT file', { exact: false }),
   ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Cancel', exact: true }),
+  ).toHaveCount(0);
   await page.getByRole('button', { name: 'OK', exact: true }).click();
   await page.getByRole('button', { name: 'About the service check' }).click();
   await expect(
-    page.getByText("Tests this project's Google Translation connection", {
+    page.getByText("Sends “Hello.” to this project's Google Translation", {
       exact: false,
     }),
   ).toBeVisible();
+  await expect(page.locator('.service-help-text')).toHaveCSS(
+    'max-width',
+    '210px',
+  );
   await page.keyboard.press('Escape');
   await configure(page);
   await expect(

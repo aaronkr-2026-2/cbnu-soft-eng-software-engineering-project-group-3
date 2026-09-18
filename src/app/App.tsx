@@ -19,13 +19,16 @@ import {
   Switch,
   Tag,
   theme,
+  Tooltip,
 } from 'antd';
 import {
   ArrowDownOutlined,
   DownloadOutlined,
   GithubOutlined,
+  MoonOutlined,
   PlayCircleOutlined,
   QuestionCircleOutlined,
+  SunOutlined,
   UploadOutlined,
 } from '@ant-design/icons';
 import { useTranslator } from '../features/translator/useTranslator';
@@ -113,12 +116,18 @@ function Translator({
           <span>SRT Translator</span>
         </a>
         <Flex className="header-actions" align="center" gap="middle">
-          <Switch
-            size="small"
-            checked={dark}
-            onChange={setDark}
-            aria-label="Dark theme"
-          />
+          <Tooltip
+            title={dark ? 'Switch to light theme' : 'Switch to dark theme'}
+          >
+            <Switch
+              size="small"
+              checked={dark}
+              onChange={setDark}
+              aria-label="Dark theme"
+              checkedChildren={<MoonOutlined aria-hidden="true" />}
+              unCheckedChildren={<SunOutlined aria-hidden="true" />}
+            />
+          </Tooltip>
           <Button
             type="text"
             size="small"
@@ -142,8 +151,12 @@ function Translator({
       <Modal
         title="What this translator does"
         open={aboutOpen}
-        onOk={() => setAboutOpen(false)}
         onCancel={() => setAboutOpen(false)}
+        footer={
+          <Button type="primary" onClick={() => setAboutOpen(false)}>
+            OK
+          </Button>
+        }
       >
         <p>
           Upload an English UTF-8 SRT file, choose a translation engine, target
@@ -252,10 +265,10 @@ function Translator({
                   title="Check service"
                   trigger={['hover', 'click']}
                   content={
-                    <span>
-                      Tests this project's Google Translation connection with a
-                      tiny “Hello.” request before you translate. Google may
-                      count those characters toward this project's usage.
+                    <span className="service-help-text">
+                      Sends “Hello.” to this project's Google Translation
+                      service to verify it is available. Google may count those
+                      characters as usage.
                     </span>
                   }
                 >

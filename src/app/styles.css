@@ -159,6 +159,11 @@ a {
 .credential-actions {
   gap: 8px;
 }
+.service-help-text {
+  display: block;
+  max-width: 210px;
+  line-height: 1.5;
+}
 .credential-panel a,
 .credential-status {
   font-size: 11px;

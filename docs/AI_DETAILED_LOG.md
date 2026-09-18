@@ -366,3 +366,15 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** Added the completion-commit requirement to `AGENTS.md` and `docs/DEVELOPMENT_RULES.md`; added the expected commit hash to the task report; and recorded the policy in project state and the short AI log. The rule requires documentation and verification first, Git-status inspection before staging, and one local commit for the completed logical change. It explicitly rejects automatic pushes, merges, rebases, resets, history rewriting, and committing ignored/generated/unrelated files.
 
 **Something the AI got wrong that I had to catch:** Earlier completed prompts left verified local work uncommitted. The user identified that the repository workflow needed an explicit completion rule. The policy applies from this task forward; human review of commit grouping remains TBD - human review required.
+
+## Theme cue and compact help surfaces — 2026-09-18
+
+**Tool(s) used:** ChatGPT/Codex; local React/CSS and Playwright inspection; Ant Design `Switch`, `Tooltip`, `Modal`, and `Popover`.
+
+**What I asked for:** Make the top-right theme switch self-explanatory, remove the workflow modal's Cancel button, and make the service-check question-mark help compact.
+
+**What I kept as-is:** The compact header, dark-theme state, help content, service-check action, and owner-funded gateway boundary remain unchanged.
+
+**What I changed or rejected, and why:** Added sun/moon icons to the Ant Design switch and a tooltip that states the next theme. Replaced the modal's default two-action footer with a single explicit `OK` button. Kept the service explanation but gave its popover content a 210 px maximum width so it reads as a small help surface. `npm run check`, `npm run format:check`, and five Chromium browser workflows passed; the browser test covers the missing Cancel action and compact popover width. The production build retains Vite's existing JavaScript-chunk warning above 500 kB.
+
+**Something the AI got wrong that I had to catch:** The compact header initially provided a small theme switch without clearly showing its purpose, and the default modal footer exposed an unnecessary Cancel button. The user identified both usability issues. Human visual review across target screen sizes remains TBD - human review required.

@@ -91,3 +91,9 @@ Moved the cost card and estimate error into the scrollable configuration area, a
 `npm run check` passed: TypeScript, zero-warning ESLint, 59 Vitest tests, and the production build. `npm run test:e2e` passed five Chromium workflows. The browser test opens the header help modal and the service-check help popover before running the normal upload-to-download flow.
 
 The 52 px header removes the marketing subtitle and mode label, using compact theme, help, and GitHub controls. The sidebar now begins with `Select your English subtitle`; the verbose service-card help paragraph is replaced by a question-mark popover. A generated loaded-file screenshot was visually inspected. The build retains Vite's existing JavaScript-chunk warning above 500 kB.
+
+## 2026-09-18 — Theme cue and compact help surfaces
+
+`npm run check` passed: TypeScript, zero-warning ESLint, 59 Vitest tests, and the production build. `npm run format:check` passed. `npm run test:e2e` passed five Chromium workflows, including assertions that the help modal has no Cancel button and that the service help content is bounded to 210 px. The production build retains Vite's existing JavaScript-chunk warning above 500 kB.
+
+The theme switch now shows sun/moon visual cues and a tooltip describing the next theme. The workflow modal uses one explicit `OK` button. The service-check popover keeps the same explanation in a compact, controlled reading width.

@@ -14,7 +14,7 @@ Ant Design is the project's standard UI library. Its components provide the shar
 | Simple horizontal or vertical arrangement | `Flex`; use `Space` for a compact sequence of controls                          |
 | Form controls and validation              | `Form`, `Input`, `Select`, `Checkbox`, `Radio`, `Switch`, and `Button`          |
 | Generic grouped surface                   | `Card`                                                                          |
-| Status, confirmation, and errors          | `Alert`, `Tag`, `Progress`, `Message`, `Notification`, `Modal`, or `Popconfirm` |
+| Status, confirmation, errors, and help    | `Alert`, `Tag`, `Progress`, `Message`, `Notification`, `Modal`, `Popconfirm`, `Tooltip`, or `Popover` |
 | Navigation                                | `Menu`, `Breadcrumb`, `Tabs`, `Dropdown`, or `Pagination` as appropriate        |
 | Responsive columns                        | `Grid`, `Row`, and `Col` when the layout is ordinary application content        |
 
@@ -27,6 +27,8 @@ Custom CSS may set product identity and layout behavior around Ant Design compon
 The long subtitle review list uses `@tanstack/react-virtual` because Ant Design does not provide a variable-height virtual list with retained editing rows. It is a focused performance dependency: it measures cue rows, mounts the viewport plus a small buffer, and lets the app scroll to the active translation cue.
 
 Inspect the rendered DOM when styling an Ant Design composite component. `Sider` wraps its supplied content in `.ant-layout-sider-children`; sidebar gaps and the bottom action region belong on that actual layout container. The desktop translator uses 20 px between major controls, a stationary action group below the scrollable sidebar controls, and a compact sticky preview/column-label header in the content pane.
+
+Use a `Tooltip` for a short label such as the next theme action. Use a `Popover` for compact optional help that needs a sentence or two, with a deliberate reading width. Use a `Modal` only for a workflow explanation that merits focused reading; give it the minimum necessary action buttons.
 
 ## Review check
 
