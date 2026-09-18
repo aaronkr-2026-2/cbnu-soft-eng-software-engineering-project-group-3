@@ -7,7 +7,7 @@ The product uses only official Google Cloud Translation models. Gemini Developer
 | Option | Product explanation | Request model |
 | --- | --- | --- |
 | NMT | Fast general-purpose translation of the supplied text. It translates sentences/text, not individual dictionary words. | `nmt` |
-| TLLM | Google's specialized Translation LLM. Google positions it for higher quality and it can make better use of supplied context. Test language coverage, quality, speed, and cost before making it the default. | `projects/PROJECT_ID/locations/REGION/models/general/translation-llm` |
+| TLLM | Google's specialized Translation LLM. Google positions it for higher quality. It can only use context that the request actually supplies; the current one-cue-per-string implementation does not supply cross-cue context. Test language coverage, quality, speed, and cost before making it the default. | `projects/PROJECT_ID/locations/REGION/models/general/translation-llm` |
 
 The project owner pays Cloud Translation costs. A visitor never creates, enters, or sees an API key. The browser sends only an authenticated job request to the project's gateway. The gateway sends the chosen model request to Google using `GOOGLE_CLOUD_API_KEY` from a local ignored `.env` or production secret manager.
 

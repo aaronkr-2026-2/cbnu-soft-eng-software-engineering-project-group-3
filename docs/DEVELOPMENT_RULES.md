@@ -40,6 +40,8 @@ These rules apply to humans and AI coding tools.
 - Do not leave dead code, duplicate logic, commented-out implementations, or placeholder providers presented as real.
 - Preserve user-edited subtitle text unless an explicit action authorizes replacement.
 - Treat file content, API output, metadata, and restored local state as untrusted input.
+- Prefer Ant Design components for the application shell, standard controls, feedback, spacing, and generic panels. Use custom semantic elements and CSS only where the product needs subtitle-specific structure, interaction, or rendering-performance behavior. See `UI_COMPONENT_GUIDE.md`.
+- Inspect a library component's rendered DOM before applying child spacing or sticky layout rules. The desktop translator sidebar must apply its 20 px vertical rhythm to Ant Design's actual child container, not the outer `Sider`. Keep translation actions, progress, and download in one stationary bottom region outside the scrollable controls. Keep the subtitle-preview heading and column labels compact and sticky in the content scroll container.
 
 ## 4. Dependencies
 
@@ -109,6 +111,7 @@ Never claim a command passed unless it was run successfully in the current sourc
 ## 8. Git and review
 
 - One logical change per commit.
+- At the end of every completed user prompt that changes repository files, update the required records, run the relevant verification, inspect `git status`, and create one local commit before reporting completion. Do not commit secrets, ignored files, generated artifacts, or unrelated user changes. Push, merge, rebase, reset, and history rewriting require explicit user instruction.
 - Use a feature/fix/docs branch and pull request for reviewed work unless the course workflow says otherwise.
 - Do not mix broad formatting with functional changes.
 - A reviewer checks correctness, readability, tests, security/privacy, requirements alignment, and documentation impact.
@@ -122,7 +125,8 @@ After every material code, configuration, dependency, test, architecture, deploy
 1. update `PROJECT_STATE.md` to reflect what is now true;
 2. update requirements/architecture/ADR when behavior or a decision changed;
 3. append an honest one-line `AI_LOG.md` entry and the supporting detail/evidence in `docs/AI_DETAILED_LOG.md`;
-4. do not fabricate human reflections - use `TBD - human review required` for anything only the team can answer.
+4. inspect the final diff and create the local task commit;
+5. do not fabricate human reflections - use `TBD - human review required` for anything only the team can answer.
 
 The course requires the AI log at every milestone; this project intentionally applies the same format to every material change so no AI-assisted work is lost between milestones.
 

@@ -61,10 +61,42 @@ test('upload → official gateway → edit → download and theme lifecycle', as
 }) => {
   const consoleErrors: string[] = [];
   page.on('pageerror', (error) => consoleErrors.push(error.message));
+  await page.goto('./');
+  await page.getByRole('button', { name: 'About this translator' }).click();
+  await expect(
+    page.getByRole('dialog', { name: 'What this translator does' }),
+  ).toBeVisible();
+  await expect(
+    page.getByText('Upload an English UTF-8 SRT file', { exact: false }),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'OK', exact: true }).click();
+  await page.getByRole('button', { name: 'About the service check' }).click();
+  await expect(
+    page.getByText("Tests this project's Google Translation connection", {
+      exact: false,
+    }),
+  ).toBeVisible();
+  await page.keyboard.press('Escape');
   await configure(page);
   await expect(
     page.getByRole('button', { name: 'Start translation', exact: true }),
   ).toHaveCSS('height', '40px');
+  await expect(page.locator('.sidebar-controls')).toHaveCSS('row-gap', '20px');
+  await expect(page.locator('.sidebar-controls')).toHaveCSS(
+    'overflow-y',
+    'auto',
+  );
+  await expect(page.locator('.sidebar-actions')).toHaveCSS('flex-shrink', '0');
+  await expect(page.locator('.sidebar-controls .estimate')).toHaveCount(1);
+  await expect(page.locator('.sidebar-actions .estimate')).toHaveCount(0);
+  await expect(page.locator('.content-heading')).toHaveCSS(
+    'position',
+    'sticky',
+  );
+  await expect(page.locator('.cue-row').first()).toHaveCSS(
+    'border-left-width',
+    '0px',
+  );
   await expect(
     page.getByRole('button', { name: 'Start translation', exact: true }),
   ).toBeEnabled();
@@ -220,4 +252,28 @@ test('cancellation stops a pending request and disables download', async ({
   await expect(
     page.getByRole('button', { name: 'Download translated SRT' }),
   ).toBeDisabled();
+});
+
+test('a long subtitle file keeps only visible cue rows mounted', async ({
+  page,
+}) => {
+  const cues = Array.from({ length: 2500 }, (_, index) => {
+    const cueNumber = index + 1;
+    return `${cueNumber}\n00:00:${String(index % 60).padStart(2, '0')},000 --> 00:01:${String(index % 60).padStart(2, '0')},000\nCue ${cueNumber}.`;
+  }).join('\n\n');
+  await page.goto('./');
+  await page.getByLabel('Subtitle file', { exact: true }).setInputFiles({
+    name: 'long.srt',
+    mimeType: 'application/x-subrip',
+    buffer: Buffer.from(cues),
+  });
+  await expect(page.getByText('2,500 cues loaded')).toBeVisible();
+  expect(await page.locator('.cue-row').count()).toBeLessThan(40);
+  await page.locator('.content').evaluate((element) => {
+    element.scrollTop = element.scrollHeight;
+  });
+  await expect(
+    page.getByRole('region', { name: 'Cue 2500', exact: true }),
+  ).toBeVisible();
+  expect(await page.locator('.cue-row').count()).toBeLessThan(40);
 });

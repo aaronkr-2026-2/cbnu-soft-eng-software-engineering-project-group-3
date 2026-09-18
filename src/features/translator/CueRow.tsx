@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Button, Input, Tag } from 'antd';
+import { memo, useState } from 'react';
+import { Button, Card, Flex, Input, Tag } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import type { Cue } from '../../core/srt/srt';
 import { textRuns } from '../../core/srt/markup';
@@ -34,9 +34,10 @@ interface Props {
   group: number;
   groupStart: boolean;
   onSave: (id: string, value: string) => void;
+  onEditingChange: (editing: boolean) => void;
 }
 
-export function CueRow({
+export const CueRow = memo(function CueRow({
   cue,
   translation,
   edited,
@@ -46,6 +47,7 @@ export function CueRow({
   group,
   groupStart,
   onSave,
+  onEditingChange,
 }: Props) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState('');
@@ -70,26 +72,38 @@ export function CueRow({
       aria-label={`Cue ${cue.index}`}
     >
       {groupStart && <div className="group-label">Group {group}</div>}
-      <div className="cue-pair">
-        <article
+      <Flex className="cue-pair" gap={12} align="stretch">
+        <Card
+          size="small"
           className="cue-card original-card"
           tabIndex={0}
           aria-label={`Original cue ${cue.index}`}
         >
-          <div className="cue-meta">
+          <Flex
+            className="cue-meta"
+            justify="space-between"
+            align="center"
+            wrap
+          >
             <strong>#{cue.index}</strong>
             <span>
               {cue.start} → {cue.end}
             </span>
-          </div>
+          </Flex>
           <SubtitleText text={cue.text} />
-        </article>
-        <article
+        </Card>
+        <Card
+          size="small"
           className={`cue-card translated-card ${editing ? 'is-editing' : ''}`}
           tabIndex={0}
           aria-label={`Translation cue ${cue.index}`}
         >
-          <div className="cue-meta">
+          <Flex
+            className="cue-meta"
+            justify="space-between"
+            align="center"
+            wrap
+          >
             <Tag
               color={
                 edited
@@ -112,12 +126,13 @@ export function CueRow({
                   setDraft(translation);
                   setError('');
                   setEditing(true);
+                  onEditingChange(true);
                 }}
               >
                 Edit
               </Button>
             )}
-          </div>
+          </Flex>
           {editing ? (
             <div className="edit-form">
               <Input.TextArea
@@ -134,6 +149,7 @@ export function CueRow({
                   try {
                     onSave(cue.id, draft);
                     setEditing(false);
+                    onEditingChange(false);
                   } catch (failure) {
                     setError(
                       failure instanceof Error
@@ -145,7 +161,13 @@ export function CueRow({
               >
                 Save
               </Button>
-              <Button size="small" onClick={() => setEditing(false)}>
+              <Button
+                size="small"
+                onClick={() => {
+                  setEditing(false);
+                  onEditingChange(false);
+                }}
+              >
                 Cancel edit
               </Button>
             </div>
@@ -168,8 +190,8 @@ export function CueRow({
               </ul>
             </div>
           )}
-        </article>
-      </div>
+        </Card>
+      </Flex>
     </section>
   );
-}
+});

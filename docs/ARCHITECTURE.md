@@ -10,7 +10,7 @@ Date: 2026-09-17
 
 The React client now implements local SRT parsing, cue display/editing, an explicit session/job controller, and official Cloud Translation Basic v2 NMT requests. See ADR-003-REACT-MIGRATION.md. The credential field is a native uncontrolled input and the adapter keeps its key in a private field outside serializable React job state. Vite does not load `.env`. Language lookup and a six-character test request validate credentials; full jobs use bounded cue/segment requests with response-count/markup validation.
 
-`useTranslator` owns UI/job state and file/credential cancellation; `runJob` orchestrates batches through `TranslationProvider`; SRT and formatting functions remain under `src/core`. Request IDs protect mapping, and aborted/stale file or provider work is ignored. Download requires complete output. Retry preserves completed results and edits in the current tab.
+`useTranslator` owns UI/job state and file/credential cancellation; `runJob` orchestrates batches through `TranslationProvider`; SRT and formatting functions remain under `src/core`. Request IDs protect mapping, and aborted/stale file or provider work is ignored. The cue review uses a measured virtual list so a long SRT mounts only visible rows and a small buffer; an editing row stays mounted to preserve its unsaved draft. Download requires complete output. Retry preserves completed results and edits in the current tab.
 
 The checkpoint store, metadata, Statistics, and production-backend diagrams below describe future architecture, not current code. Statistics is hidden. There is no persistent subtitle/credential store or project telemetry in this implementation. Production deployment is configured but not verified live.
 

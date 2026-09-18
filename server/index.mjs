@@ -5,8 +5,49 @@ const endpoint = 'https://translation.googleapis.com/language/translate/v2';
 const key = process.env.GOOGLE_CLOUD_API_KEY?.trim();
 const projectId = process.env.GOOGLE_CLOUD_PROJECT_ID?.trim();
 const location =
-  process.env.GOOGLE_TRANSLATE_TLLM_LOCATION?.trim() || 'asia-northeast3';
+  process.env.GOOGLE_TRANSLATE_TLLM_LOCATION?.trim() || 'us-central1';
 const maxBodyBytes = 100_000;
+
+function cloudFailure(response, data) {
+  const providerMessage =
+    data &&
+    typeof data === 'object' &&
+    data.error &&
+    typeof data.error === 'object' &&
+    typeof data.error.message === 'string'
+      ? data.error.message.toLowerCase()
+      : '';
+  let category = 'upstream_failure';
+  if (response.status === 403) {
+    if (providerMessage.includes('referer')) category = 'key_restriction';
+    else if (providerMessage.includes('billing')) category = 'billing';
+    else if (providerMessage.includes('daily limit'))
+      category = 'daily_quota';
+    else if (
+      providerMessage.includes('user rate limit') ||
+      providerMessage.includes('per minute')
+    )
+      category = 'rate_limited';
+    else if (
+      providerMessage.includes('quota') ||
+      providerMessage.includes('limit exceeded')
+    )
+      category = 'quota';
+    else if (providerMessage.includes('has not been used'))
+      category = 'api_not_enabled';
+    else category = 'access_denied';
+  } else if (response.status === 400) category = 'invalid_request';
+  else if (response.status === 429) category = 'rate_limited';
+
+  const error = new Error('Cloud Translation request failed.');
+  error.status = response.status;
+  error.category = category;
+  // Never log the upstream message, request body, subtitle text, or key.
+  console.error(
+    `[translation-gateway] Cloud Translation failure: HTTP ${response.status}; ${category}`,
+  );
+  return error;
+}
 
 function send(response, status, body) {
   response.writeHead(status, {
@@ -36,15 +77,7 @@ async function google(path, options = {}) {
     headers: { ...options.headers, 'x-goog-api-key': key },
   });
   const data = await response.json().catch(() => null);
-  if (!response.ok) {
-    const message =
-      response.status === 403
-        ? 'Google denied the gateway request. Check API, billing, key restrictions, and quota.'
-        : `Google returned HTTP ${response.status}.`;
-    const error = new Error(message);
-    error.status = response.status;
-    throw error;
-  }
+  if (!response.ok) throw cloudFailure(response, data);
   return data;
 }
 
@@ -92,10 +125,12 @@ createServer(async (request, response) => {
       request.method === 'GET' &&
       url.pathname === '/api/translation/languages'
     ) {
-      const model = modelName(url.searchParams.get('model'));
-      const data = await google(
-        `/languages?target=en&model=${encodeURIComponent(model)}`,
-      );
+      // Basic v2 rejects a TLLM model resource on its languages endpoint.
+      // Validate the requested engine, then use the default NMT catalogue to
+      // populate the picker; actual TLLM availability is checked by its
+      // service translation below and must be benchmarked before release.
+      modelName(url.searchParams.get('model'));
+      const data = await google('/languages?target=en');
       send(response, 200, data);
       return;
     }
@@ -126,7 +161,11 @@ createServer(async (request, response) => {
     const status = typeof error.status === 'number' ? error.status : 500;
     send(response, status, {
       error: {
-        message: error instanceof Error ? error.message : 'Gateway failed.',
+        message: 'Translation gateway request failed.',
+        category:
+          typeof error.category === 'string'
+            ? error.category
+            : 'gateway_failure',
       },
     });
   }

@@ -40,7 +40,6 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 
 **Something the AI got wrong that I had to catch:** The AI could not authenticate to the supplied GitHub repository, so repository-specific state could not be verified. The documentation explicitly limits its code claims to the attached `srt-translator-beta-3.html`; the team must reconcile the pack with the repository before treating it as current.
 
-
 ## Solo scope and Firebase storage cost review — 2026-09-16
 
 **Tool(s) used:** ChatGPT/Codex; official Firebase, Google Cloud, and Cloudflare documentation
@@ -52,7 +51,6 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** Documentation records solo ownership, current quotas and student offers, sample storage arithmetic, Firebase versus R2 trade-offs, and unresolved cost/collection choices. No application code or cloud configuration was changed. Human acceptance/rejection of the recommendations is TBD.
 
 **Something the AI got wrong that I had to catch:** Human reflection is TBD. During this follow-up, the AI corrected its earlier unsupported duplicate-statement finding: direct source inspection shows no duplicated return, progress-width statement, or target-header statement at the cited locations. The earlier claim is superseded; no source-code fix was required.
-
 
 ## Telemetry-only cloud scope — 2026-09-16
 
@@ -66,7 +64,6 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. No new human-reported AI error was provided; do not invent one.
 
-
 ## Country-and-city telemetry decision — 2026-09-16
 
 **Tool(s) used:** ChatGPT/Codex
@@ -78,7 +75,6 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** Documentation now treats country-and-city precision as confirmed. The acquisition method, behavior when location is unavailable, retention, deletion, and user-facing collection controls remain open because the user did not select them. No application code or Firebase configuration was changed.
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. No new human-reported AI error was provided; do not invent one.
-
 
 ## Provider funding, subtitle UX, and formatting specification — 2026-09-16
 
@@ -92,7 +88,6 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. No new human-reported AI error was provided; do not invent one.
 
-
 ## Google Cloud Translation development key setup — 2026-09-17
 
 **Tool(s) used:** ChatGPT/Codex; official Google Cloud setup, authentication, API-key, quota, pricing, and budget documentation.
@@ -104,7 +99,6 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** Added docs/GOOGLE_TRANSLATE_SETUP.md, linked it from docs/PROVIDER_AUTH_AND_COST.md, and reconciled PROJECT_STATE.md with local repository evidence. The guide covers billing/API setup, restricted Basic v2 keys, development quotas, budget alerts, and the future local browser test. No Google resources were configured and no key or paid API call was used. Human acceptance/rejection of the setup recommendations is TBD - human review required.
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. No human-reported error was supplied. The credential field and browser compatibility test are explicitly recorded as pending, not implemented or passed.
-
 
 ## Trial billing and missing Translation API troubleshooting — 2026-09-17
 
@@ -118,7 +112,6 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. The user confirmed that the amount is on hold. Its actual release has not been verified; no account-specific refund guarantee is recorded.
 
-
 ## Local development credential file protection — 2026-09-17
 
 **Tool(s) used:** ChatGPT/Codex; local filesystem metadata and Git checks.
@@ -130,7 +123,6 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** Added .gitignore rules for local environment files and the mentioned .nev spelling, allowing a future placeholder-only .env.example. Updated PROJECT_STATE.md and docs/GOOGLE_TRANSLATE_SETUP.md to distinguish reported credential preparation from a working integration. The existing .env was untracked and previously not ignored. No key was printed, used in a request, or included in the app. Human acceptance/rejection is TBD - human review required.
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. Key validity and restrictions remain unverified; no successful provider test is claimed.
-
 
 ## React migration plan and provider distinction — 2026-09-17
 
@@ -144,7 +136,6 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. No human-reported error was supplied. Planning, mocked verification, live browser authentication, and deployment are distinguished; none is claimed complete without evidence.
 
-
 ## React migration and official Cloud Translation implementation — 2026-09-17
 
 **Tool(s) used:** ChatGPT/Codex; local Git/npm; TypeScript, ESLint, Prettier, Vitest/Testing Library, Playwright; official Google Cloud, Vite, React, Ant Design, and GitHub documentation.
@@ -156,7 +147,6 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** TBD - human review required. Implementation supplied for review: locked React/TypeScript/Vite/Ant Design app, pure SRT and subtitle modules, official Basic v2 NMT adapter, volatile credential testing, batching/response validation, cancellation/retry, cue editing/quality warnings/download, and CI/Pages configuration. Added solo Agile/sprint documents, ADR-003 and BUILD_LOG; updated README, PROJECT_STATE, setup, requirements, architecture, semester plan, and open decisions. Local clean install, typecheck/lint, 56 tests, formatting, production build/artifact checks pass; four mocked Chromium browser flows pass under the Pages subpath. No real key was read or used and no commit/push/deployment occurred. Gemini, reload checkpoints, full multilingual grammar analysis, other-browser/live API verification, remote issues/CI/Pages, and human review remain pending. Build size warning is documented.
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. No human-reported implementation error was supplied. AI-detected failures and fixes are recorded separately in BUILD_LOG, including stale development-server assets, icon accessibility names, sidebar shrinking, test-query typing, Node script lint configuration, and mismatched build/preview subpaths. These are not fabricated human reflections.
-
 
 ## Product vision and documentation workflow review — 2026-09-17
 
@@ -170,7 +160,6 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. No human-reported error was supplied. The comparison is framed as the product's intended difference and does not assert unverified details about the alternative service.
 
-
 ## Documentation reconciliation and feature-branch publication — 2026-09-17
 
 **Tool(s) used:** ChatGPT/Codex; local Git and GitHub remote.
@@ -182,7 +171,6 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** Reconciled README.md, PROJECT_STATE.md, PRODUCT_REQUIREMENTS.md, BUILD_LOG.md, and this log with the completed React migration evidence and product vision. Staged files were checked for ignored credential files/key-shaped values, committed as the React migration increment, and published to origin/feat/react-official-translate. The product is not represented as deployed and no pull request was created.
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. The first published commit left older local-evidence language saying no push had occurred. This follow-up corrects that documentation before the final branch update.
-
 
 ## Ignore rules and AI-log Markdown readability — 2026-09-17
 
@@ -196,7 +184,6 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. No human-reported AI error was supplied. The prior adjacent field lines were valid Markdown source but were not separated into paragraphs, so GitHub displayed them as a single block.
 
-
 ## Translation feasibility, pricing, and product-gap review — 2026-09-18
 
 **Tool(s) used:** ChatGPT/Codex; local source/Git inspection; official Google Cloud and Gemini documentation; the named competitor's own product page and explanation for its published claims only.
@@ -208,7 +195,6 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** TBD - human review required. Added docs/TRANSLATION_FEASIBILITY_REVIEW.md with verified code gaps and a proposed sequence for funding choice, quality benchmarking, context/cue alignment, measured performance, and release evidence. Updated PROJECT_STATE.md, docs/PROVIDER_AUTH_AND_COST.md, and docs/REACT_MIGRATION_PLAN.md to distinguish the implemented NMT port from the incomplete product vision and to record current Basic v2 TLLM support. Corrected the assumption that movie duration determines request fit. Documentation-only verification uses git diff --check and local link checks; no new application-test or live-provider success is claimed. No credential contents were read, paid calls made, or changes pushed.
 
 **Something the AI got wrong that I had to catch:** The user reported that the project's functionality does not match their plan. Inspection confirms that the port's visual continuation groups do not provide conversation context to the provider and that formatting does not perform semantic cue alignment. Any additional human reflection is TBD - human review required.
-
 
 ## Owner-funded NMT/TLLM gateway and documentation cleanup — 2026-09-18
 
@@ -222,7 +208,6 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 
 **Something the AI got wrong that I had to catch:** The earlier direct-browser implementation did not meet the requested owner-funded design. The new gateway keeps the key out of the browser, but it has not yet been live-tested or deployed. Human review of model quality, budget, rate limiting, abuse controls, and production host is TBD - human review required.
 
-
 ## Local gateway environment-name alignment — 2026-09-18
 
 **Tool(s) used:** ChatGPT/Codex; redacted local environment-variable-name inspection; local source/documentation checks.
@@ -235,7 +220,6 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 
 **Something the AI got wrong that I had to catch:** The earlier gateway configuration expected a different variable name from the developer's actual `.env`. No credential value, live API result, or billing result was inspected; human review is TBD - human review required.
 
-
 ## Seoul TLLM-location default — 2026-09-18
 
 **Tool(s) used:** ChatGPT/Codex; official Google Cloud documentation and local configuration/source inspection.
@@ -247,3 +231,138 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** Set the local gateway and `.env.example` default to `asia-northeast3`, Google's Seoul Cloud region. Updated setup/current-state records and the short log. Google's TLLM guide uses a configurable technical region but does not publish a Seoul-specific availability assertion in the reviewed page, so this is a requested default, not a verified TLLM-availability claim.
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. The live Check service result remains required to confirm this model/region/project combination.
+
+## Local 502 diagnosis and development command fix — 2026-09-18
+
+**Tool(s) used:** ChatGPT/Codex; local application, gateway, Vite configuration, and npm-script inspection.
+
+**What I asked for:** Explain the local `Google returned HTTP 502` Check service error and the gateway-help text.
+
+**What I kept as-is:** TBD - human review required. The key remains outside Vite/browser code, and no credential value or live provider response was inspected.
+
+**What I changed or rejected, and why:** The 502 was diagnosed as the Vite client running without its local gateway because `npm run dev` previously started only Vite. Added a development launcher that starts both processes, changed `npm run dev` to use it, retained `npm run dev:client` only for client-only work, and added a clear 502 recovery message. Rewrote the UI explanation in plain language: no visitor key is needed, and Check service makes a tiny translation test that may count a few characters. Updated README, setup, project state, and both logs.
+
+**Something the AI got wrong that I had to catch:** The earlier setup documentation told the developer to start two terminals while the primary `npm run dev` command still started only one process. Human review of the live provider result is TBD - human review required.
+
+## Live Cloud Translation diagnosis and TLLM location correction — 2026-09-18
+
+**Tool(s) used:** ChatGPT/Codex; official Google Cloud Translation and API-key documentation; redacted local live requests.
+
+**What I asked for:** Explain why the local gateway reported Google request failures.
+
+**What I kept as-is:** The provider key and project ID remain ignored and were never printed, logged, committed, or sent to the browser. The two-engine NMT/TLLM product decision remains unchanged.
+
+**What I changed or rejected, and why:** Google reported that the initial key request was blocked because it had no HTTP referrer; the gateway is server-to-server, so the developer must not use a Websites application restriction for this local server key. After that restriction was corrected, a minimal NMT request succeeded. TLLM failed at the requested `asia-northeast3` (Seoul) location with `400 Invalid Value`, while the same minimal request succeeded at `us-central1`. Changed the gateway and example configuration default to `us-central1`. Also stopped passing the full TLLM model resource to the Basic v2 languages endpoint because Google rejected that value; the picker uses the NMT language catalogue and the TLLM Check service performs the real model request. Updated state and setup records.
+
+**Something the AI got wrong that I had to catch:** The earlier requested Seoul default was applied before live availability was confirmed. It was not a working TLLM configuration. Human review of translation quality, realistic-file cost, and production controls is still TBD - human review required.
+
+## Safe live-gateway failure diagnostics — 2026-09-18
+
+**Tool(s) used:** ChatGPT/Codex; local source/test inspection; official Google Cloud quota documentation; redacted minimal live provider request.
+
+**What I asked for:** Explain why a TLLM job stopped after partial progress and distinguish visible browser requests from the private provider credential.
+
+**What I kept as-is:** The browser continues to call only the project gateway. The key and the gateway-to-Google request remain server-side. A failed job still preserves completed cues in the current tab for an explicit remaining-cues retry.
+
+**What I changed or rejected, and why:** Source inspection found that one failed batch stops the sequential job and the old client reduced every 403 to one generic message. Added a server-generated, allowlisted failure category for key restriction, billing, API enablement, quota, rate limiting, invalid request, or general access denial. The client maps only those category names to fixed messages, so it never displays arbitrary upstream text. The gateway terminal records only HTTP status and category, never subtitle text, request bodies, provider messages, keys, or project identifiers. A direct minimal TLLM request succeeded at the current configuration, so this does not claim that a particular subtitle batch or the full job is healthy.
+
+**Something the AI got wrong that I had to catch:** A prior generic 403 message was insufficient evidence to call the partial-job failure a Google DDoS control. Google documents quota errors separately; the exact category must be captured from the failed batch. Human review of the resulting category and any TLLM timeout/batch-size adjustment is TBD - human review required.
+
+## Expanded repository demonstration subtitle — 2026-09-18
+
+**Tool(s) used:** ChatGPT/Codex; local fixture and repository-state inspection.
+
+**What I asked for:** Replace the very short demonstration SRT with a more realistic full-length movie subtitle file if appropriate.
+
+**What I kept as-is:** The developer's downloaded full subtitle file remains a local manual stress-test input. It was not moved, uploaded, or added to Git.
+
+**What I changed or rejected, and why:** Replaced the previous three-cue repository fixture with a 40-cue original fictional SRT. It includes realistic timing, multiline text, two-speaker cues, sound descriptions, and all three supported formatting tags. Rejected committing the complete third-party movie subtitle because a public repository fixture should be independently reusable and should not distribute a complete external subtitle work.
+
+**Something the AI got wrong that I had to catch:** The earlier three-cue fixture was too small to demonstrate the normal subtitle review experience. It has been expanded, but it is still not a substitute for controlled local stress and quality testing on a full file. Human review is TBD - human review required.
+
+## Full-file UI responsiveness and context-strategy correction — 2026-09-18
+
+**Tool(s) used:** ChatGPT/Codex; local React/job/domain inspection; official Google Cloud Translation method, model, and quota documentation.
+
+**What I asked for:** Investigate a white-screen/freeze during a full NMT run and determine whether visual continuation groups are sent as translation context.
+
+**What I kept as-is:** NMT/TLLM provider calls keep the existing stable one-input/one-result mapping. Completed cues remain in the current tab after a failed job, and no whole-movie request or proportional target-text split was introduced.
+
+**What I changed or rejected, and why:** Confirmed that the UI previously rendered every cue pair and reevaluated every cue row after each batch, while the job could immediately begin the next batch before a browser paint. Memoized cue rows, used a `Set` for active IDs, added browser containment for off-screen cue cards, and yielded after each batch. Changed UI/provider wording so TLLM is no longer presented as contextual when the request still contains separate cue strings. Added proposed ADR-005: NMT remains the reliable independent-cue baseline; a contextual TLLM path requires a bounded group, a provider-preserved structural mapping, validation, and a human-reviewed benchmark before enabling it.
+
+**Something the AI got wrong that I had to catch:** The visual continuation-group treatment was previously easy to mistake for provider context. Source inspection proved it did not alter the `q` request array. The current performance work improves rendering but does not prove the large-file white screen is fully resolved; human stress testing is TBD - human review required.
+
+## Ant Design shell and component standard — 2026-09-18
+
+**Tool(s) used:** ChatGPT/Codex; the user-supplied Ant Design component reference; local React, CSS, documentation, and test inspection.
+
+**What I asked for:** Replace unnecessary generic `div`-plus-CSS application structure with Ant Design layout components and record Ant Design as the UI standard for future work.
+
+**What I kept as-is:** The subtitle editor's product-specific paired-cue structure, semantic text rendering, editing behavior, continuation labels, and off-screen rendering containment remain. These do not have an equivalent ready-made Ant Design component.
+
+**What I changed or rejected, and why:** Replaced the page shell with Ant Design `Layout`, `Header`, `Sider`, and `Content`; replaced generic action/form arrangements with `Flex`; and changed original/translated cue surfaces to Ant Design `Card`. Added `docs/UI_COMPONENT_GUIDE.md` and made it part of the required AI read order. Kept focused CSS only for visual identity, responsive behavior, and subtitle-specific interaction/performance needs. `npm run check` passed TypeScript, ESLint, 59 Vitest tests, and the production build; `npm run format:check` passed; and `npm run test:e2e` passed all four Chromium workflows. The build retains the pre-existing Vite warning for a JavaScript chunk above 500 kB.
+
+**Something the AI got wrong that I had to catch:** The existing React port used Ant Design controls but did not use its layout primitives for the application shell. The user identified this mismatch. Human review of the final visual layout is TBD - human review required.
+
+## Sidebar spacing and long-list rendering — 2026-09-18
+
+**Tool(s) used:** ChatGPT/Codex; local React/CSS inspection, `@tanstack/react-virtual`, Vitest, and Playwright.
+
+**What I asked for:** Add visible vertical space between sidebar controls, confirm whether cue surfaces use Ant Design, and prevent blank cue cards during rapid scrolling through a full subtitle file.
+
+**What I kept as-is:** Original and translated cue surfaces remain Ant Design `Card` components. Cue editing, quality warnings, local output, and active-cue follow behavior remain intact.
+
+**What I changed or rejected, and why:** Increased the sidebar's flex gap to 20 px. Rejected the prior `content-visibility: auto` approach because it deferred off-screen drawing and produced visible blank cards during rapid scrolling. Added `@tanstack/react-virtual` for measured, variable-height cue virtualization with an eight-row overscan buffer. An editing row remains in the rendered range to preserve an unsaved draft. Added a 2,500-cue Chromium test that checks the final cue after a bottom scroll while fewer than 40 rows are mounted. `npm run check`, `npm run format:check`, and all five Chromium browser tests passed. The production bundle remains above Vite's 500 kB warning threshold.
+
+**Something the AI got wrong that I had to catch:** The first long-list browser assertion used an ambiguous accessible-label query because the cue section and both cards include the cue number. The test now targets the cue section's `region` role. This was a test-selector correction, not an application failure. Human testing on the developer's full local SRT is still required.
+
+## Compact sticky translator layout and cost explanation — 2026-09-18
+
+**Tool(s) used:** ChatGPT/Codex; local React/CSS and request-estimate inspection; Vitest; Playwright.
+
+**What I asked for:** Reduce header/body whitespace, remove the `YOUR WORKSPACE` label, fix absent sidebar spacing, keep loaded-file progress/download actions at the desktop sidebar bottom, make the NMT cost card understandable, and use a compact sticky subtitle-preview header with source/translation labels.
+
+**What I kept as-is:** The 20/80 desktop split, official NMT/TLLM selection, existing request calculation, translation/edit/download behavior, and responsive mobile layout remain. TLLM is not given an invented cost estimate.
+
+**What I changed or rejected, and why:** Removed the `YOUR WORKSPACE` label; reduced header height and content padding; and moved the sidebar flex layout to Ant Design's rendered `.ant-layout-sider-children` wrapper, which corrects the previously invisible gap. It now gives controls a 20 px vertical rhythm. The initial sticky bottom-region attempt overlaid the configuration controls in a visual check, so the final layout separates a scrollable controls area from the stationary cost, Start/Cancel, progress, Download, and Reset region. The content title is the centered, compact, sticky `Subtitle preview`, with source/translation labels directly below; the former marketing headline is removed. Replaced the estimate's unexplained numbers with a whole-file NMT total, character count, request count, explicit non-per-request explanation, and a three-attempt ceiling. Added structural rules and requirements. `npm run check`, `npm run format:check`, and all five Chromium tests passed; the browser test covers the new CSS/wording. The build still has Vite's existing JavaScript chunk warning above 500 kB.
+
+**Something the AI got wrong that I had to catch:** The previous 20 px gap was added to the outer `Sider`, but Ant Design wraps supplied children in an internal element; the rule did not produce the intended visible spacing. The corrected selector targets the rendered wrapper. Human visual review at the developer's screen size is still TBD - human review required.
+
+
+## Wider cue cards and scrollable cost explanation — 2026-09-18
+
+**Tool(s) used:** ChatGPT/Codex; local React/CSS inspection; Vitest; Playwright; generated loaded-file screenshot inspection.
+
+**What I asked for:** Remove the estimate from the stationary sidebar region, add bottom breathing room to scrollable settings, remove shadows, and maximize subtitle-card width by removing the vertical rail and excess horizontal padding.
+
+**What I kept as-is:** The stationary action region continues to expose Start/Cancel, progress, Download, and Reset. Card pairing, continuation labels, virtual scrolling, and accessible status information remain unchanged.
+
+**What I changed or rejected, and why:** Moved the cost estimate and estimate error into the scrollable settings area and added 36 px bottom padding. Removed the action-region shadow. Reduced content-side padding to 6 px, removed the cue-row left border and left padding, and removed column-label side padding so paired cards use more of the content pane. The Playwright test verifies that the estimate is in `.sidebar-controls`, absent from `.sidebar-actions`, and that cue rows have no left border. `npm run check`, `npm run format:check`, and five Chromium workflows passed. A generated loaded-file screenshot confirmed the final arrangement.
+
+**Something the AI got wrong that I had to catch:** The first stationary sidebar design placed the estimate there, which made the action panel unnecessarily tall. The user requested that it return to scrollable settings. Human visual review at other screen sizes remains TBD - human review required.
+
+
+## Compact header and contextual help — 2026-09-18
+
+**Tool(s) used:** ChatGPT/Codex; local React/CSS inspection; Ant Design `Modal` and `Popover`; Vitest; Playwright; generated screenshot inspection.
+
+**What I asked for:** Remove the header and sidebar introductory text, reduce header size, add a question-mark workflow help modal, and replace the service-card paragraph with a compact help popover.
+
+**What I kept as-is:** The header retains product identity, theme switching, and a repository link. The Check service action and its safety/usage explanation remain available. No provider credential is added to the browser.
+
+**What I changed or rejected, and why:** Reduced the header to 52 px, removed its marketing subtitle and redundant mode label, and made its controls compact. Added an accessible question-mark button that opens a modal explaining upload, configuration, translation, review/editing, download, and the active-tab limitation. Removed `Translate subtitles` and `English in. Your language out.` in favor of `Select your English subtitle` above the picker. Replaced the service-card paragraph with a question-mark `Popover` that opens on hover or click. `npm run check` and five Chromium browser workflows passed. The browser test opens both help surfaces; a generated screenshot was inspected.
+
+**Something the AI got wrong that I had to catch:** The prior explanatory text used permanent screen space even though the user only needs it when deciding how to use the app. It is now available through explicit help controls. Human review of the final wording is TBD - human review required.
+
+
+## Local commit completion rule — 2026-09-18
+
+**Tool(s) used:** ChatGPT/Codex; local Git and repository-rule inspection.
+
+**What I asked for:** Make a local Git commit automatic after every completed file-changing prompt, then record the policy in the project rules and logs.
+
+**What I kept as-is:** Existing one-logical-change-per-commit, secret-protection, review, and explicit remote-publishing rules remain.
+
+**What I changed or rejected, and why:** Added the completion-commit requirement to `AGENTS.md` and `docs/DEVELOPMENT_RULES.md`; added the expected commit hash to the task report; and recorded the policy in project state and the short AI log. The rule requires documentation and verification first, Git-status inspection before staging, and one local commit for the completed logical change. It explicitly rejects automatic pushes, merges, rebases, resets, history rewriting, and committing ignored/generated/unrelated files.
+
+**Something the AI got wrong that I had to catch:** Earlier completed prompts left verified local work uncommitted. The user identified that the repository workflow needed an explicit completion rule. The policy applies from this task forward; human review of commit grouping remains TBD - human review required.

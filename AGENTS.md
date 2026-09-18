@@ -14,8 +14,9 @@ Before changing anything, read:
 6. `docs/COURSE_ALIGNMENT.md`
 7. `docs/SUBTITLE_FORMATTING_SPEC.md`
 8. `docs/PROVIDER_AUTH_AND_COST.md`
-9. accepted ADRs, then `docs/OPEN_QUESTIONS.md`
-10. recent entries in `AI_LOG.md` and `docs/AI_DETAILED_LOG.md`
+9. `docs/UI_COMPONENT_GUIDE.md`
+10. accepted ADRs, then `docs/OPEN_QUESTIONS.md`
+11. recent entries in `AI_LOG.md` and `docs/AI_DETAILED_LOG.md`
 
 ## Non-negotiable rules
 
@@ -26,6 +27,8 @@ Before changing anything, read:
 - Keep changes small, understandable, and junior-developer-friendly.
 - Keep SRT/subtitle domain logic independent of React and network providers.
 - Keep Cloud Translation model details behind the translation-provider interface.
+- Use Ant Design as the first choice for application layout, standard controls, feedback, navigation, spacing, and generic panels. Retain semantic HTML and focused custom CSS where the subtitle-review interface needs domain-specific behavior or performance control; do not add generic `div` wrappers when an appropriate Ant Design component exists. Follow `docs/UI_COMPONENT_GUIDE.md`.
+- Verify the rendered DOM of library layout components before styling their child spacing or fixed regions. For the desktop translator sidebar, apply a visible 20 px gap to the actual control container and keep loaded-file actions in a stationary bottom group outside the scrollable controls. Keep the subtitle-preview heading and its column labels compact and sticky at the top of the scrollable content pane.
 - Never use or describe the MVP's undocumented Google consumer endpoint as production-ready.
 - Never expose, commit, persist, log, or place secrets in public Vite environment variables.
 - Translation is owner-funded through a server-side gateway. Never expose, commit, persist in browser storage, log, or place the project-owner key in URLs, downloaded files, public Vite variables, or frontend source.
@@ -38,6 +41,7 @@ Before changing anything, read:
 - Do not implement microservices merely to match a lecture topic. Discuss and document why they fit or do not fit.
 - Run relevant typecheck, lint, tests, and build. Never claim they passed without current successful output.
 - After every material change, update `PROJECT_STATE.md` and affected documentation, append a one-line plain-language entry to `AI_LOG.md`, and append the evidence/detail to `docs/AI_DETAILED_LOG.md`.
+- After completing a user prompt that changes repository files, create one local commit for that completed logical change before reporting completion. Inspect Git status first; never include secrets, ignored files, unrelated user changes, or generated artifacts. Do not push, merge, amend published history, or use destructive Git commands unless the user explicitly asks.
 - Never fabricate the human-only `kept`, `changed/rejected`, or `AI got wrong` reflection. Use `TBD - human review required` when necessary.
 - Work must satisfy the Definition of Done in `docs/PRODUCT_REQUIREMENTS.md`.
 
@@ -73,4 +77,5 @@ At the end of an AI task, report:
 - verification commands and outcomes;
 - unresolved limitations/TBDs;
 - documentation/state changes;
+- local commit hash, when the task changed repository files;
 - the `AI_LOG.md` entry added.

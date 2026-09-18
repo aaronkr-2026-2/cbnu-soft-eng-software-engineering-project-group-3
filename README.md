@@ -27,6 +27,10 @@ The React client currently supports local UTF-8 SRT import (up to 5 MiB), parsin
 
 The historical MVP is preserved at [archive/mvp/srt-translator-beta-3.html](archive/mvp/srt-translator-beta-3.html). It uses an undocumented endpoint and is not built or deployed.
 
+## Run locally
+
+Run `npm run dev`. It starts both the local Vite client and the local translation gateway, which reads ignored `.env`. Do not run `npm run dev:client` by itself when you need translation; that client-only command cannot reach Google.
+
 ## Records and development guidance
 
 [AGENTS.md](AGENTS.md) is the canonical working agreement. [PROJECT_STATE.md](PROJECT_STATE.md) records what is currently true. `GEMINI.md` and `CLAUDE.md` are small pointers that tell those coding tools to read `AGENTS.md`.

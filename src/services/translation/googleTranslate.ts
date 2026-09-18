@@ -42,6 +42,40 @@ function responseItems(value: unknown, field: string): unknown[] {
   return value.data[field];
 }
 
+function failureCategory(value: unknown): string | undefined {
+  if (
+    record(value) &&
+    record(value.error) &&
+    typeof value.error.category === 'string'
+  )
+    return value.error.category;
+  return undefined;
+}
+
+function failureMessage(status: number, category: string | undefined): string {
+  if (category === 'key_restriction')
+    return 'Google blocked this server key restriction. A local gateway key must not use a Websites/referrer restriction.';
+  if (category === 'billing')
+    return 'Google requires billing to use this Translation project.';
+  if (category === 'api_not_enabled')
+    return 'Cloud Translation API is not enabled for this Google Cloud project.';
+  if (category === 'quota')
+    return 'Google Translation quota was reached. Check the Cloud Translation quota page, then translate remaining cues.';
+  if (category === 'daily_quota')
+    return 'Google Translation daily quota was reached. It resets at midnight Pacific Time; adjust the project quota if appropriate.';
+  if (category === 'rate_limited')
+    return 'Google Translation per-minute quota was reached. Wait about a minute, then translate remaining cues.';
+  if (category === 'access_denied')
+    return 'Google denied the project gateway request. Check API access, billing, server key restrictions, and quota.';
+  if (category === 'invalid_request')
+    return 'Google rejected this request. The selected model, language, or batch size may not be supported.';
+  if (status === 401 || status === 403)
+    return 'Google denied the project gateway request. Check API access, billing, server key restrictions, and quota.';
+  if (status === 400)
+    return 'Google rejected this request. The selected model, language, or batch size may not be supported.';
+  return `Google returned HTTP ${status}.`;
+}
+
 function sleep(ms: number, signal: AbortSignal): Promise<void> {
   return new Promise((resolve, reject) => {
     checkAbort(signal);
@@ -98,16 +132,15 @@ export class GoogleTranslate implements TranslationProvider {
           redirect: 'error',
         });
         if (!response.ok) {
-          if (response.status === 401 || response.status === 403)
+          const data: unknown = await response.json().catch(() => null);
+          const category = failureCategory(data);
+          if (response.status === 502)
             throw new ProviderError(
-              'Google denied the project gateway request. Check API access, billing, server key restrictions, and quota.',
-            );
-          if (response.status === 400)
-            throw new ProviderError(
-              'Google rejected this request. Check the language, key, and request size.',
+              'The translation connection is unavailable. If you are working locally, stop both servers and run npm run dev again.',
+              true,
             );
           throw new ProviderError(
-            `Google returned HTTP ${response.status}.`,
+            failureMessage(response.status, category),
             response.status === 429 || response.status >= 500,
           );
         }

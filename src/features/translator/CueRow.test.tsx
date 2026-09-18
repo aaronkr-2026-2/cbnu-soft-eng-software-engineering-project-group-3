@@ -14,6 +14,7 @@ const props = {
   profile: 'adult' as const,
   group: 1,
   groupStart: true,
+  onEditingChange: vi.fn(),
 };
 describe('cue editing', () => {
   it('keeps the persistent edit state and cancels without changing saved output', async () => {

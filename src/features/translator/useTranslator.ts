@@ -243,11 +243,11 @@ export function useTranslator(model: TranslationModel) {
     }
   }
 
-  function saveEdit(id: string, value: string) {
+  const saveEdit = useCallback((id: string, value: string) => {
     validateOutput(value);
     setTranslations((previous) => ({ ...previous, [id]: value }));
     setEdited((previous) => ({ ...previous, [id]: true }));
-  }
+  }, []);
   function restart() {
     if (busy) return;
     if (

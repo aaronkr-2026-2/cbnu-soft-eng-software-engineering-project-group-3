@@ -6,6 +6,7 @@ import { decodeEntities, plainText, sliceMarkup } from './markup';
 
 const source =
   '7\n00:00:01,000 --> 00:00:04,000\n<i>Hello there.</i>\nSecond line.\n\n12\n00:00:05,000 --> 00:00:06,500\nGoodbye.\n';
+const demonstrationFixture = readFileSync('examples/demo.srt', 'utf8');
 
 describe('baseline characterization (historical HTML remains unchanged)', () => {
   const html = readFileSync('archive/mvp/srt-translator-beta-3.html', 'utf8');
@@ -30,6 +31,11 @@ describe('baseline characterization (historical HTML remains unchanged)', () => 
 describe('cue-preserving SRT domain', () => {
   it('round trips cue indexes, timestamps, markup, and multiline text', () =>
     expect(serializeSrt(parseSrt(source))).toBe(source));
+  it('parses the longer original demonstration fixture without loss', () => {
+    const cues = parseSrt(demonstrationFixture);
+    expect(cues).toHaveLength(40);
+    expect(serializeSrt(cues)).toBe(demonstrationFixture);
+  });
   it('normalizes BOM and CRLF while preserving Unicode', () => {
     const fixture =
       '\ufeff' +

@@ -78,6 +78,38 @@ describe('official Google adapter', () => {
     expect(fetcher).toHaveBeenCalledTimes(1);
     expect(safeError(new Error('secret-key-in-error'))).not.toContain('secret');
   });
+  it('shows an allowlisted gateway diagnosis without echoing provider content', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockResolvedValue(
+        response(
+          {
+            error: {
+              category: 'quota',
+              message: 'untrusted upstream response',
+            },
+          },
+          403,
+        ),
+      ),
+    );
+    await expect(
+      new GoogleTranslate('nmt').translateBatch(input, 'es', signal()),
+    ).rejects.toThrow('quota was reached');
+  });
+  it('distinguishes a daily quota from a short rate-limit window', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi
+        .fn()
+        .mockResolvedValue(
+          response({ error: { category: 'daily_quota' } }, 403),
+        ),
+    );
+    await expect(
+      new GoogleTranslate('nmt').translateBatch(input, 'es', signal()),
+    ).rejects.toThrow('midnight Pacific Time');
+  });
   it('retries transient failures with an explicit bounded request count', async () => {
     vi.useFakeTimers();
     const fetcher = vi

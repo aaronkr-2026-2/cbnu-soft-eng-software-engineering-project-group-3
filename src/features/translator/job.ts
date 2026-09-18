@@ -13,6 +13,24 @@ export interface JobCallbacks {
   request: () => void;
 }
 
+function yieldForPaint(signal: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const complete = () => {
+      try {
+        checkAbort(signal);
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    };
+    if (typeof requestAnimationFrame === 'function') {
+      requestAnimationFrame(complete);
+      return;
+    }
+    setTimeout(complete, 0);
+  });
+}
+
 export async function runJob(
   provider: TranslationProvider,
   batches: Batch[],
@@ -51,5 +69,8 @@ export async function runJob(
       completed[cue.id] = formatTranslation(segments, target);
     }
     callbacks.completed(completed);
+    // Fast NMT responses can otherwise schedule the next large state update
+    // before React has painted the current batch.
+    await yieldForPaint(signal);
   }
 }
