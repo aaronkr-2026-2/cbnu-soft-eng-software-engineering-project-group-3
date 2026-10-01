@@ -378,3 +378,15 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** Added sun/moon icons to the Ant Design switch and a tooltip that states the next theme. Replaced the modal's default two-action footer with a single explicit `OK` button. Kept the service explanation but gave its popover content a 210 px maximum width so it reads as a small help surface. `npm run check`, `npm run format:check`, and five Chromium browser workflows passed; the browser test covers the missing Cancel action and compact popover width. The production build retains Vite's existing JavaScript-chunk warning above 500 kB.
 
 **Something the AI got wrong that I had to catch:** The compact header initially provided a small theme switch without clearly showing its purpose, and the default modal footer exposed an unnecessary Cancel button. The user identified both usability issues. Human visual review across target screen sizes remains TBD - human review required.
+
+## Joined-speech revision verification and GitHub preparation — 2026-10-01
+
+**Tool(s) used:** ChatGPT/Codex; local Git/npm; TypeScript; ESLint; Prettier; Vitest; Playwright Chromium.
+
+**What I asked for:** Push the current code to GitHub.
+
+**What I kept as-is:** The current React/Ant Design interface, owner-funded gateway boundary, joined-speech behavior for NMT/TLLM, approximate cue redistribution, user edits, and unresolved production/live-quality limits remain. The ignored `.env` and provider credentials were not read, staged, logged, or sent to automated tests.
+
+**What I changed or rejected, and why:** Verified the complete current worktree before publication. Fixed the stale 40-cue assertion for the now 43-cue demo, made the fixture path work under jsdom, and preserved the separator between a leading speaker hyphen and a protected annotation. Updated browser assertions to validate the full provider payload, per-cue failure display, and cue-text conservation after SRT download. `npm run check` passed typecheck, zero-warning lint, 83 tests, and the production build; `npm run format:check` passed; and all 10 mocked Chromium workflows passed. The existing bundle-size warning remains documented.
+
+**Something the AI got wrong that I had to catch:** The initial publication check found stale test expectations for the expanded fixture, the complete gateway payload, per-cue error count, and raw-SRT conservation. These were corrected before publication. Human translation/timing review and production deployment evidence remain TBD - human review required.

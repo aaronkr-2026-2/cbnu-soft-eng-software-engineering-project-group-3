@@ -1,6 +1,6 @@
 # Course Alignment and Scope Report
 
-Date: 2026-09-15
+Updated: 2026-09-18
 
 ## Overall assessment
 
@@ -85,3 +85,9 @@ Before accepting a stretch feature, answer:
 5. Can every team member explain and test it?
 
 If the answers are weak, keep it in the backlog instead of implementing it.
+
+## Voice memo review — 2026-09-18
+
+Checked the five-page project-guide PDF and Markdown companion. The narrowed upload → translate → review → download flow remains suitable for a solo project. Restoring actual joined provider input, isolating group failures and admitting approximate timing placement provide concrete requirements, architecture and reliability evidence. See REQUIREMENTS_REVISION_AUDIT.md.
+
+Local implementation and passing tests alone do not satisfy the course. User/persona validation, dated sprint reviews, public working deployment, external peer review, licensing review, human AI reflections and a live code walkthrough remain required evidence. Keep the short AI_LOG.md index linked to the detailed five-field records; human reflections must be completed by the author. A paid Cloud service is a project choice, not a course requirement.

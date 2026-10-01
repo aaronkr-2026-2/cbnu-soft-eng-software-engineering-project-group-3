@@ -1,3 +1,3 @@
-# Gemini project instructions
+# Gemini coding-assistant instructions
 
-Read and follow `AGENTS.md` as the canonical project memory before planning or editing. Then follow its required read order. Do not duplicate or override those rules here. If this file conflicts with `AGENTS.md`, stop and ask the user to resolve the conflict.
+This file configures the coding assistant, not a translation provider. Read and follow `AGENTS.md` as the canonical repository memory and its required read order. Do not duplicate product rules here. The user's latest explicit instruction takes precedence over old project records; update affected records when decisions change.

@@ -1,5 +1,12 @@
-import { formatTranslation } from '../../core/subtitles/subtitles';
+import {
+  CPS_LIMITS,
+  formatTranslation,
+  type Profile,
+  type TranslationSegment,
+} from '../../core/subtitles/subtitles';
+import { distributeTranslation } from '../../core/subtitles/groups';
 import { plainText } from '../../core/srt/markup';
+import { validateOutput } from '../../core/srt/srt';
 import {
   checkAbort,
   ProviderError,
@@ -11,23 +18,19 @@ export interface JobCallbacks {
   active: (ids: string[]) => void;
   completed: (results: Record<string, string>) => void;
   request: () => void;
+  failed?: (ids: string[], error: unknown) => void;
 }
 
 function yieldForPaint(signal: AbortSignal): Promise<void> {
   return new Promise((resolve, reject) => {
-    const complete = () => {
+    setTimeout(() => {
       try {
         checkAbort(signal);
         resolve();
       } catch (error) {
         reject(error);
       }
-    };
-    if (typeof requestAnimationFrame === 'function') {
-      requestAnimationFrame(complete);
-      return;
-    }
-    setTimeout(complete, 0);
+    }, 0);
   });
 }
 
@@ -37,40 +40,87 @@ export async function runJob(
   target: string,
   signal: AbortSignal,
   callbacks: JobCallbacks,
+  profile: Profile = 'adult',
 ): Promise<void> {
   for (const batch of batches) {
     checkAbort(signal);
-    callbacks.active(batch.cues.map(({ cue }) => cue.id));
-    const results = await provider.translateBatch(
-      batch.inputs,
-      target,
-      signal,
-      callbacks.request,
+    const ids = batch.groups.flatMap((group) =>
+      group.cues.map((cue) => cue.id),
     );
-    checkAbort(signal);
-    const byId = new Map(results.map((result) => [result.id, result.text]));
-    if (
-      results.length !== batch.inputs.length ||
-      byId.size !== results.length ||
-      batch.inputs.some((input) => !byId.has(input.id))
-    )
-      throw new ProviderError(
-        'Translation result IDs do not match this batch.',
+    callbacks.active(ids);
+    let groupFailuresReported = false;
+    try {
+      const results = await provider.translateBatch(
+        batch.inputs,
+        target,
+        signal,
+        callbacks.request,
       );
-    const completed: Record<string, string> = {};
-    for (const { cue, inputs } of batch.cues) {
-      const segments = inputs.map((input) => {
-        const text = byId.get(input.id)!;
-        return /^-\s/.test(plainText(input.text)) &&
-          !/^-\s/.test(plainText(text))
-          ? `- ${text}`
-          : text;
-      });
-      completed[cue.id] = formatTranslation(segments, target);
+      checkAbort(signal);
+      const byId = new Map(results.map((result) => [result.id, result.text]));
+      if (
+        results.length !== batch.inputs.length ||
+        byId.size !== results.length ||
+        batch.inputs.some((input) => !byId.has(input.id))
+      )
+        throw new ProviderError(
+          'Translation result IDs do not match this batch.',
+        );
+      const completed: Record<string, string> = {};
+      const failedGroups: Array<{ ids: string[]; error: ProviderError }> = [];
+      for (const group of batch.groups) {
+        const groupCompleted: Record<string, string> = {};
+        const cueSegments = new Map(
+          group.cues.map((cue) => [cue.id, [] as TranslationSegment[]]),
+        );
+        try {
+          for (const unit of group.units) {
+            let text = byId.get(unit.id)!;
+            if (unit.speaker && !/^-\s*/.test(plainText(text)))
+              text = `- ${text}`;
+            const chunks = distributeTranslation(
+              text,
+              unit.parts,
+              target,
+              CPS_LIMITS[profile],
+            );
+            unit.parts.forEach(({ cue }, i) =>
+              cueSegments.get(cue.id)!.push({
+                text: chunks[i],
+                hardBreak: unit.speaker,
+              }),
+            );
+          }
+          for (const cue of group.cues) {
+            const text = formatTranslation(cueSegments.get(cue.id)!, target);
+            validateOutput(text);
+            groupCompleted[cue.id] = text;
+          }
+          Object.assign(completed, groupCompleted);
+        } catch (error) {
+          failedGroups.push({
+            ids: group.cues.map((cue) => cue.id),
+            error: new ProviderError(
+              error instanceof Error
+                ? error.message
+                : 'Could not distribute this translation.',
+            ),
+          });
+        }
+      }
+      checkAbort(signal);
+      if (Object.keys(completed).length) callbacks.completed(completed);
+      if (failedGroups.length) {
+        for (const failed of failedGroups)
+          callbacks.failed?.(failed.ids, failed.error);
+        groupFailuresReported = true;
+        throw failedGroups[0].error;
+      }
+    } catch (error) {
+      if (!signal.aborted && !groupFailuresReported)
+        callbacks.failed?.(ids, error);
+      throw error;
     }
-    callbacks.completed(completed);
-    // Fast NMT responses can otherwise schedule the next large state update
-    // before React has painted the current batch.
     await yieldForPaint(signal);
   }
 }

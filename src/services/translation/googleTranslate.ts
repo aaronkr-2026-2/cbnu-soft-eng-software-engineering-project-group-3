@@ -13,6 +13,12 @@ import {
 export const TRANSLATE_ENDPOINT = '/api/translation';
 export type TranslationModel = 'nmt' | 'tllm';
 export const MAX_REQUEST_BYTES = 90000; // Margin beneath Basic's documented 100 KB limit.
+export const MAX_TLLM_INPUT_CHARACTERS = 30000;
+
+export function inputCharacters(inputs: TranslationInput[]): number {
+  return inputs.reduce((total, input) => total + [...input.text].length, 0);
+}
+
 export function translationBody(
   inputs: TranslationInput[],
   target: string,
@@ -213,6 +219,8 @@ export class GoogleTranslate implements TranslationProvider {
     if (
       !inputs.length ||
       inputs.length > 128 ||
+      (this.model === 'tllm' &&
+        inputCharacters(inputs) > MAX_TLLM_INPUT_CHARACTERS) ||
       new TextEncoder().encode(body).length > MAX_REQUEST_BYTES ||
       new Set(inputs.map((input) => input.id)).size !== inputs.length
     )
@@ -245,9 +253,13 @@ export class GoogleTranslate implements TranslationProvider {
         )
           throw new Error('Changed markup');
         if (!plainText(text).trim()) throw new Error('Empty');
+        const structure = (value: string) =>
+          (plainText(value).match(/(?:\[|\]|[♪♫])/g) ?? []).join('');
+        if (structure(text) !== structure(inputs[i].text))
+          throw new Error('Changed sound/music structure');
       } catch {
         throw new ProviderError(
-          'Google returned empty text or changed unsupported formatting. No results from this batch were saved.',
+          'Google returned empty text or changed formatting, sound brackets, or music symbols. No results from this batch were saved.',
         );
       }
       return { id: inputs[i].id, text };

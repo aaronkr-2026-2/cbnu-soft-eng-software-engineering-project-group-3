@@ -1,6 +1,6 @@
 # Semester Plan and Milestones
 
-Version: 0.1 draft
+Version: 0.2 draft
 
 Updated: 2026-09-17
 
@@ -66,7 +66,7 @@ Confirmed 2026-09-16: this is a solo project. Recommendation: prioritize telemet
 
 ## Initial 10-issue backlog
 
-Implementation update 2026-09-17: the requested React/official-provider increment and local Week 5 process documents are ready for review. See [Week 5 sprint](sprints/WEEK_05.md), [Agile workflow](AGILE_WORKFLOW.md), and [build evidence](../BUILD_LOG.md). Live-key testing, remote issues/CI/Pages, and human review remain pending; this does not change course deadlines or mark the milestone complete.
+Implementation update 2026-09-17: the requested React/official-provider increment and local Week 5 process documents are ready for review. See [Week 5 sprint](sprints/WEEK_05.md), [Agile workflow](AGILE_WORKFLOW.md), and [build evidence](../BUILD_LOG.md). Later minimal provider connectivity is recorded in BUILD_LOG.md; live grouped-subtitle quality, remote issues/CI/Pages verification and human review remain pending; this does not change course deadlines or mark the milestone complete.
 
 These issue titles are drafts and should be reconciled with the repository rather than duplicated blindly.
 
@@ -75,12 +75,12 @@ The [React migration and official Translate implementation plan](REACT_MIGRATION
 1. Preserve, document, tag, and deploy the MVP baseline.
 2. Add product vision, project state, AI log, and open decisions.
 3. Scaffold React + TypeScript + Vite + Ant Design.
-4. Port the application shell, theme, and Translator/Statistics modes.
+4. Port the application shell, theme, and Translator view; keep Statistics hidden.
 5. Port and characterize SRT parse/serialize behavior.
 6. Define translation provider contract and isolate the legacy provider.
 7. Port job progress, elapsed timer, active-tab warning, connected-group/hover/edit states, errors, and download.
 8. Add automated checks and GitHub Pages workflow.
-9. Implement the owner-funded NMT/TLLM gateway and context-aware grouped translation with validated cue mapping.
+9. Implement the owner-funded NMT/TLLM gateway and joined-speech translation with text-conserving approximate redistribution (ADR-006).
 10. Replace proportional word splitting/six-word wrapping with the exact formatting specification and editable cues.
 
 ## Milestone evidence checklist
@@ -95,3 +95,9 @@ At each milestone retain:
 - one course principle applied to actual code;
 - `AI_LOG.md` entry with kept/rejected/wrong details;
 - one thing the developer can explain live.
+
+## Voice memo revision — 2026-09-18
+
+The core now explicitly restores joined speech for both NMT/TLLM, followed by local approximate redistribution and profile-based wrapping. This corrects a migration mismatch; it does not move course deadlines. Shared Ant Design theming, automatic language loading, precise failures and retry evidence support the existing engineering milestones. No extra feature track is activated.
+
+Live grouped-subtitle quality, production gateway limits/hosting, actual weekly process, user validation, external review and author explanation still require evidence. Earlier minimal provider smoke tests are distinct from a full film benchmark. See REQUIREMENTS_REVISION_AUDIT.md and the linked build/AI logs.

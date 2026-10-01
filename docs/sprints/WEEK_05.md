@@ -14,7 +14,7 @@ Owner for every item: project owner (solo developer). Current branch: `main`. Ba
 | W5-04 | Characterize historical parser/serializer; expose renumbering/skipping debt | Review — automated characterization fixtures pass |
 | W5-05 | Pure SRT domain with explicit errors and preserved identities/timing | Review — round-trip and validation fixtures pass |
 | W5-06 | Responsive themed shell and local file preview | Review — Statistics hidden, profile choice required |
-| W5-07 | Owner-funded NMT/TLLM gateway and complete job/download/edit flow | In progress — local gateway reads ignored `.env`; live provider test, production host, limits, and context alignment remain required |
+| W5-07 | Owner-funded NMT/TLLM gateway and complete job/download/edit flow | In progress — local gateway reads ignored `.env`; minimal provider connectivity recorded; grouped-input revision and automated evidence are under review; live quality, production host and limits remain required |
 | W5-08 | CI/Pages configuration, docs and final evidence | Review — workflow prepared; remote CI/deployment and human walkthrough pending |
 
 These IDs are local draft issues, not GitHub issue numbers. Query existing issues before publishing them. Evidence: BUILD_LOG.md, tests under src/ and e2e/, and AI_LOG.md. No item is marked Done merely because AI implemented it.

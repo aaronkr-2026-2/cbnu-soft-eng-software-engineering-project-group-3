@@ -33,7 +33,7 @@ describe('cue-preserving SRT domain', () => {
     expect(serializeSrt(parseSrt(source))).toBe(source));
   it('parses the longer original demonstration fixture without loss', () => {
     const cues = parseSrt(demonstrationFixture);
-    expect(cues).toHaveLength(40);
+    expect(cues).toHaveLength(43);
     expect(serializeSrt(cues)).toBe(demonstrationFixture);
   });
   it('normalizes BOM and CRLF while preserving Unicode', () => {

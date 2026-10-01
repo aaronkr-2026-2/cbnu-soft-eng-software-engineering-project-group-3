@@ -23,13 +23,13 @@ import { runJob } from './job';
 export type JobStatus =
   'idle' | 'running' | 'completed' | 'cancelled' | 'failed';
 
-export function useTranslator(model: TranslationModel) {
+export function useTranslator(model: TranslationModel = 'nmt') {
   const [cues, setCues] = useState<Cue[]>([]);
   const [filename, setFilename] = useState('');
   const [language, setLanguage] = useState('');
   const [profile, setProfile] = useState<Profile>();
   const [languages, setLanguages] = useState<Language[]>([]);
-  const [credentialStatus, setCredentialStatus] = useState<
+  const [serviceStatus, setServiceStatus] = useState<
     'empty' | 'testing' | 'ready'
   >('empty');
   const [translations, setTranslations] = useState<Record<string, string>>({});
@@ -37,6 +37,8 @@ export function useTranslator(model: TranslationModel) {
   const [status, setStatus] = useState<JobStatus>('idle');
   const [activeIds, setActiveIds] = useState<string[]>([]);
   const [error, setError] = useState('');
+  const [cueErrors, setCueErrors] = useState<Record<string, string>>({});
+  const [serviceError, setServiceError] = useState('');
   const [loadingFile, setLoadingFile] = useState(false);
   const [startedAt, setStartedAt] = useState<number>();
   const [finishedAt, setFinishedAt] = useState<number>();
@@ -63,56 +65,49 @@ export function useTranslator(model: TranslationModel) {
     };
   }, [invalidateFileReads]);
 
-  const invalidateCredential = useCallback(() => {
+  const invalidateService = useCallback(() => {
     testAbort.current?.abort();
     jobAbort.current?.abort();
     provider.current?.clear();
     provider.current = null;
-    setCredentialStatus('empty');
+    setServiceStatus('empty');
   }, []);
 
-  async function testService() {
-    invalidateCredential();
-    setError('');
-    setCredentialStatus('testing');
+  const loadLanguages = useCallback(async () => {
+    testAbort.current?.abort();
     const controller = new AbortController();
     testAbort.current = controller;
     const candidate = new GoogleTranslate(model);
+    provider.current = candidate;
+    setServiceStatus('testing');
+    setServiceError('');
+    setLanguages([]);
     try {
       const supported = await candidate.getLanguages(controller.signal);
-      const target =
-        supported.find((item) => item.code === 'es') ??
-        supported.find((item) => item.code !== 'en');
-      if (!target) throw new Error('No target language');
-      // A tiny translation verifies permissions as well as the language-list endpoint.
-      await candidate.translateBatch(
-        [{ id: 'key-test', text: 'Hello.' }],
-        target.code,
-        controller.signal,
-      );
-      if (!mounted.current || controller.signal.aborted) {
-        candidate.clear();
-        return;
-      }
-      provider.current = candidate;
-      setLanguages(supported);
-      setCredentialStatus('ready');
-    } catch (failure) {
-      candidate.clear();
       if (!mounted.current || controller.signal.aborted) return;
-      setCredentialStatus('empty');
-      setError(safeError(failure));
+      setLanguages(supported.filter((item) => item.code !== 'en'));
+      setServiceStatus('ready');
+    } catch (failure) {
+      if (!mounted.current || controller.signal.aborted) return;
+      setServiceStatus('empty');
+      setServiceError(safeError(failure));
     }
-  }
+  }, [model]);
 
-  // Compatibility for existing hook tests; the browser no longer accepts a key.
-  async function testKey(_ignored?: string) {
-    void _ignored;
-    await testService();
-  }
+  useEffect(() => {
+    let disposed = false;
+    queueMicrotask(() => {
+      if (!disposed) void loadLanguages();
+    });
+    return () => {
+      disposed = true;
+      testAbort.current?.abort();
+    };
+  }, [loadLanguages]);
 
   const resetOutput = () => {
     setTranslations({});
+    setCueErrors({});
     setEdited({});
     setStatus('idle');
     setActiveIds([]);
@@ -171,7 +166,10 @@ export function useTranslator(model: TranslationModel) {
   );
   const estimate = useMemo(() => {
     try {
-      return { value: estimateTranslation(pending, language), error: '' };
+      return {
+        value: estimateTranslation(cues, language, model),
+        error: '',
+      };
     } catch (failure) {
       return {
         value: null,
@@ -181,33 +179,55 @@ export function useTranslator(model: TranslationModel) {
             : 'Unable to estimate this file.',
       };
     }
-  }, [pending, language]);
+  }, [cues, language, model]);
+  const remainingEstimate = useMemo(() => {
+    try {
+      return {
+        value: estimateTranslation(cues, language, model, translations),
+        error: '',
+      };
+    } catch (failure) {
+      return {
+        value: null,
+        error:
+          failure instanceof Error
+            ? failure.message
+            : 'Unable to estimate remaining subtitle text.',
+      };
+    }
+  }, [cues, language, model, translations]);
   const busy = status === 'running';
   const canStart =
     !busy &&
     !loadingFile &&
-    credentialStatus === 'ready' &&
+    serviceStatus === 'ready' &&
     !!profile &&
     languages.some((item) => item.code === language) &&
     pending.length > 0 &&
-    !!estimate.value;
+    !!remainingEstimate.value;
 
   async function start() {
     const service = provider.current;
-    if (!canStart || !service || !estimate.value || jobInFlight.current) return;
+    if (
+      !canStart ||
+      !service ||
+      !remainingEstimate.value ||
+      jobInFlight.current
+    )
+      return;
     jobInFlight.current = true;
     const controller = new AbortController();
     jobAbort.current = controller;
     const current = () => mounted.current && jobAbort.current === controller;
     setStatus('running');
     setError('');
-    setStartedAt(Date.now());
+    setStartedAt((previous) => previous ?? Date.now());
     setFinishedAt(undefined);
-    setApiCalls(0);
+    setCueErrors({});
     try {
       await runJob(
         service,
-        estimate.value.batches,
+        remainingEstimate.value.batches,
         language,
         controller.signal,
         {
@@ -215,24 +235,44 @@ export function useTranslator(model: TranslationModel) {
             if (current()) setActiveIds(ids);
           },
           completed: (results) => {
-            if (current() && !controller.signal.aborted)
-              setTranslations((previous) => ({ ...previous, ...results }));
+            if (current() && !controller.signal.aborted) {
+              setTranslations((previous) => ({
+                ...previous,
+                ...Object.fromEntries(
+                  Object.entries(results).filter(
+                    ([id]) => previous[id] === undefined,
+                  ),
+                ),
+              }));
+              setCueErrors((previous) => {
+                const next = { ...previous };
+                Object.keys(results).forEach((id) => delete next[id]);
+                return next;
+              });
+            }
+          },
+          failed: (ids, failure) => {
+            if (current())
+              setCueErrors((previous) => ({
+                ...previous,
+                ...Object.fromEntries(
+                  ids.map((id) => [id, safeError(failure)]),
+                ),
+              }));
           },
           request: () => {
             if (current()) setApiCalls((count) => count + 1);
           },
         },
+        profile,
       );
       if (current()) {
         setStatus('completed');
-        service.clear();
-        provider.current = null;
-        setCredentialStatus('empty');
       }
-    } catch (failure) {
+    } catch {
       if (current()) {
         setStatus(controller.signal.aborted ? 'cancelled' : 'failed');
-        if (!controller.signal.aborted) setError(safeError(failure));
+        // Failed batch errors are attached to only the affected cue rows.
       }
     } finally {
       jobInFlight.current = false;
@@ -289,10 +329,11 @@ export function useTranslator(model: TranslationModel) {
     profile,
     setProfile,
     languages,
-    credentialStatus,
-    testService,
-    testKey,
-    invalidateCredential,
+    serviceStatus,
+    loadLanguages,
+    serviceError,
+    cueErrors,
+    invalidateService,
     translations,
     edited,
     status,
@@ -305,6 +346,7 @@ export function useTranslator(model: TranslationModel) {
     apiCalls,
     loadFile,
     estimate,
+    remainingEstimate,
     canStart,
     start,
     cancel: () => jobAbort.current?.abort(),

@@ -1,45 +1,49 @@
 # Project State
 
-Last updated: 2026-09-18
+Last updated: 2026-10-01 — joined-speech revision verification
 
-## Product and ownership decisions
+## Confirmed product
 
-This is a solo project. The intended audience is tech-savvy movie viewers who already obtain `.srt` subtitle files and want a translation in their preferred language.
+This is a solo project for movie viewers who can obtain an English SRT and want subtitles in their preferred language. The core flow is choose file → select NMT/TLLM, target language and explicit Adult/Children profile → start → review/edit → download. Original cue indexes/order/timecodes remain intact.
 
-The product will offer two official Cloud Translation choices:
-
-- **NMT** — the fast general-purpose model. It translates the sentence/text supplied to it; it is not a word-by-word dictionary.
-- **TLLM** — Google's specialized Translation LLM, intended for higher-quality translation and better use of supplied context. Its performance, language coverage, latency, and cost must be measured on representative subtitle fixtures before it becomes the default.
-
-Gemini Developer API is removed from product scope. The app will not show a Gemini option, prompt contract, or visitor key field.
-
-Translation is owner-funded. The React browser app must call a server-side translation gateway; the gateway reads `GOOGLE_CLOUD_API_KEY` from ignored `.env` during local development and from a secret manager in production. The key is never bundled by Vite, committed, logged, sent to telemetry, or stored in the browser. On 2026-09-18, NMT and TLLM minimal live requests succeeded using the configured local key/project without exposing either value. The requested Seoul TLLM location (`asia-northeast3`) returned `400 Invalid Value`; the gateway therefore defaults to the verified `us-central1` location. Public deployment also needs a hosting decision plus a defined budget, rate limit, and abuse-control policy. See [ADR-004](docs/ADR-004-OWNER-FUNDED-CLOUD-TRANSLATION.md).
-
-Cloud scope remains telemetry only: country/city, target language, and movie identity after its open privacy decisions are resolved. Completed subtitle storage, sharing, cloud checkpoints, and cross-user reuse remain deferred.
+Both official Cloud Translation models use the owner's server-side gateway. The local server reads ignored `.env`; the browser never sees the credential. No visitor key field or Gemini product integration exists. See ADR-004 and ADR-006.
 
 ## Current implementation
 
-The React/TypeScript/Vite/Ant Design client is on local `main`. Its browser shell uses Ant Design `Layout` (`Header`, `Sider`, and `Content`), `Flex`, `Card`, `Modal`, `Popover`, and `Tooltip` rather than generic structural wrappers; subtitle-specific rows retain focused CSS for paired-cue behavior. The 52 px header has no subtitle text and exposes compact theme, help, and repository controls. Its theme switch displays a sun or moon and describes the next theme on hover; its workflow modal has one explicit `OK` action. The sidebar begins with `Select your English subtitle`; its service help text is replaced with a question-mark popover limited to a compact 210 px reading width. The compact desktop sidebar applies its 20 px gap to Ant Design's rendered child container. Its configuration area, including the cost explanation, scrolls separately above a stationary bottom region for action buttons, job progress, and download. The content pane has a compact sticky, centered `Subtitle preview` header with source/translation labels directly below it, 6 px horizontal content padding, and no cue-row rail or left inset. The NMT estimate labels its whole-file cost, character count, request count, and three-attempt retry ceiling; TLLM remains explicitly unquoted. The large cue list uses `@tanstack/react-virtual`, which measures cue rows and mounts only the viewport plus a small buffer; an edit in progress remains mounted while the user scrolls. It contains local UTF-8 SRT parsing/serialization, supported markup validation, subtitle quality warnings, editing, download, progress, cancellation, and the owner-funded gateway client. `npm run dev` now starts both Vite and the local Node gateway; using the old client-only command left the gateway unavailable and caused the observed 502 service-check error. The gateway reads ignored `.env`, proxies only NMT/TLLM requests, and keeps the key outside Vite and the browser. It categorizes upstream failures for the browser and writes only HTTP status/category to the local terminal; it now distinguishes per-minute from daily quota messages and never logs subtitle text, provider messages, or credentials. Cue rows are memoized and the job yields after each batch to reduce full-file UI freezes. It now has minimal live NMT/TLLM evidence; it has not been tested on a real SRT fixture or deployed publicly.
+- React/TypeScript/Vite/Ant Design with a compact header, approximate 20/80 desktop layout and virtualized paired cue cards. Theme starts from the OS; shared configuration lives in `src/app/theme.ts`. Major controls use 24 px spacing within an 8/16/24/32 px scale. Ant Design Upload handles choose/drop.
+- English UTF-8 SRT up to 5 MiB; balanced i/b/u markup; strict import errors; original source identity/times preserved. The header brand confirms before resetting loaded work. Help has X and OK; repository/theme controls remain compact.
+- Languages load automatically through the gateway, without a paid Hello probe. The picker uses Google's NMT catalogue; not every TLLM language/model/location is independently verified.
+- Shared source grouping joins lowercase/ellipsis continuation speech for BOTH engines. Soft wraps become spaces; structural speaker/sound/music boundaries remain distinct. Groups are technically bounded to 64 cues and a preferred 5,000 source characters, with request-size validation.
+- Provider results are validated and redistributed locally into original time slots by reading capacity and target-language boundaries, then wrapped. This is approximate text placement, not semantic/audio alignment. Redistributed cues show a review notice. See `docs/SUBTITLE_FORMATTING_SPEC.md` for constraints.
+- Original timing, supported markup, translated text and edits are retained. Impossible distributions fail visibly. Valid sibling groups survive a local group failure; request failures affect the submitted batch. Retry preserves completed original groups and edits; unattempted cues remain waiting.
+- Progress, elapsed time, cumulative translation-attempt count, cancellation, per-cue errors, editing and complete-only download exist. Retry retains the first start time; elapsed time spans from first Start to the latest stop, including the gap when resumed. Reload recovery is not implemented.
+- Cost estimates show the selected engine's whole file and remaining work. NMT counts prepared input; TLLM assumes output length equals input and labels that assumption. Credits and final billing are unknown. No guaranteed cost ceiling is claimed.
+- The local Node gateway proxies official NMT/TLLM only, validates request shape/size and sanitizes failure categories. TLLM input is capped at 30,000 code points. Routine tests mock Google. Requests are currently sequential; concurrency is not part of this revision.
 
-Source inspection on 2026-09-18 confirmed that continuation groups are currently visual only. The app submits separate cue/speaker strings in the `q` array, so both NMT and TLLM currently translate cues independently; neither path provides conversation-aware translation or semantic cue alignment. A bounded group request and validated structural mapping are planned before contextual-translation claims are restored. ADR-004 records the provider boundary.
+The 43-cue original `examples/demo.srt` remains available. Dedicated regression fixtures exercise continuation gathering, annotations, output distribution and large lists. Complete downloaded movie subtitles remain local manual inputs rather than repository fixtures.
 
-The historical one-file MVP is preserved at `archive/mvp/srt-translator-beta-3.html` and local tag `mvp-baseline` (`b64bc59`). It uses an undocumented consumer endpoint and is not part of the production build.
+## Corrected previous records
 
-`examples/demo.srt` is a 40-cue original demonstration fixture. It exercises multiline dialogue, speaker breaks, and the supported `<i>`, `<b>`, and `<u>` tags without bundling a complete third-party subtitle file. Full downloaded subtitle files remain local manual-test inputs and must not be committed.
+The React port previously grouped cues only on screen while sending separate strings. The voice memo explicitly restored real joined provider input for both models. ADR-006 supersedes ADR-005's marked-TLLM-only proposal. Arbitrary cue markers are not a Google-guaranteed alignment mechanism, and source-word ratios are not restored.
 
-## Evidence boundary
+README, architecture and migration plans no longer instruct visitor keys or describe the already implemented local gateway as future work. Historical ADR-002/003/005 and previous log entries remain labelled history. `GEMINI.md` and `CLAUDE.md` are coding-assistant pointers, not runtime features.
 
-Earlier local checks recorded in [BUILD_LOG.md](BUILD_LOG.md) passed against mocked provider responses. On 2026-09-18, minimal live `Hello.` NMT and TLLM requests succeeded without exposing the key; that is service smoke-test evidence only. There is no real-SRT live test, production gateway, public deployment, remote CI/Pages evidence, or human translation-quality review. Do not describe any of those as complete.
+## Evidence and remaining limits
 
-## Next implementation steps
+The archived HTML at `archive/mvp/srt-translator-beta-3.html` and local `mvp-baseline` tag (`b64bc59`) preserve the before-state. The archive's undocumented endpoint is excluded from the production build.
 
-1. Build and test the local gateway that reads the ignored `.env` key without exposing it to Vite.
-2. Select a production gateway host and define cost, rate-limit, and abuse controls before public deployment.
-3. Implement NMT and TLLM model selection through that gateway and run a human-reviewed quality/cost benchmark.
-4. Implement bounded connected-dialogue groups and validated cue alignment for the chosen contextual path.
+Earlier logs record minimal live NMT/TLLM requests on 2026-09-18 using `us-central1`; Seoul `asia-northeast3` failed that smoke test. The user also reported full-file attempts and UI/quality problems. Neither is controlled live acceptance evidence for the revised grouped pipeline. On 2026-10-01, the current revision passed typecheck, zero-warning lint, 83 Vitest tests, the production build, formatting, and 10 mocked Chromium workflows. Current automated verification is recorded in BUILD_LOG.md, with mocked provider quality clearly separated from human review.
 
-## Records
+Public gateway hosting, owner budget/allowance, server-enforced abuse/rate controls, live grouped-subtitle language/timing review and current remote deployment evidence remain outstanding. Current desktop compatibility targets exceed the browsers actually tested. A bundle-size warning remains documented with build evidence.
 
-[AI_LOG.md](AI_LOG.md) is the short professor-readable record. [docs/AI_DETAILED_LOG.md](docs/AI_DETAILED_LOG.md) preserves detailed evidence and historical entries. `AGENTS.md` is the canonical working agreement; `GEMINI.md` and `CLAUDE.md` only direct those tools to it.
+## Next work
 
-Completed user prompts that change repository files require one verified local commit before the task report. A remote push, merge, rebase, reset, or history rewrite remains an explicit user action, not an automatic step.
+1. Human-review grouped NMT/TLLM output and timing on a small original fixture in representative target languages; define acceptance and model/language coverage.
+2. Choose production gateway host and budget/allowance/abuse controls; verify the deployed frontend-to-gateway flow.
+3. Complete dated user/persona, sprint/review, security and external peer-review evidence under the existing semester plan.
+4. Implement browser-local checkpoint/resume at its planned milestone. Current retry is in-tab only.
+5. Keep Statistics/metadata/lives/telemetry conditional. Country/city acquisition, retention and notice remain open. Cloud subtitle storage/reuse and durable persisted jobs remain deferred.
+
+## Records and workflow
+
+`AGENTS.md` is canonical. `docs/REQUIREMENTS_REVISION_PROMPT.md` is the extracted executable memo; `docs/REQUIREMENTS_REVISION_AUDIT.md` records the gap analysis and course check. The short `AI_LOG.md` links detailed course-format evidence in `docs/AI_DETAILED_LOG.md`. Every completed file-changing prompt requires documentation, verification and a local commit; a remote push requires an explicit request.

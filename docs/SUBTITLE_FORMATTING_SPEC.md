@@ -1,90 +1,68 @@
 # Subtitle Grouping and Formatting Specification
 
-Status: Accepted baseline
+Status: Accepted product direction; deterministic implementation, human translation-quality review pending.
 
-Date: 2026-09-16
+Updated: 2026-09-18 — voice memo / ADR-006 supersedes the independent-cue rule.
 
-This specification replaces the MVP's universal six-word wrapping and proportional translated-word splitting. It defines deterministic behavior that can be tested. Values are an initial profile based on Netflix's English timed-text guidance; later language profiles may override them through a documented decision.
+## 1. Data and invariants
 
-## 1. Terms
+A cue is one numbered SRT block with original start/end strings and text. A continuation group is a bounded list of adjacent cues. A translation unit is one uninterrupted speech or explicit structural section; it may span several cues. A visible grapheme is one user-perceived character after markup is excluded.
 
-- **Cue:** one numbered SRT block with one start/end timecode.
-- **Continuation group:** two or more adjacent cues that form one continuing utterance. Grouping never removes or changes their cue IDs or timecodes.
-- **Dialogue segment:** speech attributed to one speaker inside a cue.
-- **Visible grapheme:** a user-perceived character after supported SRT formatting tags are excluded. Spaces and punctuation count for line length and CPS because viewers must scan them.
+Preserve cue count, source order, index strings and exact time strings. Preserve source display text for the original column. Normalize only translation input. Never silently omit returned words, duplicate translated text to fill a cue, change timing, or merge source cues into a single output cue.
 
-## 2. Continuation-group presentation
+## 2. Gather and normalize before translation
 
-- Connected cues stay in one visible group in both original and translated columns.
-- Use the normal compact gap between cues inside a group and a clearly larger vertical gap after the last cue of a group. Use Ant Design spacing tokens rather than unexplained pixel constants; the inter-group gap must be at least twice the intra-group gap.
-- A non-color-only group indicator, such as a shared left rail or group label, spans the connected cues.
-- Hovering either the original or translated card highlights the whole paired cue row.
-- Edit mode applies a stronger persistent background/border state to the translated card until Save or Cancel. Hover must not hide the edit state. Light/dark themes and keyboard focus require equivalent visible states.
+1. Start a group at the first cue.
+2. Inspect the next cue's visible text through i/b/u markup and leading whitespace.
+3. Append it when it begins with a Unicode lowercase letter, three dots (`...`) or the ellipsis character (`…`). Otherwise begin a new group. Capitals, square brackets, speaker hyphens and music symbols at the start are boundaries.
+4. Bound a group to 64 cues and a preferred 5,000 normalized source characters. A single larger cue can exceed the preferred size but must still pass hard request limits. These are technical bounds, not subtitle standards.
+5. Recognize source speaker/annotation/music sections before flattening display newlines. Line-leading `- ` is a speaker heuristic even before lowercase speech; an inline `- <Uppercase>` is also a heuristic. Do not split ordinary hyphenated words.
+6. Treat bracketed descriptions such as `[sighs]` and music sections as meaningful content. Translate descriptions/lyrics while preserving brackets/music symbols; do not silently strip them.
+7. Replace soft wraps within speech with spaces. Join the continuing speech parts across cues with spaces. Preserve punctuation, including commas and ellipses; do not insert newlines after every comma.
+8. Preserve balanced supported markup. Explicit structural boundaries can produce separate provider inputs. The final speaker's continuing speech can join the following continuation cue; known speaker turns must not be merged.
 
-## 3. Fixed cue boundaries
+The UI and request builder use the same bounded source groups. This is a deliberately simple heuristic: it can miss a capitalized continuation or group unrelated lowercase speech. It is not speaker recognition and has no claimed 100% linguistic accuracy. No additional invented time-gap threshold is applied in this revision.
 
-- Preserve the input cue count, order, indexes, and timecodes.
-- Do not merge several SRT cues into one output cue.
-- Do not translate a whole group and divide the target text by source word-count ratios.
-- The selected Cloud Translation model receives bounded continuation-group context only when the gateway grouping/alignment implementation supports it, and every result must remain associated with requested cue IDs.
-- Google Cloud Translation NMT receives one translatable string per cue, batched in one request where possible. This preserves alignment; batching must not be described as cross-cue context.
-- If provider output cannot be mapped one-to-one to every requested cue, reject that batch instead of guessing boundaries.
+## 3. Translate and validate
 
-## 4. Exact default readability profile
+Both NMT and TLLM receive one `q` input for each joined speech/structural unit. Several independent units may share a HTTP request; a shared request does not itself imply shared context. Retain cue membership and stable unit IDs locally. Do not send arbitrary cue-ID markers and assume Google will preserve them.
 
-For each translated cue:
+Keep at most 128 strings and a conservative 90,000-byte client body, with a preferred 5,000-character batch target; reject oversized units/groups explicitly. TLLM also has a 30,000-code-point total input ceiling enforced by the client and gateway. Validate response count, local mapping, nonempty text, supported tag structure, brackets and music symbols. A malformed result must never reach output as successful translation.
 
-1. `durationSeconds = (endMilliseconds - startMilliseconds) / 1000`.
-2. Count visible grapheme clusters after excluding supported formatting tags.
-3. `cps = visibleGraphemes / durationSeconds`.
-4. Adult default: maximum 20 CPS. Children's profile: maximum 17 CPS.
-5. Maximum two display lines.
-6. Default maximum 42 visible graphemes per line.
-7. Effective text capacity is `min(84, floor(durationSeconds * cpsLimit))` visible graphemes.
+## 4. Distribute, then wrap
 
-If the cue text is no longer than 42 graphemes, keep one line unless a required dialogue boundary exists. If it exceeds 42 but can fit into two lines, select one break that keeps both lines at or below 42 and is as balanced as the grammatical rules permit.
+The owner explicitly requested joined translation followed by local redistribution. Source-word-count splitting and six-word line wrapping remain retired.
 
-Line-break candidate priority:
+Allocate a joined result among only its contributing original cue slots. Use available reading capacity and target-language word boundaries, preferring nearby punctuation. Sections sharing a cue share its capacity. `Intl.Segmenter` supports words/graphemes in scripts that do not use English-style spaces. Keep supported markup balanced when slicing. Keep all translated text in its returned order.
 
-1. required speaker boundary;
-2. after sentence-ending or clause punctuation;
-3. before a conjunction;
-4. before a preposition;
-5. another word boundary that best balances the lines.
+This distribution is a layout approximation, not semantic alignment to speech. Mark multi-cue redistribution for review against the movie. If there are too few safe pieces to populate every contributing cue, fail the group; never copy text into several cues or silently create empty output.
 
-Never deliberately split an article from its noun, adjective from noun, first from last name, subject/pronoun from verb, auxiliary/negation from verb, or a phrasal/prepositional verb from its particle when the language profile can identify that relationship.
+After distribution, combine inline non-speaker sections without creating unnecessary display lines. Retain required speaker breaks. Apply the readability profile to each cue separately. More than two genuine speakers can conflict with the two-line target: preserve them and report the conflict.
 
-If total text exceeds 84 graphemes, either line exceeds 42, or CPS exceeds the selected limit after the best break, mark the cue `needs-review`. A line break cannot fix excessive CPS. The core release does not silently delete meaning, create a third line, or modify timecodes. The editor shows the measured reason and lets the user shorten the translation. Retiming/new-cue creation requires separate approval.
+A local distribution failure affects its group; successfully validated sibling groups remain available. A transport/provider failure can affect the whole submitted request. Retry only failed/unattempted original groups, preserving completed groups and edits. Do not regroup a filtered cue list across completed gaps.
 
-## 5. Non-movable dialogue rule
+## 5. Readability reference profile
 
-The user's dialogue rule is mandatory:
+- Adult maximum: 20 visible characters per second. Children: 17.
+- At most two display lines where structure allows; 42 visible graphemes per line.
+- `durationSeconds = (endMs - startMs) / 1000`.
+- `cps = visibleGraphemes / durationSeconds`.
+- Capacity: `min(84, floor(durationSeconds × cpsLimit))`.
+- Keep short text on one line unless a mandatory speaker break exists.
+- Prefer natural language/word boundaries and punctuation when wrapping; use conservative English phrase protection where supported.
 
-- Detect source speaker markers before translation when a dialogue segment begins with a hyphen followed by whitespace and a Unicode uppercase letter (`- <Capital...>`).
-- The first marker may begin line one. Every later detected marker forces a newline immediately before its hyphen.
-- Preserve the segments separately through provider requests so the rule does not depend on capitalization in the target language.
-- A two-speaker cue has exactly one speaker per line; the forced boundary cannot be moved by balancing logic.
-- More than two detected speakers cannot satisfy the two-line baseline. Preserve the content and flag the cue for review instead of silently discarding a speaker or generating unlimited lines.
+These are an English-derived reference, not fully implemented grammatical rules for every language. Do not claim a universal or medically “nausea-safe” formatter. A newline does not reduce CPS or create time. Flag excessive length, lines, capacity and CPS for editing; no automatic deletion, shortening or retiming.
 
-## 6. Context-aware translation repair
+## 6. Presentation
 
-The selected Cloud Translation model receives per-cue capacities, durations, speaker segments, and stable cue IDs only after the grouped-input implementation is validated. It may phrase a continuing utterance naturally across existing cues, but must preserve semantic order, return every ID once, and omit nothing plot-relevant. A remaining violation becomes `needs-review`.
+Keep paired original/translated cards, group labels, compact within-group spacing and at least twice that gap between groups. Preserve hover/focus pairing and a persistent edit state in both themes. Failed cues carry their error below the pair; unattempted cues remain waiting. All saved edits appear in output.
 
-## 7. Acceptance fixtures
+## 7. Required evidence
 
-Automated fixtures must cover:
+Tests must cover joined pizza-style continuation payloads for both models; lowercase, dots, Unicode ellipsis and markup; source speaker/sound/music boundaries; bounded groups; complete returned-text conservation; stable cue IDs/times; balanced markup and graphemes; unallocatable output; failure isolation; retry/edit protection; long scripts without spaces; 42/43 grapheme and 20/17 CPS boundaries; partial download prevention; and browser edit/export.
 
-- single-line text at 42 and 43 graphemes;
-- two balanced lines and every protected grammatical boundary;
-- 20 CPS and a value immediately above it;
-- adult and children's profiles;
-- two `- <Capital...>` speakers and a three-speaker overflow;
-- scripts without case, proving source-detected speaker boundaries survive translation;
-- a continuation group whose translated word order differs from English;
-- missing, duplicated, and reordered provider cue IDs;
-- hover, keyboard focus, edit-state persistence, and light/dark theme contrast.
+Automated mapping and readability evidence does not establish live language quality. A human should compare the original movie timing and translated grouped output for representative NMT/TLLM language pairs.
 
-## References
+## Sources
 
-- [Netflix English (USA) Timed Text Style Guide](https://partnerhelp.netflixstudios.com/hc/en-us/articles/217350977-English-USA-Timed-Text-Style-Guide)
-- [Netflix Subtitle Template Guide](https://partnerhelp.netflixstudios.com/hc/en-us/articles/219375728-Timed-Text-Style-Guide-Subtitle-Templates)
+Verified for this revision: [Google v2 translate](https://docs.cloud.google.com/translate/docs/reference/rest/v2/translate), [Google request-size guidance](https://docs.cloud.google.com/translate/quotas), [Netflix English timed-text guidance](https://partnerhelp.netflixstudios.com/hc/en-us/articles/217350977-English-USA-Timed-Text-Style-Guide).

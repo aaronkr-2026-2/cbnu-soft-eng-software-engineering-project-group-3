@@ -57,6 +57,26 @@ describe('subtitle presentation and quality', () => {
     expect(plainText(output).replace('\n', ' ')).toBe(plainText(text));
     expect(output.split('\n')).toHaveLength(2);
   });
+  it('uses locale word boundaries to wrap long CJK translations without spaces', () => {
+    const text =
+      'これは字幕として読みやすい長さに分ける必要がある日本語の翻訳です。これは二つ目の文です。';
+    const output = formatTranslation([text], 'ja');
+    expect(output).toContain('\n');
+    expect(plainText(output).replace('\n', '')).toBe(text);
+  });
+  it('does not turn inline descriptions or music into forced display lines', () => {
+    expect(
+      formatTranslation(
+        [
+          { text: 'Hello,' },
+          { text: '[sighs]' },
+          { text: 'I am here.' },
+          { text: '♪ Song ♪' },
+        ],
+        'en',
+      ),
+    ).toBe('Hello, [sighs] I am here. ♪ Song ♪');
+  });
   it('groups continuation cues without modifying identities or timing', () => {
     const cues = [
       cue,

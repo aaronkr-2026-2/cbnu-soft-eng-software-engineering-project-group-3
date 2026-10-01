@@ -1,31 +1,35 @@
-# Cloud Translation access, models, and cost
+# Cloud Translation access, models and cost
 
-Status: Owner-funded gateway selected on 2026-09-18. See [ADR-004](ADR-004-OWNER-FUNDED-CLOUD-TRANSLATION.md).
+Updated: 2026-09-18. Current decisions: [ADR-004](ADR-004-OWNER-FUNDED-CLOUD-TRANSLATION.md), [ADR-006](ADR-006-JOINED-SPEECH-REDISTRIBUTION.md).
 
-The product uses only official Google Cloud Translation models. Gemini Developer API is not a product provider.
+## Models and requests
 
-| Option | Product explanation | Request model |
+| Option | Meaning | Google model |
 | --- | --- | --- |
-| NMT | Fast general-purpose translation of the supplied text. It translates sentences/text, not individual dictionary words. | `nmt` |
-| TLLM | Google's specialized Translation LLM. Google positions it for higher quality. It can only use context that the request actually supplies; the current one-cue-per-string implementation does not supply cross-cue context. Test language coverage, quality, speed, and cost before making it the default. | `projects/PROJECT_ID/locations/REGION/models/general/translation-llm` |
+| NMT | Fast general-purpose translation of supplied text. | `nmt` |
+| TLLM | Specialized Translation LLM; quality must be reviewed for the selected language. | `projects/PROJECT_ID/locations/REGION/models/general/translation-llm` |
 
-The project owner pays Cloud Translation costs. A visitor never creates, enters, or sees an API key. The browser sends only an authenticated job request to the project's gateway. The gateway sends the chosen model request to Google using `GOOGLE_CLOUD_API_KEY` from a local ignored `.env` or production secret manager.
+Both receive normalized joined continuation speech under the same domain rules. Batching several independent strings is a transport optimization, not a promise of context between them. Local distribution preserves cue identities/times but approximates placement of translated words. Gemini Developer API is excluded.
 
-Never pass the key through `VITE_*`, browser storage, URLs, logs, telemetry, downloaded files, source code, or Git. GitHub Pages alone cannot host this private gateway.
+The browser calls the local gateway without a provider credential. The gateway reads `GOOGLE_CLOUD_API_KEY` from ignored `.env` or a production secret manager and adds it to Google's `x-goog-api-key` header. There is currently no application authentication layer; do not describe these browser requests as authenticated jobs. [Google key guidance](https://docs.cloud.google.com/docs/authentication/api-keys-best-practices).
 
-## Cost controls required before public release
+## Estimates shown in the app
 
-- Set a monthly budget and billing alerts in the Cloud project.
-- Set Cloud Translation quota limits.
-- Set gateway request-size, rate, and concurrency limits.
-- Decide the public allowance and the response when it is exhausted.
-- Record actual NMT/TLLM usage separately from estimates.
+List prices verified for this revision: NMT $20 per million input characters; standard TLLM $10 per million input characters plus $10 per million output characters. The app counts the actual prepared input strings in Unicode code points, including encoded markup/entities, as an estimate. JSON envelope bytes are separate request-size accounting. [Official pricing](https://cloud.google.com/products/translate/pricing).
 
-The current NMT UI estimate is historical implementation evidence only: it counts pending provider-bound input code points at `$20 / 1,000,000`. It cannot see credits, trial balance, TLLM output characters, or actual billing. Current pricing must be rechecked before release. [Cloud Translation pricing](https://cloud.google.com/products/translate/pricing).
+The selected-engine card displays a stable whole-file estimate and clearly identifies remaining work. For TLLM, preflight output characters are assumed equal to input characters; this is an explicitly labelled estimation assumption, not a measured expansion ratio or upper bound. Actual output, retries, account credits, discounts and billing can change the final charge. The app cannot read the owner's $300 trial balance or Cloud bill. Do not advertise a guaranteed maximum cost.
 
-## Development configuration
+Request count means planned HTTP translation batches. During the job, the actual counter includes automatic and manual translation attempts. Automatic language discovery sends no translated Hello probe and is not counted as a translation attempt.
 
-The local gateway needs these values in ignored `.env`:
+## Limits and production controls
+
+Google recommends approximately 5,000 code points per request; Basic permits at most 100K bytes. TLLM also has a 30,000-character request limit. The app uses smaller preferred batches and a 90,000-byte client margin. Rate and quota limits still apply; grouping or concurrency does not bypass them. [Quotas and limits](https://docs.cloud.google.com/translate/quotas).
+
+Before public translation, define a monthly owner budget, public allowance, gateway host, rate/concurrency limits and abuse controls. Budgets/alerts alone are not an application spending stop. Keep the API key out of `VITE_*`, browser persistence, URLs, telemetry, logs and downloads. Pages serves the frontend only; the private gateway deploys separately.
+
+## Local configuration
+
+Only placeholder names belong in the repository:
 
 ```text
 GOOGLE_CLOUD_API_KEY=replace-with-your-key
@@ -33,11 +37,4 @@ GOOGLE_CLOUD_PROJECT_ID=replace-with-your-project-id
 GOOGLE_TRANSLATE_TLLM_LOCATION=us-central1
 ```
 
-The project ID and location are needed for TLLM's full model name. Do not add any value with a `VITE_` prefix.
-
-## Sources
-
-- [Cloud Translation Basic v2](https://docs.cloud.google.com/translate/docs/reference/rest/v2/translate)
-- [Translation LLM](https://docs.cloud.google.com/translate/docs/translation-llm)
-- [Cloud Translation model comparison](https://docs.cloud.google.com/translate/docs/advanced/compare-models)
-- [Cloud Translation pricing](https://cloud.google.com/products/translate/pricing)
+See [setup](GOOGLE_TRANSLATE_SETUP.md). Prior minimal NMT/TLLM connectivity evidence is recorded separately from this revision's mocked tests. Full grouped-subtitle quality and the model-specific language catalogue still need human/live verification.

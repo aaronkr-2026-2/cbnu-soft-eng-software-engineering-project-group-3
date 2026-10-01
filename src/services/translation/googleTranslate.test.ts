@@ -166,7 +166,7 @@ describe('official Google adapter', () => {
     await assertion;
     expect(fetcher).toHaveBeenCalledTimes(1);
   });
-  it('fetches and validates supported languages using the temporary key', async () => {
+  it('fetches and validates supported languages through the gateway', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn().mockResolvedValue(
@@ -194,7 +194,23 @@ describe('batch sizing and estimates', () => {
       [...estimate.batches[0].inputs[0].text].length,
     );
     expect(estimate.usd).toBe((estimate.characters / 1000000) * 20);
-    expect(estimate.retryCeilingUsd).toBe(estimate.usd * 3);
+  });
+  it('uses the selected TLLM rate and an equal-output-length assumption', () => {
+    const estimate = estimateTranslation([cue], 'mn', 'tllm');
+    expect(estimate.outputCharactersAssumed).toBe(estimate.characters);
+    expect(estimate.usd).toBe((estimate.characters / 1000000) * 20);
+  });
+  it('rejects a TLLM request above its 30,000-character input limit', async () => {
+    const fetcher = vi.fn();
+    vi.stubGlobal('fetch', fetcher);
+    await expect(
+      new GoogleTranslate('tllm').translateBatch(
+        [{ id: 'too-large', text: 'x'.repeat(30001) }],
+        'mn',
+        signal(),
+      ),
+    ).rejects.toThrow('exceeds supported limits');
+    expect(fetcher).not.toHaveBeenCalled();
   });
   it('splits batches at the string limit and keeps each cue’s speaker segments together', () => {
     const cues = Array.from({ length: 65 }, (_, i) => ({

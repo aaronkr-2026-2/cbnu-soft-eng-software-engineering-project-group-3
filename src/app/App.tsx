@@ -13,13 +13,14 @@ import {
   Flex,
   Layout,
   Modal,
-  Popover,
   Progress,
   Select,
   Switch,
   Tag,
   theme,
   Tooltip,
+  Upload,
+  type UploadRef,
 } from 'antd';
 import {
   ArrowDownOutlined,
@@ -36,6 +37,8 @@ import { continuationGroups, type Profile } from '../core/subtitles/subtitles';
 import { PRICE_DATE } from '../services/translation/batches';
 import type { TranslationModel } from '../services/translation/googleTranslate';
 import { VirtualCueList } from '../features/translator/VirtualCueList';
+
+import { appTheme, spacing } from './theme';
 
 const { Content, Header, Sider } = Layout;
 
@@ -68,17 +71,18 @@ function Elapsed({
 function Translator({
   dark,
   setDark,
+  onReset,
 }: {
   dark: boolean;
   setDark: (value: boolean) => void;
+  onReset: () => void;
 }) {
   const [engine, setEngine] = useState<TranslationModel>('nmt');
   const app = useTranslator(engine);
   const { token } = theme.useToken();
-  const fileInput = useRef<HTMLInputElement>(null);
+  const uploadRef = useRef<UploadRef>(null);
   const viewport = useRef<HTMLDivElement>(null);
   const [follow, setFollow] = useState(true);
-  const [dragging, setDragging] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const groups = useMemo(() => continuationGroups(app.cues), [app.cues]);
   const activeIds = useMemo(() => new Set(app.activeIds), [app.activeIds]);
@@ -103,18 +107,37 @@ function Translator({
     '--edit': token.colorWarningBg,
     '--edit-border': token.colorWarningBorder,
     '--gap': `${token.marginXS}px`,
-    '--group-gap': `${token.marginLG}px`,
+    '--group-gap': `${spacing.large}px`,
+    '--space-small': `${spacing.small}px`,
+    '--space-medium': `${spacing.medium}px`,
+    '--space-large': `${spacing.large}px`,
+    '--space-bottom': `${spacing.bottom}px`,
+    '--on-accent': token.colorTextLightSolid,
   } as CSSProperties;
 
   return (
     <Layout className="app" style={styles}>
       <Header className="app-header">
-        <a className="brand" href="#main">
+        <Button
+          type="text"
+          className="brand"
+          aria-label="Reset translator and return home"
+          onClick={() => {
+            if (
+              (app.cues.length || app.busy) &&
+              !window.confirm(
+                'Reset the workspace and discard this session’s subtitles and edits?',
+              )
+            )
+              return;
+            onReset();
+          }}
+        >
           <span className="brand-symbol" aria-hidden="true">
             S
           </span>
           <span>SRT Translator</span>
-        </a>
+        </Button>
         <Flex className="header-actions" align="center" gap="middle">
           <Tooltip
             title={dark ? 'Switch to light theme' : 'Switch to dark theme'}
@@ -174,62 +197,51 @@ function Translator({
       <Layout className="workspace">
         <Sider
           className="sidebar"
-          width={320}
+          width="20%"
           theme={dark ? 'dark' : 'light'}
           aria-label="Translation controls"
         >
-          <Flex vertical className="sidebar-controls" gap={20}>
+          <Flex vertical className="sidebar-controls" gap={spacing.large}>
             <h1 className="file-picker-heading">
               Select your English subtitle
             </h1>
-            <label
-              className={`file-picker ${dragging ? 'dragging' : ''} ${app.busy ? 'disabled' : ''}`}
-              onDragOver={(event) => {
-                event.preventDefault();
-                if (!app.busy) setDragging(true);
+            <Upload.Dragger
+              ref={uploadRef}
+              accept=".srt"
+              multiple={false}
+              maxCount={1}
+              showUploadList={false}
+              disabled={app.busy || app.loadingFile}
+              beforeUpload={(file) => {
+                void app.loadFile(file);
+                return false;
               }}
-              onDragLeave={() => setDragging(false)}
-              onDrop={(event) => {
-                event.preventDefault();
-                setDragging(false);
-                const file = event.dataTransfer.files[0];
-                if (file && !app.busy) void app.loadFile(file);
-              }}
+              aria-label="Subtitle file"
             >
-              <UploadOutlined className="upload-icon" />
-              <strong>
+              <p className="ant-upload-drag-icon">
+                <UploadOutlined />
+              </p>
+              <p className="ant-upload-text">
                 {app.loadingFile
                   ? 'Reading subtitle…'
                   : app.filename || 'Choose or drop an SRT'}
-              </strong>
-              <span>UTF-8 · up to 5 MiB</span>
-              <input
-                ref={fileInput}
-                type="file"
-                accept=".srt"
-                aria-label="Subtitle file"
-                disabled={app.busy}
-                onChange={(event) => {
-                  const file = event.target.files?.[0];
-                  if (file) void app.loadFile(file);
-                  event.target.value = '';
-                }}
-              />
-            </label>
+              </p>
+              <p className="ant-upload-hint">UTF-8 · up to 5 MiB</p>
+            </Upload.Dragger>
             {app.cues.length > 0 && (
               <p className="file-summary">
                 {app.cues.length.toLocaleString()} cues loaded · stays on this
                 device
               </p>
             )}
-            <Flex vertical className="field" gap={7}>
+            <Flex vertical className="field" gap={spacing.small}>
               <label htmlFor="engine">Translation engine</label>
               <Select
                 id="engine"
                 value={engine}
-                disabled={app.busy}
+                disabled={configuredLock}
                 onChange={(value) => {
-                  app.invalidateCredential();
+                  app.invalidateService();
                   setEngine(value as TranslationModel);
                 }}
                 options={[
@@ -245,56 +257,37 @@ function Translator({
               />
               <p className="help-text">
                 {engine === 'tllm'
-                  ? "TLLM is Google's higher-quality model. This release still sends each cue separately, so it does not yet provide connected-dialogue context."
-                  : 'NMT is the faster model. This release sends each cue separately for reliable timing and result mapping.'}
+                  ? "TLLM is Google's higher-quality translation model. Connected speech is joined before translation; quality varies by language."
+                  : 'NMT offers fast general translation. Connected speech is joined before translation.'}
               </p>
             </Flex>
-            <section
-              className="credential-panel"
-              aria-label="Translation service"
-            >
-              <Flex className="credential-actions" gap={8}>
-                <Button
-                  onClick={() => void app.testService()}
-                  disabled={app.busy || app.credentialStatus === 'testing'}
-                  loading={app.credentialStatus === 'testing'}
-                >
-                  Check service
-                </Button>
-                <Popover
-                  title="Check service"
-                  trigger={['hover', 'click']}
-                  content={
-                    <span className="service-help-text">
-                      Sends “Hello.” to this project's Google Translation
-                      service to verify it is available. Google may count those
-                      characters as usage.
-                    </span>
-                  }
-                >
+            {app.serviceError && (
+              <Alert
+                type="error"
+                title="Could not load languages"
+                description={app.serviceError}
+                action={
                   <Button
-                    type="text"
-                    size="small"
-                    shape="circle"
-                    icon={<QuestionCircleOutlined aria-hidden="true" />}
-                    aria-label="About the service check"
-                  />
-                </Popover>
-              </Flex>
-              <p className="credential-status" role="status">
-                {app.credentialStatus === 'ready'
-                  ? 'Translation service ready'
-                  : app.credentialStatus === 'testing'
-                    ? 'Checking translation service…'
-                    : 'Check the service to enable translation.'}
-              </p>
-            </section>
-            <Flex vertical className="field" gap={7}>
+                    disabled={app.busy}
+                    onClick={() => void app.loadLanguages()}
+                  >
+                    Retry loading languages
+                  </Button>
+                }
+                showIcon
+              />
+            )}
+            <Flex vertical className="field" gap={spacing.small}>
               <label htmlFor="language">Translate to</label>
               <Select
                 id="language"
                 showSearch={{ optionFilterProp: 'label' }}
-                placeholder="Check the service to load languages"
+                placeholder={
+                  app.serviceStatus === 'testing'
+                    ? 'Loading languages…'
+                    : 'Choose a language'
+                }
+                loading={app.serviceStatus === 'testing'}
                 value={app.language || undefined}
                 disabled={configuredLock || !app.languages.length}
                 onChange={app.setLanguage}
@@ -304,7 +297,7 @@ function Translator({
                 }))}
               />
             </Flex>
-            <Flex vertical className="field" gap={7}>
+            <Flex vertical className="field" gap={spacing.small}>
               <label htmlFor="profile">Reading profile</label>
               <Select
                 id="profile"
@@ -323,39 +316,37 @@ function Translator({
             </Flex>
             {app.cues.length > 0 && app.estimate.value && (
               <Card className="estimate" size="small" title="Cost estimate">
-                {engine === 'nmt' ? (
-                  <>
-                    <p>
-                      <strong>${app.estimate.value.usd.toFixed(4)} USD</strong>{' '}
-                      for all remaining subtitle text.
-                    </p>
-                    <ul>
-                      <li>
-                        {app.estimate.value.characters.toLocaleString()}{' '}
-                        characters sent to Google in{' '}
-                        {app.estimate.value.batches.length} requests.
-                      </li>
-                      <li>
-                        This is the estimated total for this file, not a charge
-                        per request.
-                      </li>
-                      <li>
-                        If every request had to run three times, the maximum
-                        estimate would be $
-                        {app.estimate.value.retryCeilingUsd.toFixed(4)} USD.
-                      </li>
-                    </ul>
-                  </>
-                ) : (
+                <p>
+                  <strong>${app.estimate.value.usd.toFixed(4)} USD</strong>{' '}
+                  estimated for this whole file with the selected engine.
+                </p>
+                <p>
+                  {app.estimate.value.characters.toLocaleString()} input
+                  characters · {app.estimate.value.batches.length} requests.
+                </p>
+                {translatedCount > 0 && app.remainingEstimate.value && (
                   <p>
-                    TLLM charges for both input and output characters. This app
-                    cannot give a reliable TLLM total yet, so check Google's
-                    pricing before starting.
+                    <strong>
+                      ${app.remainingEstimate.value.usd.toFixed(4)} USD
+                    </strong>{' '}
+                    estimated for the remaining text.
+                  </p>
+                )}
+                {engine === 'tllm' && (
+                  <p>
+                    Assumes{' '}
+                    {app.estimate.value.outputCharactersAssumed.toLocaleString()}{' '}
+                    output characters, equal to the input length. Actual output
+                    length changes the price.
                   </p>
                 )}
                 <small>
-                  Remaining credits are unknown. Service checks and manual
-                  retries may add usage. NMT price checked {PRICE_DATE}.{' '}
+                  Estimated total, not the final bill. The project owner pays;
+                  credits and discounts are unknown. Retries add usage.{' '}
+                  {engine === 'nmt'
+                    ? '$20 per million input characters.'
+                    : '$10 per million input plus $10 per million output characters.'}{' '}
+                  Prices checked {PRICE_DATE}.{' '}
                   <a
                     href="https://cloud.google.com/products/translate/pricing"
                     target="_blank"
@@ -369,11 +360,18 @@ function Translator({
             {app.estimate.error && (
               <Alert type="error" title={app.estimate.error} showIcon />
             )}
+            {app.remainingEstimate.error && (
+              <Alert
+                type="error"
+                title={app.remainingEstimate.error}
+                showIcon
+              />
+            )}
           </Flex>
           <Flex
             vertical
             className={`sidebar-actions ${app.cues.length ? 'is-loaded' : ''}`}
-            gap={10}
+            gap={spacing.small}
           >
             <Button
               type="primary"
@@ -386,9 +384,13 @@ function Translator({
                 void app.start();
               }}
             >
-              {translatedCount
-                ? 'Translate remaining cues'
-                : 'Start translation'}
+              {app.status === 'failed'
+                ? 'Retry translation'
+                : app.complete
+                  ? 'Translation complete'
+                  : translatedCount
+                    ? 'Translate remaining cues'
+                    : 'Start translation'}
             </Button>
             {app.busy && (
               <Button danger block onClick={app.cancel}>
@@ -401,7 +403,13 @@ function Translator({
                   <strong>
                     {translatedCount} / {app.cues.length} cues complete
                   </strong>
-                  <Tag>{app.status}</Tag>
+                  <Tag>
+                    {app.status === 'running'
+                      ? 'translating'
+                      : app.status === 'completed'
+                        ? 'done'
+                        : app.status}
+                  </Tag>
                 </div>
                 <Progress
                   percent={Math.round(
@@ -454,7 +462,7 @@ function Translator({
             </Button>
             {translatedCount > 0 && (
               <Button block disabled={app.busy} onClick={app.restart}>
-                Reset translations / change settings
+                Reset translations
               </Button>
             )}
           </Flex>
@@ -514,7 +522,7 @@ function Translator({
               className="banner"
               type="info"
               title="Completed cues and saved edits are kept in this tab."
-              description="Translate remaining cues resumes unfinished work. Reload recovery is not available yet."
+              description="Retry resumes unfinished work and keeps the request count. Reload recovery is not available yet."
               showIcon
             />
           )}
@@ -531,7 +539,11 @@ function Translator({
               </p>
               <Button
                 icon={<UploadOutlined aria-hidden="true" />}
-                onClick={() => fileInput.current?.click()}
+                onClick={() =>
+                  uploadRef.current?.nativeElement
+                    ?.querySelector('input')
+                    ?.click()
+                }
               >
                 Choose subtitle file
               </Button>
@@ -546,7 +558,7 @@ function Translator({
                 translations={app.translations}
                 edited={app.edited}
                 activeIds={activeIds}
-                failed={app.status === 'failed' || app.status === 'cancelled'}
+                cueErrors={app.cueErrors}
                 profile={app.profile}
                 groups={groups}
                 activeId={activeId}
@@ -573,20 +585,18 @@ function Translator({
 }
 
 export default function App() {
-  const [dark, setDark] = useState(false);
+  const [dark, setDark] = useState(
+    () => window.matchMedia('(prefers-color-scheme: dark)').matches,
+  );
+  const [workspace, setWorkspace] = useState(0);
   return (
-    <ConfigProvider
-      theme={{
-        algorithm: dark ? theme.darkAlgorithm : theme.defaultAlgorithm,
-        token: {
-          colorPrimary: '#42664d',
-          borderRadius: 8,
-          fontFamily:
-            '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-        },
-      }}
-    >
-      <Translator dark={dark} setDark={setDark} />
+    <ConfigProvider theme={appTheme(dark)}>
+      <Translator
+        key={workspace}
+        dark={dark}
+        setDark={setDark}
+        onReset={() => setWorkspace((value) => value + 1)}
+      />
     </ConfigProvider>
   );
 }

@@ -1,4 +1,4 @@
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { useTranslator } from './useTranslator';
 
@@ -19,6 +19,28 @@ function deferred<T>() {
 }
 const json = (body: unknown) => new Response(JSON.stringify(body));
 describe('translator state', () => {
+  it('loads target languages automatically without sending a translation probe', async () => {
+    const fetcher = vi.fn().mockResolvedValue(
+      json({
+        data: {
+          languages: [
+            { language: 'en', name: 'English' },
+            { language: 'mn', name: 'Mongolian' },
+          ],
+        },
+      }),
+    );
+    vi.stubGlobal('fetch', fetcher);
+    const { result } = renderHook(useTranslator);
+    await waitFor(() => expect(result.current.serviceStatus).toBe('ready'));
+    expect(result.current.languages).toEqual([
+      { code: 'mn', name: 'Mongolian' },
+    ]);
+    expect(fetcher).toHaveBeenCalledWith(
+      expect.stringContaining('/languages?model=nmt'),
+      expect.objectContaining({ method: 'GET' }),
+    );
+  });
   it('keeps Start and Download disabled until prerequisites are valid', async () => {
     const { result } = renderHook(useTranslator);
     await act(() => result.current.loadFile(file()));
@@ -56,22 +78,22 @@ describe('translator state', () => {
     expect(result.current.cues).toHaveLength(0);
     expect(result.current.error).toContain('.srt extension');
   });
-  it('cannot restore a cleared credential from an in-flight test', async () => {
+  it('cannot restore a cleared service from an in-flight language lookup', async () => {
     const pending = deferred<Response>();
     vi.stubGlobal('fetch', vi.fn().mockReturnValue(pending.promise));
     const { result } = renderHook(useTranslator);
     let test!: Promise<void>;
     act(() => {
-      test = result.current.testKey('not-a-real-key');
+      test = result.current.loadLanguages();
     });
-    act(() => result.current.invalidateCredential());
+    act(() => result.current.invalidateService());
     await act(async () => {
       pending.resolve(
         json({ data: { languages: [{ language: 'es', name: 'Spanish' }] } }),
       );
       await test;
     });
-    expect(result.current.credentialStatus).toBe('empty');
+    expect(result.current.serviceStatus).toBe('empty');
   });
   it('rejects over-limit files without reading their contents', async () => {
     const arrayBuffer = vi.fn();

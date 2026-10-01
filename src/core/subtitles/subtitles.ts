@@ -1,3 +1,4 @@
+import { groupCues, sourceSections } from './groups';
 import type { Cue } from '../srt/srt';
 import { normalizeMarkup, plainText, sliceMarkup } from '../srt/markup';
 
@@ -15,26 +16,11 @@ export function graphemes(text: string): number {
 }
 
 export function speakerSegments(text: string): string[] {
-  const visible = plainText(text);
-  const markers = [...visible.matchAll(/-\s+(?=\p{Lu})/gu)].map(
-    (match) => match.index,
-  );
-  // A marker after the first forces a boundary, independent of target-script case.
-  const boundaries = [0, ...markers.slice(1), visible.length];
-  return boundaries
-    .slice(0, -1)
-    .map((start, i) =>
-      normalizeMarkup(sliceMarkup(text, start, boundaries[i + 1])),
-    );
+  return sourceSections(text).map((section) => section.text);
 }
 
 export function continuationGroups(cues: Cue[]): number[] {
-  let group = 0;
-  return cues.map((cue, i) => {
-    if (i === 0 || !/^(?:[a-z]|\.)/.test(plainText(cue.text).trimStart()))
-      group += 1;
-    return group;
-  });
+  return groupCues(cues).flatMap((group, i) => group.map(() => i + 1));
 }
 
 export function quality(text: string, cue: Cue, profile: Profile): Quality {
@@ -69,33 +55,69 @@ function protectedEnglishBreak(before: string, after: string): boolean {
   );
 }
 
+export interface TranslationSegment {
+  text: string;
+  hardBreak?: boolean;
+}
+
+function normalizeSegments(
+  segments: Array<string | TranslationSegment>,
+): TranslationSegment[] {
+  return segments.map((segment) =>
+    typeof segment === 'string'
+      ? { text: normalizeMarkup(segment), hardBreak: /^-\s*/.test(segment) }
+      : { ...segment, text: normalizeMarkup(segment.text) },
+  );
+}
+
+function lineBreakPositions(visible: string, language: string): number[] {
+  const whitespace = [...visible.matchAll(/\s+/g)].map(
+    (match) => match.index + match[0].length,
+  );
+  if (whitespace.length) return whitespace;
+  const words = [
+    ...new Intl.Segmenter(language || undefined, {
+      granularity: 'word',
+    }).segment(visible),
+  ]
+    .map(({ index, segment }) => index + segment.length)
+    .filter((index) => index > 0 && index < visible.length);
+  return words;
+}
+
 export function formatTranslation(
-  segments: string[],
+  segments: Array<string | TranslationSegment>,
   language: string,
 ): string {
-  const normalized = segments.map(normalizeMarkup);
-  // Preserve every speaker, including overflow, and let quality() flag it.
-  if (normalized.length > 1) return normalized.join('\n');
-  const text = normalized[0] ?? '';
+  const text = normalizeSegments(segments).reduce(
+    (output, segment, index) =>
+      output + (index ? (segment.hardBreak ? '\n' : ' ') : '') + segment.text,
+    '',
+  );
+  // Preserve every required speaker boundary, including overflow.
+  if (text.includes('\n')) return text;
   const visible = plainText(text);
   if (graphemes(visible) <= 42) return text;
-  const candidates = [...visible.matchAll(/\s+/g)].map((match) => {
-    const before = visible.slice(0, match.index);
-    const after = visible.slice(match.index + match[0].length);
-    const left = graphemes(before),
-      right = graphemes(after);
-    const overflow = Math.max(0, left - 42) + Math.max(0, right - 42);
+  const candidates = lineBreakPositions(visible, language).map((position) => {
+    const left = visible.slice(0, position);
+    const right = visible.slice(position);
+    const before = left.trimEnd();
+    const after = right.trimStart();
+    const leftGraphemes = graphemes(before),
+      rightGraphemes = graphemes(after);
+    const overflow =
+      Math.max(0, leftGraphemes - 42) + Math.max(0, rightGraphemes - 42);
     const protectedBreak =
       language === 'en' && protectedEnglishBreak(before, after);
     const punctuation = /[.!?,;:]$/.test(before) ? 0 : 25;
     return {
-      start: match.index,
-      end: match.index + match[0].length,
+      start: before.length,
+      end: visible.length - after.length,
       score:
         overflow * 1000 +
         Number(protectedBreak) * 10000 +
         punctuation +
-        Math.abs(left - right),
+        Math.abs(leftGraphemes - rightGraphemes),
     };
   });
   const best = candidates.sort((a, b) => a.score - b.score)[0];

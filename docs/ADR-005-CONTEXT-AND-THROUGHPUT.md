@@ -1,6 +1,6 @@
 # ADR-005: Context and throughput strategy
 
-Status: Proposed
+Status: Superseded by ADR-006 on 2026-09-18. The content below records an earlier proposal, not current instructions.
 
 Date: 2026-09-18
 

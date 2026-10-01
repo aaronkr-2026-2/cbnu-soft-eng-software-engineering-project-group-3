@@ -2,7 +2,7 @@
 
 Status: Accepted for the requested implementation
 
-Superseded in its provider/credential portions by ADR-004 on 2026-09-18. The React/SRT/testing decisions remain historical implementation evidence.
+Superseded in its provider/credential portions by ADR-004 on 2026-09-18. Its independent-cue mapping is also superseded by ADR-006. The React/SRT/testing decisions remain historical implementation evidence.
 
 Date: 2026-09-17
 

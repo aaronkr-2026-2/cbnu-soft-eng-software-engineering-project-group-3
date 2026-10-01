@@ -1,63 +1,95 @@
 import type { Cue } from '../../core/srt/srt';
 import { providerHtml } from '../../core/srt/markup';
-import { speakerSegments } from '../../core/subtitles/subtitles';
+import {
+  groupCues,
+  speechUnits,
+  type SpeechUnit,
+} from '../../core/subtitles/groups';
 import type { TranslationInput } from './provider';
-import { MAX_REQUEST_BYTES, translationBody } from './googleTranslate';
+import {
+  inputCharacters,
+  MAX_REQUEST_BYTES,
+  MAX_TLLM_INPUT_CHARACTERS,
+  translationBody,
+  type TranslationModel,
+} from './googleTranslate';
 
-export interface PreparedCue {
-  cue: Cue;
+export interface PreparedGroup {
+  cues: Cue[];
+  units: SpeechUnit[];
   inputs: TranslationInput[];
 }
 export interface Batch {
-  cues: PreparedCue[];
+  groups: PreparedGroup[];
   inputs: TranslationInput[];
 }
 export interface Estimate {
   characters: number;
   batches: Batch[];
   usd: number;
-  retryCeilingUsd: number;
+  outputCharactersAssumed: number;
 }
-export const PRICE_DATE = '2026-09-17';
+export const PRICE_DATE = '2026-09-18';
 export const USD_PER_MILLION = 20;
+export const TLLM_USD_PER_MILLION = 10;
 
-export function estimateTranslation(cues: Cue[], target: string): Estimate {
+export function estimateTranslation(
+  cues: Cue[],
+  target: string,
+  model: TranslationModel = 'nmt',
+  completed: Readonly<Record<string, string>> = {},
+): Estimate {
   const batches: Batch[] = [];
-  let batch: Batch = { cues: [], inputs: [] };
+  let batch: Batch = { groups: [], inputs: [] };
   const count = (inputs: TranslationInput[]) =>
     inputs.reduce((sum, input) => sum + [...input.text].length, 0);
-  for (const cue of cues) {
-    const prepared: PreparedCue = {
-      cue,
-      inputs: speakerSegments(cue.text).map((text, i) => ({
-        id: `${cue.id}:${i}`,
-        text: providerHtml(text),
-      })),
-    };
+  for (const group of groupCues(cues)) {
+    if (group.every((cue) => completed[cue.id] !== undefined)) continue;
+    if (group.some((cue) => completed[cue.id] !== undefined))
+      throw new Error(
+        'A continuation group is only partly complete. Reset translations before changing its grouping.',
+      );
+    const units = speechUnits(group);
+    const inputs = units.map(({ id, text }) => ({
+      id,
+      text: providerHtml(text),
+    }));
     if (
-      prepared.inputs.length > 128 ||
-      new TextEncoder().encode(translationBody(prepared.inputs, target))
-        .length > MAX_REQUEST_BYTES
+      inputs.length > 128 ||
+      (model === 'tllm' &&
+        inputCharacters(inputs) > MAX_TLLM_INPUT_CHARACTERS) ||
+      new TextEncoder().encode(translationBody(inputs, target, model)).length >
+        MAX_REQUEST_BYTES
     )
       throw new Error(
-        `Cue ${cue.index} is too large for one safe request. Edit the source file before translating.`,
+        `Group starting at cue ${group[0].index} is too large for one safe request. Edit the source file before translating.`,
       );
-    const combined = [...batch.inputs, ...prepared.inputs];
+    const combined = [...batch.inputs, ...inputs];
     if (
       batch.inputs.length &&
       (combined.length > 128 ||
         count(combined) > 5000 ||
-        new TextEncoder().encode(translationBody(combined, target)).length >
-          MAX_REQUEST_BYTES)
+        new TextEncoder().encode(translationBody(combined, target, model))
+          .length > MAX_REQUEST_BYTES)
     ) {
       batches.push(batch);
-      batch = { cues: [], inputs: [] };
+      batch = { groups: [], inputs: [] };
     }
-    batch.cues.push(prepared);
-    batch.inputs.push(...prepared.inputs);
+    batch.groups.push({ cues: group, units, inputs });
+    batch.inputs.push(...inputs);
   }
   if (batch.inputs.length) batches.push(batch);
   const characters = batches.reduce((sum, item) => sum + count(item.inputs), 0);
-  const usd = (characters / 1000000) * USD_PER_MILLION;
-  return { characters, batches, usd, retryCeilingUsd: usd * 3 };
+  const outputCharactersAssumed = model === 'tllm' ? characters : 0;
+  const usd =
+    model === 'nmt'
+      ? (characters / 1000000) * USD_PER_MILLION
+      : ((characters + outputCharactersAssumed) / 1000000) *
+        TLLM_USD_PER_MILLION;
+  return {
+    characters,
+    batches,
+    usd,
+    outputCharactersAssumed,
+  };
 }

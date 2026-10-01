@@ -12,7 +12,7 @@ interface Props {
   translations: Record<string, string>;
   edited: Record<string, boolean>;
   activeIds: ReadonlySet<string>;
-  failed: boolean;
+  cueErrors: Record<string, string>;
   profile?: Profile;
   groups: number[];
   activeId?: string;
@@ -26,7 +26,7 @@ export function VirtualCueList({
   translations,
   edited,
   activeIds,
-  failed,
+  cueErrors,
   profile,
   groups,
   activeId,
@@ -87,7 +87,12 @@ export function VirtualCueList({
               translation={translations[cue.id]}
               edited={!!edited[cue.id]}
               active={activeIds.has(cue.id)}
-              failed={failed}
+              failed={!!cueErrors[cue.id]}
+              failureMessage={cueErrors[cue.id]}
+              redistributed={
+                groups[virtualRow.index - 1] === group ||
+                groups[virtualRow.index + 1] === group
+              }
               profile={profile}
               group={group}
               groupStart={

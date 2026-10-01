@@ -2,7 +2,7 @@
 
 Version: 0.1
 
-Date: 2026-09-15
+Updated: 2026-09-18
 
 These rules apply to humans and AI coding tools.
 
@@ -31,7 +31,7 @@ These rules apply to humans and AI coding tools.
 
 - Prefer plain, readable TypeScript and React patterns.
 - Use meaningful names and small functions with one clear responsibility.
-- Keep domain logic outside React components.
+- Keep domain logic outside React components. Both models use the shared continuation/group pipeline; test actual outgoing joined input, not only visual labels. Approximate redistribution needs review and must preserve text and original timing.
 - Keep network details inside provider adapters.
 - Avoid premature abstractions, generic frameworks, service locators, and unnecessary state libraries.
 - Avoid `any`; use `unknown` plus validation at trust boundaries.
@@ -40,8 +40,9 @@ These rules apply to humans and AI coding tools.
 - Do not leave dead code, duplicate logic, commented-out implementations, or placeholder providers presented as real.
 - Preserve user-edited subtitle text unless an explicit action authorizes replacement.
 - Treat file content, API output, metadata, and restored local state as untrusted input.
+- Define shared global/component tokens in `src/app/theme.ts` and consume them through ConfigProvider. Use the 8/16/24/32 px spacing scale; avoid conflicting one-off global overrides of component internals. Focused layout/style props remain valid for measured virtual positions and subtitle markup.
 - Prefer Ant Design components for the application shell, standard controls, feedback, spacing, and generic panels. Use custom semantic elements and CSS only where the product needs subtitle-specific structure, interaction, or rendering-performance behavior. See `UI_COMPONENT_GUIDE.md`.
-- Inspect a library component's rendered DOM before applying child spacing or sticky layout rules. The desktop translator sidebar must apply its 20 px vertical rhythm to Ant Design's actual child container, not the outer `Sider`. Keep translation actions, progress, and download in one stationary bottom region outside the scrollable controls. Keep the subtitle-preview heading and column labels compact and sticky in the content scroll container.
+- Inspect a library component's rendered DOM before applying child spacing or sticky layout rules. The desktop translator sidebar must apply the shared 24 px major-control rhythm to Ant Design's actual child container, not the outer `Sider`. Keep translation actions, progress, and download in one stationary bottom region outside the scrollable controls. Keep the subtitle-preview heading and column labels compact and sticky in the content scroll container.
 
 ## 4. Dependencies
 
@@ -76,7 +77,7 @@ unit/integration tests
 production build
 ```
 
-Suggested tools: Vitest, React Testing Library, and a request-mocking tool compatible with the chosen stack. Exact tools are confirmed when scaffolding occurs.
+Suggested tools: Vitest, React Testing Library, and a request-mocking tool compatible with the chosen stack. Implemented tools are Vitest, Testing Library and Playwright with mocked HTTP. Use actual current package/lockfile evidence.
 
 Test the behavior most likely to corrupt output:
 
@@ -141,7 +142,7 @@ Every AI-assisted task follows:
 5. Run relevant verification.
 6. Summarize exact files/behavior changed and remaining limitations.
 7. Update state/decision documentation.
-8. Append `AI_LOG.md` in the required format.
+8. Append one plain-language AI_LOG.md line and the full course-format entry in docs/AI_DETAILED_LOG.md, then create the local task commit.
 
 If an AI cannot access a referenced repository/file/service, it must say so and continue only with evidence it can inspect.
 

@@ -21,3 +21,4 @@ Short, professor-readable record of AI-assisted work. Detailed evidence, command
 - 2026-09-18 — Replaced header and service-card explanatory text with compact Ant Design help controls and reduced the header height.
 - 2026-09-18 — Added the rule that each completed file-changing prompt ends with verification, documentation updates, and one local commit; remote publishing remains explicit.
 - 2026-09-18 — Added sun/moon theme cues, simplified the workflow modal to one `OK` action, and narrowed the service-check help popover.
+- 2026-10-01 — Verified and prepared the joined-speech NMT/TLLM revision for GitHub, correcting stale fixture/browser assertions and preserving spaces before protected annotations.

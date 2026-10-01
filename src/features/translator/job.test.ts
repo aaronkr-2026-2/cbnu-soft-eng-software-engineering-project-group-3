@@ -97,3 +97,97 @@ describe('job integrity', () => {
     expect(cb.completed).toHaveBeenCalledTimes(1);
   });
 });
+
+it('commits a complete joined group with unchanged cue identities', async () => {
+  const source = parseSrt(
+    '101\n00:00:01,000 --> 00:00:03,000\nI was cooking\n\n102\n00:00:03,000 --> 00:00:06,000\nwhen the telephone rang.',
+  );
+  const prepared = estimateTranslation(source, 'en').batches;
+  const cb = callbacks();
+  const text = 'I was cooking when the telephone rang.';
+  const translate = vi.fn(async () => [{ id: prepared[0].inputs[0].id, text }]);
+  await runJob(
+    provider(translate),
+    prepared,
+    'en',
+    new AbortController().signal,
+    cb,
+  );
+  expect(translate.mock.calls).toHaveLength(1);
+  const result = cb.completed.mock.calls[0][0];
+  expect(Object.keys(result)).toEqual(['cue-1', 'cue-2']);
+  expect(Object.values(result).join(' ').replace(/\s+/g, ' ')).toBe(text);
+});
+
+it('attributes an unallocatable group to the failed batch without saving partial output', async () => {
+  const source = parseSrt(
+    '1\n00:00:01,000 --> 00:00:03,000\nOne\n\n2\n00:00:03,000 --> 00:00:06,000\ncontinues',
+  );
+  const prepared = estimateTranslation(source, 'en').batches;
+  const cb = { ...callbacks(), failed: vi.fn() };
+  await expect(
+    runJob(
+      provider(async () => [{ id: prepared[0].inputs[0].id, text: 'Yes.' }]),
+      prepared,
+      'en',
+      new AbortController().signal,
+      cb,
+    ),
+  ).rejects.toThrow('too short');
+  expect(cb.completed).not.toHaveBeenCalled();
+  expect(cb.failed.mock.calls[0][0]).toEqual(['cue-1', 'cue-2']);
+});
+
+it('saves a valid sibling group when another group cannot be redistributed', async () => {
+  const source = parseSrt(
+    '1\n00:00:01,000 --> 00:00:03,000\nOne\n\n2\n00:00:03,000 --> 00:00:06,000\ncontinues\n\n3\n00:00:07,000 --> 00:00:10,000\nSeparate.',
+  );
+  const prepared = estimateTranslation(source, 'en').batches;
+  const cb = { ...callbacks(), failed: vi.fn() };
+  await expect(
+    runJob(
+      provider(async () => [
+        { id: prepared[0].inputs[0].id, text: 'Yes.' },
+        { id: prepared[0].inputs[1].id, text: 'Saved.' },
+      ]),
+      prepared,
+      'en',
+      new AbortController().signal,
+      cb,
+    ),
+  ).rejects.toThrow('too short');
+  expect(cb.completed).toHaveBeenCalledWith({ 'cue-3': 'Saved.' });
+  expect(cb.failed).toHaveBeenCalledWith(['cue-1', 'cue-2'], expect.any(Error));
+});
+
+it('reports every failed group while preserving a valid sibling group', async () => {
+  const source = parseSrt(
+    '1\n00:00:01,000 --> 00:00:03,000\nOne\n\n2\n00:00:03,000 --> 00:00:06,000\ncontinues\n\n3\n00:00:07,000 --> 00:00:09,000\nTwo\n\n4\n00:00:09,000 --> 00:00:12,000\ncontinues\n\n5\n00:00:13,000 --> 00:00:16,000\nSeparate.',
+  );
+  const prepared = estimateTranslation(source, 'en').batches;
+  const cb = { ...callbacks(), failed: vi.fn() };
+  await expect(
+    runJob(
+      provider(async () => [
+        { id: prepared[0].inputs[0].id, text: 'Yes.' },
+        { id: prepared[0].inputs[1].id, text: 'No.' },
+        { id: prepared[0].inputs[2].id, text: 'Saved.' },
+      ]),
+      prepared,
+      'en',
+      new AbortController().signal,
+      cb,
+    ),
+  ).rejects.toThrow('too short');
+  expect(cb.completed).toHaveBeenCalledWith({ 'cue-5': 'Saved.' });
+  expect(cb.failed).toHaveBeenNthCalledWith(
+    1,
+    ['cue-1', 'cue-2'],
+    expect.any(Error),
+  );
+  expect(cb.failed).toHaveBeenNthCalledWith(
+    2,
+    ['cue-3', 'cue-4'],
+    expect.any(Error),
+  );
+});

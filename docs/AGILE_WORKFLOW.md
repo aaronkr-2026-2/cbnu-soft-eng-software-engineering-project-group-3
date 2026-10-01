@@ -11,4 +11,4 @@ The local backlog uses Backlog → Ready → In progress → Review → Done. Ke
 
 Use focused feature/fix/docs branches and logical commits. A PR describes behavior, acceptance criteria, verification, and limits. Review correctness, readability, security/privacy, accessibility, tests, and documentation before merging. Solo self-review is recorded honestly and does not replace the Week 12 external review.
 
-The canonical Definition of Done remains [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md#8-definition-of-done): acceptance criteria, relevant tests and all checks, no accidental secrets/data, considered loading/errors/accessibility, documentation, truthful AI log, and author understanding. Do not create a weaker competing checklist.
+The canonical Definition of Done remains [PRODUCT_REQUIREMENTS.md](PRODUCT_REQUIREMENTS.md#7-definition-of-done): acceptance criteria, relevant tests and all checks, no accidental secrets/data, considered loading/errors/accessibility, documentation, truthful AI log, and author understanding. Do not create a weaker competing checklist.

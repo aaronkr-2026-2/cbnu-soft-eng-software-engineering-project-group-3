@@ -164,3 +164,15 @@ That will take more than one notebook.
 40
 00:02:39,000 --> 00:02:43,000
 Good. We brought three.
+
+41
+00:02:43,300 --> 00:02:46,100
+I left the lantern burning
+
+42
+00:02:46,300 --> 00:02:48,100
+because I thought
+
+43
+00:02:48,300 --> 00:02:52,000
+we would find our way back before dark.

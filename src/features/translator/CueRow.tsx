@@ -1,5 +1,5 @@
 import { memo, useState } from 'react';
-import { Button, Card, Flex, Input, Tag } from 'antd';
+import { Alert, Button, Card, Flex, Input, Tag } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import type { Cue } from '../../core/srt/srt';
 import { textRuns } from '../../core/srt/markup';
@@ -30,6 +30,8 @@ interface Props {
   edited: boolean;
   active: boolean;
   failed: boolean;
+  failureMessage?: string;
+  redistributed?: boolean;
   profile?: Profile;
   group: number;
   groupStart: boolean;
@@ -43,6 +45,8 @@ export const CueRow = memo(function CueRow({
   edited,
   active,
   failed,
+  failureMessage,
+  redistributed,
   profile,
   group,
   groupStart,
@@ -63,7 +67,7 @@ export const CueRow = memo(function CueRow({
       : active
         ? 'Translating'
         : failed
-          ? 'Pending retry'
+          ? 'Failed'
           : 'Waiting';
   return (
     <section
@@ -112,7 +116,9 @@ export const CueRow = memo(function CueRow({
                     ? 'green'
                     : active
                       ? 'blue'
-                      : undefined
+                      : failed
+                        ? 'red'
+                        : undefined
               }
             >
               {status}
@@ -133,6 +139,9 @@ export const CueRow = memo(function CueRow({
               </Button>
             )}
           </Flex>
+          <div className="cue-meta">
+            #{cue.index} · {cue.start} → {cue.end}
+          </div>
           {editing ? (
             <div className="edit-form">
               <Input.TextArea
@@ -180,6 +189,12 @@ export const CueRow = memo(function CueRow({
                 : 'Translation will appear here.'}
             </p>
           )}
+          {translation !== undefined && redistributed && !edited && (
+            <p className="help-text">
+              Joined speech was redistributed across these time slots. Review
+              the wording and timing.
+            </p>
+          )}
           {!!report?.warnings.length && (
             <div className="quality-warning">
               <strong>Needs review</strong>
@@ -192,6 +207,14 @@ export const CueRow = memo(function CueRow({
           )}
         </Card>
       </Flex>
+      {failureMessage && (
+        <Alert
+          className="cue-error"
+          type="error"
+          title={failureMessage}
+          showIcon
+        />
+      )}
     </section>
   );
 });

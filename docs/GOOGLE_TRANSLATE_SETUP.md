@@ -1,26 +1,32 @@
 # Cloud Translation gateway setup
 
-The product owner funds translation. Visitors never need a Google account or API key.
+Updated: 2026-09-18
+
+The project owner funds translation. Visitors need neither a Google account nor an API key.
 
 ## Local development
 
-1. Enable **Cloud Translation API** and billing in your Google Cloud project.
-2. Create a Cloud Translation-restricted API key.
-3. Copy `.env.example` to `.env` without committing it.
-4. Set `GOOGLE_CLOUD_API_KEY` and the non-secret `GOOGLE_CLOUD_PROJECT_ID`. The gateway defaults TLLM to `us-central1`, which was verified locally on 2026-09-18 with a minimal translation request. Do not set `GOOGLE_TRANSLATE_TLLM_LOCATION` to `asia-northeast3` (Seoul): the same request returned `400 Invalid Value` there. Set an override only after verifying that exact model/location combination.
-5. Run `npm run dev`. It starts both the local gateway and the Vite client.
-6. Open `http://localhost:5173`, choose NMT or TLLM, and click **Check service**.
+1. Enable **Cloud Translation API** and billing in the owner's Cloud project.
+2. Create a key restricted to that API. The gateway is server-to-server; a Websites/referrer application restriction does not match local gateway calls. Choose appropriate server restrictions for the deployment when available. Never solve a blocked key by sending it to the browser.
+3. Create ignored `.env` from `.env.example`; set `GOOGLE_CLOUD_API_KEY` and `GOOGLE_CLOUD_PROJECT_ID`. Do not share the values in prompts, screenshots or logs.
+4. Keep `GOOGLE_TRANSLATE_TLLM_LOCATION=us-central1` unless a different exact model/location has been verified. The earlier local smoke test succeeded there; `asia-northeast3` returned `400 Invalid Value`. This is observed evidence, not a claim about all future regional availability.
+5. Run `npm ci`, then `npm run dev` to start both Vite and the Node gateway.
+6. Open `http://localhost:5173`. Languages load automatically. Choose an English SRT, NMT/TLLM, target language and reading profile, then Start. The separate paid Check service probe has been removed.
 
-The Vite client proxies `/api` to the local gateway. The gateway reads the key; Vite does not load `.env`, and the browser never receives the key. `npm run dev:client` starts only Vite and therefore cannot translate.
+The Vite dev server proxies `/api` to the gateway. Only the gateway reads `.env`. `npm run dev:client` starts Vite alone and cannot translate without a running gateway. Restart `npm run dev` after changing gateway configuration.
 
-If a job stops, read the browser error, then read the local terminal that runs `npm run dev`. It reports only the upstream HTTP status and one safe category (`key_restriction`, `billing`, `api_not_enabled`, `daily_quota`, `quota`, `rate_limited`, `invalid_request`, or `access_denied`). `daily_quota` means wait until midnight Pacific Time; `rate_limited` means wait about one minute. It never writes subtitle text, provider error text, the key, or the project ID. Restart `npm run dev` after changing gateway code or `.env`.
+The Basic v2 language endpoint provides the NMT catalogue. It does not validate every TLLM language pair/model/location. An unsupported selection must return a visible error; representative TLLM coverage still needs a live benchmark.
+
+## Troubleshooting and verification
+
+Language-loading errors have a retry control. Translation failures appear under affected cue cards. Retry retains successful output and saved edits in the current tab. Reload recovery is not implemented. The terminal prints only upstream status plus an allowlisted category, never text, provider messages, project IDs or credentials.
+
+`daily_quota` and `rate_limited` are different failures. Google's daily quota resets at midnight Pacific Time; per-minute limits need their quota window to recover. A quota error does not prove a DDoS shield. Consult the actual project quotas. [Google quota documentation](https://docs.cloud.google.com/translate/quotas).
+
+Run `npm run check`, `npm run format:check`, `npm run test:e2e` and `npm run check:build` for local verification. These use mocked translations. A human should separately test a small original grouped subtitle in both engines and review timing, wording, request count and usage before running full films. Do not place live provider calls in CI.
 
 ## Public deployment
 
-GitHub Pages cannot safely run the gateway. Deploy the gateway separately and store the key in that platform's secret manager. Before public traffic, define a monthly budget, Cloud quota, gateway rate limits, request limits, and an abuse policy. Do not put the key in GitHub Pages secrets, frontend variables, or `VITE_*` variables.
+GitHub Pages can host the frontend but cannot run the private Node gateway. Select a gateway host, configure its secrets and allowed frontend origin, and implement the owner budget/allowance and abuse/rate controls before public translation. No production gateway, authentication or enforced public allowance is currently claimed. GitHub build-time environment values embedded into a Vite bundle are public.
 
-## TLLM
-
-TLLM needs an API key plus a full project/location model resource. The gateway builds that resource from `GOOGLE_CLOUD_PROJECT_ID` and `GOOGLE_TRANSLATE_TLLM_LOCATION`. The Basic v2 language-list endpoint rejects a full TLLM model resource, so the picker uses the default NMT catalogue and Check service verifies the selected TLLM model with a tiny translation. Test NMT and TLLM on subtitle fixtures before selecting the default.
-
-Sources: [Cloud Translation setup](https://docs.cloud.google.com/translate/docs/setup), [Translation LLM](https://docs.cloud.google.com/translate/docs/translation-llm), [API-key best practices](https://docs.cloud.google.com/docs/authentication/api-keys-best-practices).
+Sources: [Cloud Translation setup](https://docs.cloud.google.com/translate/docs/setup), [v2 translate contract](https://docs.cloud.google.com/translate/docs/reference/rest/v2/translate), [API-key practices](https://docs.cloud.google.com/docs/authentication/api-keys-best-practices).

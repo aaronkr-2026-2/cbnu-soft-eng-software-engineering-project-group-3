@@ -7,6 +7,7 @@ const projectId = process.env.GOOGLE_CLOUD_PROJECT_ID?.trim();
 const location =
   process.env.GOOGLE_TRANSLATE_TLLM_LOCATION?.trim() || 'us-central1';
 const maxBodyBytes = 100_000;
+const maxTllmInputCharacters = 30_000;
 
 function cloudFailure(response, data) {
   const providerMessage =
@@ -21,8 +22,7 @@ function cloudFailure(response, data) {
   if (response.status === 403) {
     if (providerMessage.includes('referer')) category = 'key_restriction';
     else if (providerMessage.includes('billing')) category = 'billing';
-    else if (providerMessage.includes('daily limit'))
-      category = 'daily_quota';
+    else if (providerMessage.includes('daily limit')) category = 'daily_quota';
     else if (
       providerMessage.includes('user rate limit') ||
       providerMessage.includes('per minute')
@@ -69,9 +69,7 @@ function modelName(model) {
 
 async function google(path, options = {}) {
   if (!key)
-    throw new Error(
-      'Gateway configuration is missing GOOGLE_CLOUD_API_KEY.',
-    );
+    throw new Error('Gateway configuration is missing GOOGLE_CLOUD_API_KEY.');
   const response = await fetch(`${endpoint}${path}`, {
     ...options,
     headers: { ...options.headers, 'x-goog-api-key': key },
@@ -105,7 +103,10 @@ function validTranslation(body) {
     Array.isArray(body.q) &&
     body.q.length > 0 &&
     body.q.length <= 128 &&
-    body.q.every((text) => typeof text === 'string')
+    body.q.every((text) => typeof text === 'string') &&
+    (body.model !== 'tllm' ||
+      body.q.reduce((total, text) => total + [...text].length, 0) <=
+        maxTllmInputCharacters)
   );
 }
 

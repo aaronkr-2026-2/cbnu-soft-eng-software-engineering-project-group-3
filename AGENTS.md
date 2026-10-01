@@ -26,9 +26,10 @@ Before changing anything, read:
 - Preserve the original MVP and working behavior. Do not erase or rewrite code without a focused reason, acceptance criteria, and tests.
 - Keep changes small, understandable, and junior-developer-friendly.
 - Keep SRT/subtitle domain logic independent of React and network providers.
+- Both NMT and TLLM use joined continuation speech under ADR-006. Never regress to visual-only grouping, source-word-ratio splitting, or an unverified promise that Google preserves invented cue markers. Distinguish structural mapping tests from human translation/timing quality.
 - Keep Cloud Translation model details behind the translation-provider interface.
 - Use Ant Design as the first choice for application layout, standard controls, feedback, navigation, spacing, and generic panels. Retain semantic HTML and focused custom CSS where the subtitle-review interface needs domain-specific behavior or performance control; do not add generic `div` wrappers when an appropriate Ant Design component exists. Follow `docs/UI_COMPONENT_GUIDE.md`.
-- Verify the rendered DOM of library layout components before styling their child spacing or fixed regions. For the desktop translator sidebar, apply a visible 20 px gap to the actual control container and keep loaded-file actions in a stationary bottom group outside the scrollable controls. Keep the subtitle-preview heading and its column labels compact and sticky at the top of the scrollable content pane.
+- Verify the rendered DOM of library layout components before styling their child spacing or fixed regions. For the desktop translator sidebar, use the shared 8/16/24/32 px spacing scale (24 px between major sidebar controls) on the actual control container and keep loaded-file actions in a stationary bottom group outside the scrollable controls. Keep the subtitle-preview heading and its column labels compact and sticky at the top of the scrollable content pane.
 - Never use or describe the MVP's undocumented Google consumer endpoint as production-ready.
 - Never expose, commit, persist, log, or place secrets in public Vite environment variables.
 - Translation is owner-funded through a server-side gateway. Never expose, commit, persist in browser storage, log, or place the project-owner key in URLs, downloaded files, public Vite variables, or frontend source.
@@ -58,15 +59,15 @@ Before changing anything, read:
 
 - Confirmed 2026-09-16: this is a solo project. Do not allocate work to assumed teammates.
 - Confirmed 2026-09-18: use only Cloud Translation NMT and TLLM through an owner-funded server-side gateway. Gemini Developer API is removed from product scope. See ADR-004.
-- Telemetry-only scope supersedes prior Firebase/R2 file-storage proposals. Do not provision an object bucket or add upload credentials for this scope. Billing acceptance and telemetry lifecycle remain open. Read `docs/ADR-001-TELEMETRY-ONLY.md`.
+- Telemetry-only scope supersedes prior Firebase/R2 file-storage proposals. Do not provision an object bucket or add upload credentials for this scope. Public gateway allowance and telemetry lifecycle remain open. Read `docs/ADR-001-TELEMETRY-ONLY.md`.
 - Recheck dated pricing before implementation; distinguish a no-cost quota from a no-billing account.
 
 ## Current priority
 
 1. Reconcile actual repository state with `PROJECT_STATE.md`.
 2. Preserve/tag/deploy the standalone MVP as the before-state.
-3. Replace the temporary direct-browser adapter with a server-side NMT/TLLM gateway, including a cost/abuse limit and a deployment host before public release.
-4. Port contextual group handling, reliability, formatting, editing, tests, security, documentation, and CI according to the semester plan.
+3. Verify the local owner-funded NMT/TLLM gateway and define its production host, allowance and abuse controls before public release.
+4. Maintain the joined-speech behavior and approximate cue redistribution in ADR-006; benchmark live quality, then progress reliability, security and course evidence.
 5. Implement the confirmed telemetry-only feature after its open data decisions are resolved; movie matching/lives remain conditional. File storage/reuse are deferred, not active stretch milestones.
 
 ## Task completion report
