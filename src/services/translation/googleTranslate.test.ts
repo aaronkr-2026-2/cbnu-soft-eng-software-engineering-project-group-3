@@ -131,6 +131,41 @@ describe('official Google adapter', () => {
     await expect(promise).resolves.toEqual([{ id: 'cue-7:0', text: 'Hola' }]);
     expect(onRequest).toHaveBeenCalledTimes(3);
   });
+  it('uses the gateway rate-limit cooldown before retrying a 403', async () => {
+    vi.useFakeTimers();
+    const fetcher = vi
+      .fn()
+      .mockResolvedValueOnce(
+        response(
+          {
+            error: {
+              category: 'rate_limited',
+              retryAfterSeconds: 60,
+            },
+          },
+          403,
+        ),
+      )
+      .mockResolvedValue(
+        response({ data: { translations: [{ translatedText: 'Hola' }] } }),
+      );
+    vi.stubGlobal('fetch', fetcher);
+    const onRequest = vi.fn();
+    const onRetryDelay = vi.fn();
+    const promise = new GoogleTranslate('nmt').translateBatch(
+      input,
+      'es',
+      signal(),
+      onRequest,
+      onRetryDelay,
+    );
+    await vi.advanceTimersByTimeAsync(59999);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(1);
+    await expect(promise).resolves.toEqual([{ id: 'cue-7:0', text: 'Hola' }]);
+    expect(onRetryDelay).toHaveBeenCalledWith(60000);
+    expect(onRequest).toHaveBeenCalledTimes(2);
+  });
   it('times out response processing and stops after three attempts', async () => {
     vi.useFakeTimers();
     const fetcher = vi.fn(
@@ -151,7 +186,14 @@ describe('official Google adapter', () => {
   });
   it('aborts a retry delay immediately', async () => {
     vi.useFakeTimers();
-    const fetcher = vi.fn().mockResolvedValue(response({}, 503));
+    const fetcher = vi.fn().mockResolvedValue(
+      response(
+        {
+          error: { category: 'rate_limited', retryAfterSeconds: 60 },
+        },
+        403,
+      ),
+    );
     vi.stubGlobal('fetch', fetcher);
     const controller = new AbortController();
     const assertion = expect(

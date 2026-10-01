@@ -1,6 +1,6 @@
 # Open Questions and Owner Decisions
 
-Updated: 2026-09-18 — voice memo revision.
+Updated: 2026-10-01 — quota-cooldown follow-up.
 
 Resolved decisions are not questions to ask again. Record new decisions in the affected requirements/ADR and project state.
 
@@ -20,17 +20,18 @@ Resolved decisions are not questions to ask again. Record new decisions in the a
 3. Representative target languages and a small original test subtitle for human quality comparison. NMT remains the initial selector value, not a proven winner.
 4. Acceptance of the actual redistributed timing against movie audio. Which mistakes are unacceptable, and what benchmark passes? A deterministic split cannot guarantee semantic synchronization.
 5. TLLM language/model/location coverage: the current shared picker comes from the NMT catalogue. Which supported pairs will be advertised after live verification?
+6. Inspect and record the project's actual NMT/TLLM per-minute quota settings and same-project usage. The 2026-10-01 full-file run reported `rate_limited` after two application requests; the automatic cooldown recovers safely but does not establish the account-level cause or a public allowance.
 
 No key or billing values need to be pasted into a conversation. The ignored local `.env` already has the owner-controlled configuration.
 
 ## Human/course work still required
 
-6. Confirm semester dates, weekly capacity and a real sprint review/retrospective schedule. Local draft backlog entries are not published GitHub issues.
-7. Validate the audience/personas/user stories with real people; provide interview evidence rather than AI-invented users.
-8. Arrange the external classmate/instructor review required by Week 12; self-review is not equivalent.
-9. Complete the human kept/rejected/mistakes reflections in the linked detailed AI log and rehearse explaining actual source files.
-10. Verify remote CI and frontend/gateway deployment, then retain live demo evidence. Decide which additional desktop browsers to verify.
-11. Language-specific readability profiles beyond the English-derived default remain open. Do not claim universal grammatical accuracy.
+7. Confirm semester dates, weekly capacity and a real sprint review/retrospective schedule. Local draft backlog entries are not published GitHub issues.
+8. Validate the audience/personas/user stories with real people; provide interview evidence rather than AI-invented users.
+9. Arrange the external classmate/instructor review required by Week 12; self-review is not equivalent.
+10. Complete the human kept/rejected/mistakes reflections in the linked detailed AI log and rehearse explaining actual source files.
+11. Verify remote CI and frontend/gateway deployment, then retain live demo evidence. Decide which additional desktop browsers to verify.
+12. Language-specific readability profiles beyond the English-derived default remain open. Do not claim universal grammatical accuracy.
 
 ## Conditional questions — not active blockers
 

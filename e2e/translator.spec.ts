@@ -171,6 +171,32 @@ test('invalid input is visible and cannot start a job', async ({ page }) => {
   ).toBeDisabled();
 });
 
+test('long uploaded filenames stay inside the upload card', async ({
+  page,
+}) => {
+  const filename =
+    'The.Devil.Wears.Prada.2.2026.BLURAY.1080p.BluRay.x264.AAC5.1-YTS.GG-YTS.BZ-English-CROP.srt';
+  await page.goto('./');
+  await page.locator('input[type=file]').setInputFiles({
+    name: filename,
+    mimeType: 'application/x-subrip',
+    buffer: Buffer.from(fixture),
+  });
+  const upload = page.locator('.ant-upload-drag');
+  const displayedName = page.locator('.upload-filename');
+  await expect(displayedName).toHaveText(filename);
+  const uploadBox = await upload.boundingBox();
+  const nameBox = await displayedName.boundingBox();
+  expect(uploadBox).not.toBeNull();
+  expect(nameBox).not.toBeNull();
+  expect(nameBox!.x).toBeGreaterThanOrEqual(uploadBox!.x);
+  expect(nameBox!.x + nameBox!.width).toBeLessThanOrEqual(
+    uploadBox!.x + uploadBox!.width,
+  );
+  await displayedName.hover();
+  await expect(page.getByRole('tooltip')).toHaveText(filename);
+});
+
 test('uses the OS theme initially and confirms before resetting a loaded workspace', async ({
   page,
 }) => {
@@ -237,6 +263,42 @@ test('partial failure retries only pending cues and preserves edits', async ({
   ).toBeVisible();
   await expect(page.locator('.job-summary dd').last()).toHaveText('3');
   expect(calls).toBe(3);
+});
+
+test('shows a rate-limit cooldown and retries the same batch', async ({
+  page,
+}) => {
+  let calls = 0;
+  await page.route(endpoint, async (route) => {
+    const { q } = route.request().postDataJSON() as { q: string[] };
+    calls++;
+    if (calls === 1) {
+      await route.fulfill({
+        status: 403,
+        json: {
+          error: { category: 'rate_limited', retryAfterSeconds: 0.01 },
+        },
+      });
+      return;
+    }
+    await route.fulfill({
+      json: {
+        data: { translations: q.map((text) => ({ translatedText: text })) },
+      },
+    });
+  });
+  await configure(page);
+  await page
+    .getByRole('button', { name: 'Start translation', exact: true })
+    .click();
+  await expect(page.getByText('cooldown', { exact: true })).toBeVisible();
+  await expect(
+    page.getByText('Google quota cooldown', { exact: false }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Download translated SRT' }),
+  ).toBeEnabled();
+  expect(calls).toBe(2);
 });
 
 test('keeps errors for two failed groups while showing a valid sibling', async ({

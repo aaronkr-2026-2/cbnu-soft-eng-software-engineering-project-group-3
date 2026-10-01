@@ -58,6 +58,18 @@ function failureCategory(value: unknown): string | undefined {
   return undefined;
 }
 
+function retryDelayMs(value: unknown): number | undefined {
+  if (
+    record(value) &&
+    record(value.error) &&
+    typeof value.error.retryAfterSeconds === 'number' &&
+    Number.isFinite(value.error.retryAfterSeconds) &&
+    value.error.retryAfterSeconds > 0
+  )
+    return Math.min(Math.ceil(value.error.retryAfterSeconds), 120) * 1000;
+  return undefined;
+}
+
 function failureMessage(status: number, category: string | undefined): string {
   if (category === 'key_restriction')
     return 'Google blocked this server key restriction. A local gateway key must not use a Websites/referrer restriction.';
@@ -70,7 +82,7 @@ function failureMessage(status: number, category: string | undefined): string {
   if (category === 'daily_quota')
     return 'Google Translation daily quota was reached. It resets at midnight Pacific Time; adjust the project quota if appropriate.';
   if (category === 'rate_limited')
-    return 'Google Translation per-minute quota was reached. Wait about a minute, then translate remaining cues.';
+    return 'Google Translation per-minute quota was reached. Automatic retries use a one-minute cooldown; if they are exhausted, retry remaining cues later.';
   if (category === 'access_denied')
     return 'Google denied the project gateway request. Check API access, billing, server key restrictions, and quota.';
   if (category === 'invalid_request')
@@ -113,6 +125,7 @@ export class GoogleTranslate implements TranslationProvider {
     init: RequestInit,
     signal: AbortSignal,
     onRequest?: () => void,
+    onRetryDelay?: (delayMs: number) => void,
   ): Promise<unknown> {
     for (let attempt = 0; attempt < 3; attempt++) {
       checkAbort(signal);
@@ -140,6 +153,7 @@ export class GoogleTranslate implements TranslationProvider {
         if (!response.ok) {
           const data: unknown = await response.json().catch(() => null);
           const category = failureCategory(data);
+          const rateLimited = category === 'rate_limited';
           if (response.status === 502)
             throw new ProviderError(
               'The translation connection is unavailable. If you are working locally, stop both servers and run npm run dev again.',
@@ -147,7 +161,8 @@ export class GoogleTranslate implements TranslationProvider {
             );
           throw new ProviderError(
             failureMessage(response.status, category),
-            response.status === 429 || response.status >= 500,
+            rateLimited || response.status === 429 || response.status >= 500,
+            rateLimited ? (retryDelayMs(data) ?? 60000) : undefined,
           );
         }
         let data: unknown;
@@ -176,7 +191,9 @@ export class GoogleTranslate implements TranslationProvider {
         signal.removeEventListener('abort', cancel);
       }
       if (!failure.retryable || attempt === 2) throw failure;
-      await sleep(500 * 2 ** attempt, signal);
+      const delayMs = failure.retryDelayMs ?? 1000 * 2 ** attempt;
+      onRetryDelay?.(delayMs);
+      await sleep(delayMs, signal);
     }
     throw new ProviderError('Request failed.');
   }
@@ -214,6 +231,7 @@ export class GoogleTranslate implements TranslationProvider {
     target: string,
     signal: AbortSignal,
     onRequest?: () => void,
+    onRetryDelay?: (delayMs: number) => void,
   ): Promise<TranslationResult[]> {
     const body = translationBody(inputs, target, this.model);
     if (
@@ -232,6 +250,7 @@ export class GoogleTranslate implements TranslationProvider {
       { method: 'POST', body },
       signal,
       onRequest,
+      onRetryDelay,
     );
     const items = responseItems(data, 'translations');
     if (items.length !== inputs.length)

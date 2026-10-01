@@ -17,6 +17,7 @@ export interface TranslationProvider {
     target: string,
     signal: AbortSignal,
     onRequest?: () => void,
+    onRetryDelay?: (delayMs: number) => void,
   ): Promise<TranslationResult[]>;
   clear(): void;
 }
@@ -25,6 +26,7 @@ export class ProviderError extends Error {
   constructor(
     message: string,
     readonly retryable = false,
+    readonly retryDelayMs?: number,
   ) {
     super(message);
     this.name = 'ProviderError';

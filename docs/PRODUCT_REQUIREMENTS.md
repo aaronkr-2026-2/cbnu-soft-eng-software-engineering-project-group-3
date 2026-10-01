@@ -30,7 +30,7 @@ Not in this increment: Gemini, visitor keys, accounts/payments, statistics, movi
 | FR-002 | No footer. | Shell review. |
 | FR-003 | Approximately 20% desktop controls / 80% preview, usable at narrower widths. | Browser/visual review. |
 | FR-004 | Initialize theme from OS on page load; manual sun/moon switch and next-theme tooltip; all standard components use the shared theme. | Dark OS load and switch tests. |
-| FR-010 | Local choose/drop English UTF-8 SRT, at most 5 MiB; report malformed, unsupported or empty files. | Parser/file tests and browser upload. |
+| FR-010 | Local choose/drop English UTF-8 SRT, at most 5 MiB; report malformed, unsupported or empty files. Long loaded names remain inside the upload card and the complete name is discoverable. | Parser/file tests and browser upload/overflow check. |
 | FR-011 | Retain source order, indexes, exact time strings, multiline source and supported markup. | Round trips and downloaded output. |
 | FR-012 | Searchable target-language names/codes loaded automatically from official provider data. Exclude English as the fixed source. | Language-loading and selection tests. |
 | FR-013 | Non-searchable NMT/TLLM picker with concise, accurate explanations; both use joined speech. | Provider payload tests for both models. |
@@ -48,7 +48,7 @@ The language catalogue comes from Basic v2 NMT language discovery. It is not ind
 | FR-020 | Keep review/scrolling responsive during translation; virtualize long lists and yield between batches. | Synthetic 2,500-cue browser test. |
 | FR-021 | Show completed/total cues, status, percent, elapsed time and cumulative translation-request attempts. Stop the timer on terminal states; resumed elapsed time spans from the first Start (including intervening wait), and retries do not reset request counts. | Progress/retry tests; language lookup excluded from translation count. |
 | FR-022 | Distinguish waiting, translating, translated, failed and edited; explain failures below the affected paired card. | Only affected submitted cues fail; unattempted cues remain waiting. |
-| FR-023 | Bounded retries/timeouts, cancellation, stale-result protection and response validation. Failed jobs offer Retry; valid prior results/edits survive. | Provider/job/hook failure tests. |
+| FR-023 | Bounded retries/timeouts, cancellation, stale-result protection and response validation. An allowlisted per-minute `rate_limited` 403 uses the gateway delay or a 60-second default, visibly and cancelably, with at most three total attempts. Failed jobs offer Retry; valid prior results/edits survive. | Provider/job/hook failure tests; mocked cooldown browser flow. |
 | FR-024 | Later milestone: local checkpoint/resume after reload. Current implementation promises only in-tab recovery. | Required reload test before claiming this feature complete. |
 | FR-025 | Never silently drop, duplicate or empty a cue. Group validation precedes saving its output. | Short/malformed output and conservation tests. |
 | FR-026 | Active-job warning: keep tab open and foregrounded; reloading currently loses session work. | Browser warning test. |
