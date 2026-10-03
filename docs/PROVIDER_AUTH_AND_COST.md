@@ -1,6 +1,6 @@
 # Cloud Translation access, models and cost
 
-Updated: 2026-09-18. Current decisions: [ADR-004](ADR-004-OWNER-FUNDED-CLOUD-TRANSLATION.md), [ADR-006](ADR-006-JOINED-SPEECH-REDISTRIBUTION.md).
+Updated: 2026-10-01. Current decisions: [ADR-004](ADR-004-OWNER-FUNDED-CLOUD-TRANSLATION.md), [ADR-006](ADR-006-JOINED-SPEECH-REDISTRIBUTION.md).
 
 ## Models and requests
 
@@ -24,6 +24,10 @@ Request count means planned HTTP translation batches. During the job, the actual
 ## Limits and production controls
 
 Google recommends approximately 5,000 code points per request; Basic permits at most 100K bytes. TLLM also has a 30,000-character request limit. The app uses smaller preferred batches and a 90,000-byte client margin. Rate and quota limits still apply; grouping or concurrency does not bypass them. [Quotas and limits](https://docs.cloud.google.com/translate/quotas).
+
+Google documents per-minute quota exhaustion as HTTP 403 `User Rate Limit Exceeded`, not only HTTP 429. The gateway therefore maps only the allowlisted per-minute category to `rate_limited`, forwards a numeric `Retry-After` when usable, and otherwise supplies 60 seconds. The browser shows the cooldown and retries the same batch at most twice after the initial attempt; Cancel interrupts the wait. Ordinary transient failures use short bounded exponential delays. Daily quota, billing, permission and invalid-request categories still stop immediately.
+
+This recovery does not prove why one account reached its limit, change the Cloud project's quota, or enforce the future public allowance. The observed run reported a rate limit after two application requests, so the project's actual quota configuration and other same-project usage must be checked in Google Cloud before interpreting request count alone. Adding a fixed pause after every successful batch would reduce throughput without reliably matching a character- or request-based quota window.
 
 Before public translation, define a monthly owner budget, public allowance, gateway host, rate/concurrency limits and abuse controls. Budgets/alerts alone are not an application spending stop. Keep the API key out of `VITE_*`, browser persistence, URLs, telemetry, logs and downloads. Pages serves the frontend only; the private gateway deploys separately.
 

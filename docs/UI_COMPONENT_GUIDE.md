@@ -28,6 +28,8 @@ The long subtitle review list uses `@tanstack/react-virtual` because Ant Design 
 
 Inspect the rendered DOM when styling an Ant Design composite component. `Sider` wraps its supplied content in `.ant-layout-sider-children`; sidebar gaps and the bottom action region belong on that actual layout container. The desktop translator uses 24 px between major controls, a stationary action group below the scrollable sidebar controls, and a compact sticky preview/column-label header in the content pane.
 
+`Upload.Dragger` also renders an internal drag container. Loaded filenames must be constrained on that actual container: use safe anywhere-wrapping with a bounded visible line count, and keep the complete name available through a tooltip. Do not let a local filename widen or escape the sidebar.
+
 Use a `Tooltip` for a short label such as the next theme action. Use a `Popover` for compact optional help that needs a sentence or two, with a deliberate reading width. Use a `Modal` only for a workflow explanation that merits focused reading; give it the minimum necessary action buttons.
 
 ## Review check

@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 2026-10-01 — joined-speech revision verification
+Last updated: 2026-10-01 — upload-name and quota-cooldown fix
 
 ## Confirmed product
 
@@ -12,11 +12,13 @@ Both official Cloud Translation models use the owner's server-side gateway. The 
 
 - React/TypeScript/Vite/Ant Design with a compact header, approximate 20/80 desktop layout and virtualized paired cue cards. Theme starts from the OS; shared configuration lives in `src/app/theme.ts`. Major controls use 24 px spacing within an 8/16/24/32 px scale. Ant Design Upload handles choose/drop.
 - English UTF-8 SRT up to 5 MiB; balanced i/b/u markup; strict import errors; original source identity/times preserved. The header brand confirms before resetting loaded work. Help has X and OK; repository/theme controls remain compact.
+- Long loaded filenames stay within the Ant Design upload card, clamp to three visible lines and expose the complete name in a tooltip.
 - Languages load automatically through the gateway, without a paid Hello probe. The picker uses Google's NMT catalogue; not every TLLM language/model/location is independently verified.
 - Shared source grouping joins lowercase/ellipsis continuation speech for BOTH engines. Soft wraps become spaces; structural speaker/sound/music boundaries remain distinct. Groups are technically bounded to 64 cues and a preferred 5,000 source characters, with request-size validation.
 - Provider results are validated and redistributed locally into original time slots by reading capacity and target-language boundaries, then wrapped. This is approximate text placement, not semantic/audio alignment. Redistributed cues show a review notice. See `docs/SUBTITLE_FORMATTING_SPEC.md` for constraints.
 - Original timing, supported markup, translated text and edits are retained. Impossible distributions fail visibly. Valid sibling groups survive a local group failure; request failures affect the submitted batch. Retry preserves completed original groups and edits; unattempted cues remain waiting.
 - Progress, elapsed time, cumulative translation-attempt count, cancellation, per-cue errors, editing and complete-only download exist. Retry retains the first start time; elapsed time spans from first Start to the latest stop, including the gap when resumed. Reload recovery is not implemented.
+- The gateway recognizes Google's per-minute quota response as an allowlisted `rate_limited` 403 and supplies a bounded retry delay. The browser waits for that cancelable cooldown (60 seconds when Google supplies no usable `Retry-After`) and retries the same batch, up to three total attempts. The UI shows `cooldown` and the scheduled retry time. Other transient failures retain short bounded backoff; daily quota, permission, billing and invalid requests are not retried.
 - Cost estimates show the selected engine's whole file and remaining work. NMT counts prepared input; TLLM assumes output length equals input and labels that assumption. Credits and final billing are unknown. No guaranteed cost ceiling is claimed.
 - The local Node gateway proxies official NMT/TLLM only, validates request shape/size and sanitizes failure categories. TLLM input is capped at 30,000 code points. Routine tests mock Google. Requests are currently sequential; concurrency is not part of this revision.
 
@@ -32,9 +34,9 @@ README, architecture and migration plans no longer instruct visitor keys or desc
 
 The archived HTML at `archive/mvp/srt-translator-beta-3.html` and local `mvp-baseline` tag (`b64bc59`) preserve the before-state. The archive's undocumented endpoint is excluded from the production build.
 
-Earlier logs record minimal live NMT/TLLM requests on 2026-09-18 using `us-central1`; Seoul `asia-northeast3` failed that smoke test. The user also reported full-file attempts and UI/quality problems. Neither is controlled live acceptance evidence for the revised grouped pipeline. On 2026-10-01, the current revision passed typecheck, zero-warning lint, 83 Vitest tests, the production build, formatting, and 10 mocked Chromium workflows. Current automated verification is recorded in BUILD_LOG.md, with mocked provider quality clearly separated from human review.
+Earlier logs record minimal live NMT/TLLM requests on 2026-09-18 using `us-central1`; Seoul `asia-northeast3` failed that smoke test. The user also reported full-file attempts and UI/quality problems. Neither is controlled live acceptance evidence for the revised grouped pipeline. On 2026-10-01, the upload-name and quota-cooldown revision passed typecheck, zero-warning lint, 84 Vitest tests, the production build, formatting, the build-artifact check and 12 mocked Chromium workflows. Current automated verification is recorded in BUILD_LOG.md, with mocked provider quality clearly separated from human review.
 
-Public gateway hosting, owner budget/allowance, server-enforced abuse/rate controls, live grouped-subtitle language/timing review and current remote deployment evidence remain outstanding. Current desktop compatibility targets exceed the browsers actually tested. A bundle-size warning remains documented with build evidence.
+Public gateway hosting, owner budget/allowance, server-enforced abuse/rate controls, the project's actual Cloud quota settings, live grouped-subtitle language/timing review and current remote deployment evidence remain outstanding. The cooldown is recovery from a provider limit, not a production allowance or spending control. Current desktop compatibility targets exceed the browsers actually tested. A bundle-size warning remains documented with build evidence.
 
 ## Next work
 

@@ -43,6 +43,7 @@ export function useTranslator(model: TranslationModel = 'nmt') {
   const [startedAt, setStartedAt] = useState<number>();
   const [finishedAt, setFinishedAt] = useState<number>();
   const [apiCalls, setApiCalls] = useState(0);
+  const [retryAt, setRetryAt] = useState<number>();
   const provider = useRef<TranslationProvider | null>(null);
   const testAbort = useRef<AbortController | null>(null);
   const jobAbort = useRef<AbortController | null>(null);
@@ -114,6 +115,7 @@ export function useTranslator(model: TranslationModel = 'nmt') {
     setStartedAt(undefined);
     setFinishedAt(undefined);
     setApiCalls(0);
+    setRetryAt(undefined);
     setError('');
   };
 
@@ -261,7 +263,13 @@ export function useTranslator(model: TranslationModel = 'nmt') {
               }));
           },
           request: () => {
-            if (current()) setApiCalls((count) => count + 1);
+            if (current()) {
+              setRetryAt(undefined);
+              setApiCalls((count) => count + 1);
+            }
+          },
+          retryDelay: (delayMs) => {
+            if (current()) setRetryAt(Date.now() + delayMs);
           },
         },
         profile,
@@ -279,6 +287,7 @@ export function useTranslator(model: TranslationModel = 'nmt') {
       if (current()) {
         setFinishedAt(Date.now());
         setActiveIds([]);
+        setRetryAt(undefined);
       }
     }
   }
@@ -344,6 +353,7 @@ export function useTranslator(model: TranslationModel = 'nmt') {
     startedAt,
     finishedAt,
     apiCalls,
+    retryAt,
     loadFile,
     estimate,
     remainingEstimate,

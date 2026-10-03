@@ -222,9 +222,13 @@ function Translator({
                 <UploadOutlined />
               </p>
               <p className="ant-upload-text">
-                {app.loadingFile
-                  ? 'Reading subtitle…'
-                  : app.filename || 'Choose or drop an SRT'}
+                <Tooltip title={app.filename || undefined}>
+                  <span className="upload-filename">
+                    {app.loadingFile
+                      ? 'Reading subtitle…'
+                      : app.filename || 'Choose or drop an SRT'}
+                  </span>
+                </Tooltip>
               </p>
               <p className="ant-upload-hint">UTF-8 · up to 5 MiB</p>
             </Upload.Dragger>
@@ -405,7 +409,9 @@ function Translator({
                   </strong>
                   <Tag>
                     {app.status === 'running'
-                      ? 'translating'
+                      ? app.retryAt
+                        ? 'cooldown'
+                        : 'translating'
                       : app.status === 'completed'
                         ? 'done'
                         : app.status}
@@ -438,6 +444,12 @@ function Translator({
                     <dd>{app.apiCalls}</dd>
                   </div>
                 </dl>
+                {app.retryAt && (
+                  <small className="retry-note">
+                    Google quota cooldown · retrying at{' '}
+                    {new Date(app.retryAt).toLocaleTimeString()}
+                  </small>
+                )}
                 {app.startedAt !== undefined && (
                   <small>
                     Started {new Date(app.startedAt).toLocaleTimeString()}

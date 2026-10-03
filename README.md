@@ -22,7 +22,7 @@ Translate an English `.srt` file, review the result, and download subtitles with
 
 1. Choose or drop an English UTF-8 SRT, up to 5 MiB.
 2. Select NMT or TLLM, a target language, and Adult (20 CPS) or Children (17 CPS).
-3. Start translation. Progress, elapsed time and translation request attempts appear at the sidebar bottom.
+3. Start translation. Progress, elapsed time and translation request attempts appear at the sidebar bottom. A Google per-minute limit triggers a visible, cancelable cooldown before a bounded automatic retry.
 4. Review the paired cards. Edit translations, check readability warnings and review redistributed speech against the movie. Retry unfinished work if a request fails.
 5. Download when every cue is ready. Saved edits are included.
 

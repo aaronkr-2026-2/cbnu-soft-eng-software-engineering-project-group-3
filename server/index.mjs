@@ -8,6 +8,16 @@ const location =
   process.env.GOOGLE_TRANSLATE_TLLM_LOCATION?.trim() || 'us-central1';
 const maxBodyBytes = 100_000;
 const maxTllmInputCharacters = 30_000;
+const defaultRateLimitRetrySeconds = 60;
+
+function retryAfterSeconds(response) {
+  const value = response.headers.get('retry-after');
+  if (!value) return defaultRateLimitRetrySeconds;
+  const seconds = Number(value);
+  if (Number.isFinite(seconds) && seconds > 0)
+    return Math.min(Math.ceil(seconds), 120);
+  return defaultRateLimitRetrySeconds;
+}
 
 function cloudFailure(response, data) {
   const providerMessage =
@@ -42,6 +52,8 @@ function cloudFailure(response, data) {
   const error = new Error('Cloud Translation request failed.');
   error.status = response.status;
   error.category = category;
+  if (category === 'rate_limited')
+    error.retryAfterSeconds = retryAfterSeconds(response);
   // Never log the upstream message, request body, subtitle text, or key.
   console.error(
     `[translation-gateway] Cloud Translation failure: HTTP ${response.status}; ${category}`,
@@ -167,6 +179,9 @@ createServer(async (request, response) => {
           typeof error.category === 'string'
             ? error.category
             : 'gateway_failure',
+        ...(typeof error.retryAfterSeconds === 'number'
+          ? { retryAfterSeconds: error.retryAfterSeconds }
+          : {}),
       },
     });
   }

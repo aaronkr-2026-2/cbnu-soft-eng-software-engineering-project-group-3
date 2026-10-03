@@ -92,6 +92,23 @@ a {
 .ant-upload-wrapper {
   width: 100%;
 }
+.sidebar .ant-upload-drag-container {
+  display: block;
+  min-width: 0;
+}
+.sidebar .ant-upload-text {
+  max-width: 100%;
+  padding: 0 var(--space-small);
+  overflow: hidden;
+}
+.upload-filename {
+  display: -webkit-box;
+  max-width: 100%;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
 .file-summary {
   font-size: 11px;
   color: var(--muted);
@@ -165,6 +182,11 @@ a {
 .job-summary dd {
   margin: 4px 0;
   font-variant-numeric: tabular-nums;
+}
+.retry-note {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
 }
 .sidebar-actions {
   flex: 0 0 auto;

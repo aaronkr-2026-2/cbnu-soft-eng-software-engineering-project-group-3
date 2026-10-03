@@ -46,9 +46,9 @@ No new state-management or theming framework is needed. Standard UI uses Ant Des
 3. Build bounded original groups and their speech/speaker/sound units. Remove soft wraps; retain meaningful structure.
 4. Estimate the selected model's whole-file usage and pending work from those same inputs.
 5. Start only with a valid file/model/language and an explicit reading profile.
-6. Send batches of units through the provider; separate `q` strings are separate units, not shared context. Both models receive joined speech within a unit.
+6. Send batches of units sequentially through the provider; separate `q` strings are separate units, not shared context. Both models receive joined speech within a unit. A sanitized per-minute `rate_limited` 403 pauses the same batch for the gateway-provided delay, or 60 seconds by default, before a bounded retry. The delay is cancelable and visible; successful requests do not receive an arbitrary fixed delay.
 7. Validate response count, local unit IDs/order, text and markup/structural markers. Redistribute joined output by capacity and language boundaries, then format each original cue. This is approximate layout, not semantic alignment.
-8. Save valid groups and show progress. A provider request failure affects its submitted batch; a redistribution failure affects its group. Later unattempted cues remain waiting. Retry skips completed original groups and preserves edits.
+8. Save valid groups and show progress. A provider request failure affects its submitted batch; a redistribution failure affects its group. Later unattempted cues remain waiting. Automatic cooldown retries count as translation attempts. Manual retry skips completed original groups and preserves edits.
 9. Download only when every cue is valid. No blank cue, timing rewrite or lost text is accepted as successful output.
 
 The request counter accumulates translation attempts, including automatic/manual retries. Language discovery is not a translation attempt. Timer semantics and exact successful test results are recorded with the implementation evidence. Cancellation/reset/model changes must reject stale results.

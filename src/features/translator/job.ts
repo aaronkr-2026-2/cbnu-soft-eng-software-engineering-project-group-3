@@ -18,6 +18,7 @@ export interface JobCallbacks {
   active: (ids: string[]) => void;
   completed: (results: Record<string, string>) => void;
   request: () => void;
+  retryDelay?: (delayMs: number) => void;
   failed?: (ids: string[], error: unknown) => void;
 }
 
@@ -55,6 +56,7 @@ export async function runJob(
         target,
         signal,
         callbacks.request,
+        callbacks.retryDelay,
       );
       checkAbort(signal);
       const byId = new Map(results.map((result) => [result.id, result.text]));
