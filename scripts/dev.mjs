@@ -3,7 +3,7 @@ import { spawn } from 'node:child_process';
 const command = process.platform === 'win32' ? 'npx.cmd' : 'npx';
 let stopping = false;
 
-const gateway = spawn(process.execPath, ['server/index.mjs'], {
+const gateway = spawn(process.execPath, ['backend/server/index.mjs'], {
   stdio: 'inherit',
 });
 const client = spawn(command, ['vite'], { stdio: 'inherit' });

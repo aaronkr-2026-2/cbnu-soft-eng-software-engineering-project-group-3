@@ -1,9 +1,9 @@
-import { getLanguages } from '../../server/translationGateway.mjs';
+import { getLanguages } from '../../backend/server/translationGateway.mjs';
 import {
   failureResponse,
   jsonResponse,
   methodNotAllowed,
-} from '../../server/vercelAdapter.mjs';
+} from '../../backend/server/vercelAdapter.mjs';
 
 export default {
   async fetch(request) {

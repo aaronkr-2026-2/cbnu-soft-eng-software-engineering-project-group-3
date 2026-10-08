@@ -96,7 +96,7 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 
 **What I kept as-is:** TBD - human review required. Existing visitor-funded, memory-only credential requirements and application source were preserved.
 
-**What I changed or rejected, and why:** Added docs/GOOGLE_TRANSLATE_SETUP.md, linked it from docs/PROVIDER_AUTH_AND_COST.md, and reconciled PROJECT_STATE.md with local repository evidence. The guide covers billing/API setup, restricted Basic v2 keys, development quotas, budget alerts, and the future local browser test. No Google resources were configured and no key or paid API call was used. Human acceptance/rejection of the setup recommendations is TBD - human review required.
+**What I changed or rejected, and why:** Added docs/guides/GOOGLE_TRANSLATE_SETUP.md, linked it from docs/guides/PROVIDER_AUTH_AND_COST.md, and reconciled PROJECT_STATE.md with local repository evidence. The guide covers billing/API setup, restricted Basic v2 keys, development quotas, budget alerts, and the future local browser test. No Google resources were configured and no key or paid API call was used. Human acceptance/rejection of the setup recommendations is TBD - human review required.
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. No human-reported error was supplied. The credential field and browser compatibility test are explicitly recorded as pending, not implemented or passed.
 
@@ -108,7 +108,7 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 
 **What I kept as-is:** TBD - human review required. The official Basic v2 direction, visitor funding, and session-memory-only key design remain unchanged.
 
-**What I changed or rejected, and why:** Expanded docs/GOOGLE_TRANSLATE_SETUP.md with conditional billing troubleshooting and same-project API enablement/restriction steps. Updated PROJECT_STATE.md to record user-reported trial activation and the subsequent confirmation that the signup amount is on hold, consistent with a verification authorization; API setup remains unverified. No billing, refund, key, or application operation was performed. Human acceptance/rejection is TBD - human review required.
+**What I changed or rejected, and why:** Expanded docs/guides/GOOGLE_TRANSLATE_SETUP.md with conditional billing troubleshooting and same-project API enablement/restriction steps. Updated PROJECT_STATE.md to record user-reported trial activation and the subsequent confirmation that the signup amount is on hold, consistent with a verification authorization; API setup remains unverified. No billing, refund, key, or application operation was performed. Human acceptance/rejection is TBD - human review required.
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. The user confirmed that the amount is on hold. Its actual release has not been verified; no account-specific refund guarantee is recorded.
 
@@ -120,7 +120,7 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 
 **What I kept as-is:** TBD - human review required. The credential file contents were not read or modified; the memory-only visitor credential design remains unchanged.
 
-**What I changed or rejected, and why:** Added .gitignore rules for local environment files and the mentioned .nev spelling, allowing a future placeholder-only .env.example. Updated PROJECT_STATE.md and docs/GOOGLE_TRANSLATE_SETUP.md to distinguish reported credential preparation from a working integration. The existing .env was untracked and previously not ignored. No key was printed, used in a request, or included in the app. Human acceptance/rejection is TBD - human review required.
+**What I changed or rejected, and why:** Added .gitignore rules for local environment files and the mentioned .nev spelling, allowing a future placeholder-only .env.example. Updated PROJECT_STATE.md and docs/guides/GOOGLE_TRANSLATE_SETUP.md to distinguish reported credential preparation from a working integration. The existing .env was untracked and previously not ignored. No key was printed, used in a request, or included in the app. Human acceptance/rejection is TBD - human review required.
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. Key validity and restrictions remain unverified; no successful provider test is claimed.
 
@@ -132,7 +132,7 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 
 **What I kept as-is:** TBD - human review required. The accepted stack, visitor-funded session credentials, subtitle requirements, and deferred cloud storage remain unchanged.
 
-**What I changed or rejected, and why:** Added docs/REACT_MIGRATION_PLAN.md with ordered issues, acceptance checks, credential boundaries, user participation, and unresolved decisions. Linked the plan from PROJECT_STATE.md and docs/SEMESTER_PLAN.md and clarified provider/model and welcome-credit distinctions in docs/PROVIDER_AUTH_AND_COST.md. The plan proposes Basic v2 NMT first and a separate future Gemini adapter. No application implementation, credential reading, or paid API calls occurred. Human acceptance/rejection is TBD - human review required.
+**What I changed or rejected, and why:** Added docs/requirements/REACT_MIGRATION_PLAN.md with ordered issues, acceptance checks, credential boundaries, user participation, and unresolved decisions. Linked the plan from PROJECT_STATE.md and docs/planning/SEMESTER_PLAN.md and clarified provider/model and welcome-credit distinctions in docs/guides/PROVIDER_AUTH_AND_COST.md. The plan proposes Basic v2 NMT first and a separate future Gemini adapter. No application implementation, credential reading, or paid API calls occurred. Human acceptance/rejection is TBD - human review required.
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. No human-reported error was supplied. Planning, mocked verification, live browser authentication, and deployment are distinguished; none is claimed complete without evidence.
 
@@ -192,7 +192,7 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 
 **What I kept as-is:** TBD - human review required. Application code, local credentials, ADR-002 visitor funding, and canonical agent/model instructions are unchanged.
 
-**What I changed or rejected, and why:** TBD - human review required. Added docs/TRANSLATION_FEASIBILITY_REVIEW.md with verified code gaps and a proposed sequence for funding choice, quality benchmarking, context/cue alignment, measured performance, and release evidence. Updated PROJECT_STATE.md, docs/PROVIDER_AUTH_AND_COST.md, and docs/REACT_MIGRATION_PLAN.md to distinguish the implemented NMT port from the incomplete product vision and to record current Basic v2 TLLM support. Corrected the assumption that movie duration determines request fit. Documentation-only verification uses git diff --check and local link checks; no new application-test or live-provider success is claimed. No credential contents were read, paid calls made, or changes pushed.
+**What I changed or rejected, and why:** TBD - human review required. Added docs/TRANSLATION_FEASIBILITY_REVIEW.md with verified code gaps and a proposed sequence for funding choice, quality benchmarking, context/cue alignment, measured performance, and release evidence. Updated PROJECT_STATE.md, docs/guides/PROVIDER_AUTH_AND_COST.md, and docs/requirements/REACT_MIGRATION_PLAN.md to distinguish the implemented NMT port from the incomplete product vision and to record current Basic v2 TLLM support. Corrected the assumption that movie duration determines request fit. Documentation-only verification uses git diff --check and local link checks; no new application-test or live-provider success is claimed. No credential contents were read, paid calls made, or changes pushed.
 
 **Something the AI got wrong that I had to catch:** The user reported that the project's functionality does not match their plan. Inspection confirms that the port's visual continuation groups do not provide conversation context to the provider and that formatting does not perform semantic cue alignment. Any additional human reflection is TBD - human review required.
 
@@ -202,7 +202,7 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 
 **What I asked for:** Remove Gemini Developer API and visitor API keys from the product, use only NMT/TLLM with the owner project key in `.env`, clean obsolete project records, move the MVP, remove `.DS_Store`, and create short and detailed AI logs.
 
-**What I kept as-is:** TBD - human review required. The original MVP remains preserved at `archive/mvp/srt-translator-beta-3.html`; local subtitle processing, telemetry-only cloud scope, and the ignored credential boundary remain.
+**What I kept as-is:** TBD - human review required. The original MVP remains preserved at `docs/mvp/srt-translator-beta-3.html`; local subtitle processing, telemetry-only cloud scope, and the ignored credential boundary remain.
 
 **What I changed or rejected, and why:** Added ADR-004, a local Node gateway that reads `GOOGLE_TRANSLATE_API_KEY` outside Vite, NMT/TLLM UI selection, gateway tests/mocks, `.env.example`, and gateway setup documentation. Moved the detailed AI history to this file and replaced the root AI log with short entries. Removed tracked `.DS_Store`, obsolete PROJECT.md, and the Gemini prompt contract; moved the MVP from the repository root. Updated current-state, requirements, architecture, plan, course, sprint, setup, and provider records. `npm run check`, formatting, Node syntax check, and four mocked Chromium flows passed. No `.env` value was read or used.
 
@@ -300,7 +300,7 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 
 **What I kept as-is:** The subtitle editor's product-specific paired-cue structure, semantic text rendering, editing behavior, continuation labels, and off-screen rendering containment remain. These do not have an equivalent ready-made Ant Design component.
 
-**What I changed or rejected, and why:** Replaced the page shell with Ant Design `Layout`, `Header`, `Sider`, and `Content`; replaced generic action/form arrangements with `Flex`; and changed original/translated cue surfaces to Ant Design `Card`. Added `docs/UI_COMPONENT_GUIDE.md` and made it part of the required AI read order. Kept focused CSS only for visual identity, responsive behavior, and subtitle-specific interaction/performance needs. `npm run check` passed TypeScript, ESLint, 59 Vitest tests, and the production build; `npm run format:check` passed; and `npm run test:e2e` passed all four Chromium workflows. The build retains the pre-existing Vite warning for a JavaScript chunk above 500 kB.
+**What I changed or rejected, and why:** Replaced the page shell with Ant Design `Layout`, `Header`, `Sider`, and `Content`; replaced generic action/form arrangements with `Flex`; and changed original/translated cue surfaces to Ant Design `Card`. Added `docs/guides/UI_COMPONENT_GUIDE.md` and made it part of the required AI read order. Kept focused CSS only for visual identity, responsive behavior, and subtitle-specific interaction/performance needs. `npm run check` passed TypeScript, ESLint, 59 Vitest tests, and the production build; `npm run format:check` passed; and `npm run test:e2e` passed all four Chromium workflows. The build retains the pre-existing Vite warning for a JavaScript chunk above 500 kB.
 
 **Something the AI got wrong that I had to catch:** The existing React port used Ant Design controls but did not use its layout primitives for the application shell. The user identified this mismatch. Human review of the final visual layout is TBD - human review required.
 
@@ -438,3 +438,51 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** TBD - human review required
 
 **Something the AI got wrong that I had to catch:** TBD - human review required
+
+## Responsive feedback and layout containment — 2026-10-08
+
+**Tool(s) used:** ChatGPT/Codex; user-supplied production screenshot; local React/CSS and Ant Design rendered-DOM inspection; Playwright Chromium; TypeScript, ESLint, Prettier and Vitest.
+
+**What I asked for:** Repair the language-loading error card whose message collapsed into one-character columns and whose retry button escaped the card, then make the surrounding components and layout resilient at desktop and mobile widths.
+
+**What I kept as-is:** TBD - human review required
+
+**What I changed or rejected, and why:** TBD - human review required
+
+**Something the AI got wrong that I had to catch:** TBD - human review required
+
+## Modular code and documentation refactor — 2026-10-08
+
+**Tool(s) used:** ChatGPT/Codex; local Git/source/test inspection; Swift PDFKit extraction of the supplied lecture PDF; official Vercel Vite/configuration documentation; TypeScript, ESLint, Prettier, Vitest and mocked Playwright Chromium.
+
+**What I asked for:** Separate frontend/backend code without disturbing professor/Classroom50 starter files; move the archived MVP into docs; audit obsolete and fragile code and malformed API behavior; simplify README with a screenshot; organize documents; convert product personas/stories/gaps to a concise, lecture-informed format; update project memory and logs.
+
+**What I kept as-is:** TBD - human review required. Verified technical preservation: the same-origin `/api` contract, joined-speech NMT/TLLM flow, SRT cue/timing invariants, owner-only credential boundary, Classroom50 configuration/workflow/resources, and historical ADR/AI evidence remain.
+
+**What I changed or rejected, and why:** TBD - human review required. The code now lives under `frontend/` and `backend/`; only the two Vercel-required Function exports remain in root `api/`. The unchanged MVP HTML moved to `docs/mvp/`. Documentation now has topic folders, navigation and a README screenshot from a mocked test. Persona scenarios and comparison tables distinguish assumptions, implementation and human evidence. The attached PDF was a literature-review lecture, not a persona template, so only its relevant synthesis/comparison approach was used. The obsolete no-op provider `clear()` method was removed. Function body streaming is size-bounded before full buffering; empty inputs and English-only language responses fail safely. Malformed successful JSON unit and browser cases were added. `npm run format:check`, `npm run check` (108 tests and documentation links), `npm run check:build`, Node syntax checks and all 15 mocked Chromium workflows passed; Git whitespace check passed before logging. No live provider cost or quality claim is made.
+
+**Something the AI got wrong that I had to catch:** TBD - human review required. During verification, the first browser attempt was blocked by sandbox localhost permissions; it passed with local socket permission. A retained test mock still declared the removed `clear()` method, which typecheck caught and was fixed before the final suite. The live budget, rate limit, paid smoke, server-side upstream deadline and human timing/language review remain open.
+
+## Correct Features, Stories lecture alignment — 2026-10-08
+
+**Tool(s) used:** ChatGPT/Codex; the owner-supplied *5. Features, Stories* PDF read with Swift PDFKit and visually checked as page images; local product/source/test records; TypeScript, ESLint, Vitest, Vite, Prettier and Markdown-link/build-artifact checks.
+
+**What I asked for:** The owner corrected the lecture attachment for the previous product-document refactor and explicitly chose to leave the lecture's additional persona/scenario TBD. Align the affected records to that correct lecture without inventing human validation or changing application behavior.
+
+**What I kept as-is:** TBD - human review required. The source-checked current-app inventory, owner-supplied Teddy/Jenna hypotheses, existing app behavior, archived MVP, original course files and earlier audit history were preserved.
+
+**What I changed or rejected, and why:** TBD - human review required. The product folder now separates two four-aspect proto-personas, two narratives with the lecture's scenario elements, 11 provisional user stories, 11 traced feature cards, a feature/story/issue gap map and a four-question creep audit. The taxonomy folds UI observations into coherent features and removes automated tests as a user-facing feature; no runtime cut or new GitHub issue is claimed. Project state, open questions, requirement links, sprint snapshot note and the earlier audit correction point to the new records. `npm run check` passed typecheck, zero-warning lint, 108 tests, build and links across 45 Markdown files; formatting, build-artifact and whitespace checks passed. Browser workflows were not rerun for the docs-only change.
+
+**Something the AI got wrong that I had to catch:** TBD - human review required. The preceding refactor used the supplied *Literature Review* PDF as its available course source; the owner then supplied the intended *Features, Stories* PDF. Real-person checks, three corrections, the third role/scenario, issue trace and any shipped feature cut remain outstanding. The existing bundle-size warning is unchanged.
+
+## PR publication and commit-traced issue backlog — 2026-10-09
+
+**Tool(s) used:** ChatGPT/Codex; local Git/history and repository docs; npm/TypeScript/ESLint/Vitest/Vite/Playwright; GitHub CLI with the existing Git credential for single commands; read-only GitHub connector inspection.
+
+**What I asked for:** Resume the PR/merge request, remove the now-empty root `archive/`, confirm project-state upkeep rules, turn previously completed work into GitHub issues marked by implementing commit, and build a useful open backlog.
+
+**What I kept as-is:** TBD - human review required. The existing canonical `AGENTS.md` rule already puts `PROJECT_STATE.md` first in the reading order and updates it after material changes, so no duplicate rule was added. The Classroom50 starter files, archived MVP content, application behavior and ignored `.env` were untouched.
+
+**What I changed or rejected, and why:** TBD - human review required. Removed only an ignored `.DS_Store` from root `archive/` and removed the empty local directory; neither was tracked by Git. Published the branch and opened PR #5. Created retrospective GitHub issues for commit-backed implementation milestones, added the implementation commit to already-closed issue #2, and left unresolved production/quality/recovery/validation/reliability/review work open in #17–#22. Added a backlog index and connected it to the README, docs map, product gap map, state and open questions. Local verification before these documentation edits passed formatting, typecheck, lint, 108 tests, build, build-artifact scan and 15 mocked Chromium workflows; the first browser attempt hit sandbox-only localhost `EPERM`, then passed with local socket permission. Documentation links across 46 Markdown files and whitespace checks passed after the edits. The initial PR `verify` workflow passed before this final documentation commit.
+
+**Something the AI got wrong that I had to catch:** TBD - human review required. The GitHub connected app returned 403 for writes and the local `gh` stored token was invalid; the existing Git credential worked for single GitHub commands without exposing its value. Retrospective issues document past work, not contemporaneous planning or missing human/production evidence. PR merge and remote CI results must be verified separately.
