@@ -1,20 +1,25 @@
-# Feature–story gap map
+# Feature ↔ story ↔ issue gap map
 
-Updated: 2026-10-08. Read **down each evidence column**, not only across a row: code coverage, deployed behavior and human outcome are different claims. This follows the attached literature-review lecture's comparison/synthesis approach; it is not a claimed persona template.
+Updated: 2026-10-08. This is the lecture's **keep / orphan / backlog** check. Every listed product feature has a proposed story, but stories and priorities are not real-user validated. “Issue TBD” means no GitHub issue is claimed; this documentation task did not create remote issues.
 
-| Story | Implemented feature IDs | Code status | Remaining evidence or work |
-| --- | --- | --- | --- |
-| US-01 | F-03–05 | Covered | Real-user file/error usability. |
-| US-02 | F-06–09 | Partial | TLLM pair coverage; estimates are not bills. |
-| US-03 | F-10–14, F-26 | Partial | Human NMT/TLLM translation and movie-timing comparison. |
-| US-04 | F-15, F-21, F-25 | Covered | Representative full-film/browser responsiveness. |
-| US-05 | F-16–19 | Partial | Browser-local reload checkpoint and test. |
-| US-06 | F-13, F-16, F-20–21 | Covered | Human review efficiency. |
-| US-07 | F-14, F-22 | Covered | Language-specific readability validation. |
-| US-08 | F-19, F-23–24 | Covered | Observed edit task; Jenna remains hypothetical. |
-| US-09 | F-04, F-12, F-24, F-26 | Covered | Player playback and human timing review. |
-| US-10 | F-01, F-06–07 | Partial | Public language route reported working; controlled paid smoke and cost/abuse controls unverified. |
+| Feature | Story | Map decision | Implementation / evidence gap | Issue |
+| --- | --- | --- | --- | --- |
+| PF-01 Import | US-01 | Keep | Code/test covered; real-user error comprehension untested. | TBD |
+| PF-02 Options | US-02 | Keep | Setup works; TLLM language coverage and actual cost unknown. | TBD |
+| PF-03 Joined translation | US-03 | Keep | Structural tests pass; human wording/timing quality missing. | TBD |
+| PF-04 Progress | US-04 | Keep | Mocked job UI covered; full-film responsiveness unverified. | TBD |
+| PF-05 Stop/retry | US-05 | Partial / backlog | In-tab retry exists; reload checkpoint does not. | TBD |
+| PF-06 Paired review | US-06 | Keep | Paired UI exists; review efficiency untested. | TBD |
+| PF-07 Readability | US-07 | Keep provisionally | English-derived reference; language-specific validity unknown. | TBD |
+| PF-08 Edit | US-08 | Keep | Edit/export covered; observed Jenna-like task missing. | TBD |
+| PF-09 Export | US-09 | Keep | Structure tested; media-player/human timing check missing. | TBD |
+| PF-10 Workspace/help | US-10 | Partial / backlog | Live language route observed; this commit and paid NMT/TLLM/cost controls unverified. | TBD |
+| PF-11 Theme | US-11 | Keep provisionally | Control exists; persona value unvalidated. | TBD |
 
-## Synthesis and next decision
+## Orphans and backlog
 
-The structural core is well covered by mocked tests. The highest-risk gaps are **real output quality/timing**, **public allowance and abuse controls**, and **reload recovery**. Testing more fixtures cannot by itself validate a person's understanding or a production spending ceiling. Teddy/Jenna priorities and thresholds remain provisional until interview/observation evidence exists. See [current features](features-now.md), [stories](stories.md), and [open questions](../requirements/OPEN_QUESTIONS.md).
+- **Orphan product features:** none among PF-01–11. F-25/F-26 were [removed from the user-feature taxonomy](creep-audit.md), not from code. Theme remains a hypothesis-backed feature, not proof of user demand.
+- **Unbuilt story outcomes:** US-05 reload recovery; US-10 controlled end-to-end production translation. US-03 human quality/timing validation and US-02 TLLM pair coverage are evidence gaps, not missing code paths.
+- **Issue trace:** no new issue numbers are invented. Converting unbuilt stories into GitHub issues, with any epic split, is owner/backlog work; the repository currently provides only these local story IDs.
+
+The missing third role and real-person corrections are separate homework gaps; see [personas](personas.md) and [scenarios](scenarios.md). The [creep audit](creep-audit.md) records the actual feature-list merge/cut and its limit.

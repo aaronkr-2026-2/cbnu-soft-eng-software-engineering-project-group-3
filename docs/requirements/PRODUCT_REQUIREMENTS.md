@@ -8,7 +8,7 @@ Owner: one developer. Current decisions: ADR-001 (conditional telemetry only), A
 
 ## 1. Product vision and core outcome
 
-For tech-savvy movie viewers who obtain subtitle files but want to watch in their preferred language, SRT Translator converts an English SRT into an editable translated SRT with the same cue numbers and timecodes. It gathers continuing speech across time slots before translation and formats the result for subtitle reading. See the structured vision in README.
+For tech-savvy movie viewers who obtain subtitle files but want to watch in their preferred language, SRT Translator converts an English SRT into an editable translated SRT with the same cue numbers and timecodes. It gathers continuing speech across time slots before translation and formats the result for subtitle reading. The [README](../../README.md) gives the short public introduction; [product discovery](../product/README.md) records the provisional persona-to-feature trace.
 
 The core flow is **choose file → select model/language/profile → start → review/edit → download**. Language discovery is automatic. Visitors do not supply credentials or billing accounts. The project owner pays through the server gateway.
 

@@ -1,17 +1,34 @@
-# Current feature inventory
+# What the current app actually has
 
-Updated: 2026-10-08. IDs remain stable for the [story map](gap-map.md). “Present” means implemented in this repository; routine automated translation tests mock the provider.
+Updated: 2026-10-08. This is the lecture's **click-through inventory**, checked against source and mocked tests, not a list of promises. [features.md](features.md) merges these smaller observations into 11 coherent user-facing features.
 
-| IDs | What the app currently provides |
-| --- | --- |
-| F-01–02 | Compact workspace/help/reset and OS-initialized light/dark theme. |
-| F-03–05 | Local UTF-8 SRT choose/drop, strict 5 MiB/structure/markup validation, preserved source identity/timing, contained filename. |
-| F-06–09 | Gateway language lookup and retry, NMT/TLLM choice, explicit Adult/Children profile, guarded Start, labelled cost/request estimates. |
-| F-10–14 | Bounded continuation groups, joined input for both engines, response validation, approximate text-conserving redistribution, readability wrapping without retiming. |
-| F-15–19 | Progress and request count, per-cue status/failure, bounded retry/quota cooldown, cancellation, in-tab recovery and edit protection. |
-| F-20–24 | Virtualized paired review, scroll-follow, readability warnings, local editing and complete-only SRT download. |
-| F-25–26 | 2,500-cue mocked browser virtualization workflow and structural/integrity automated tests. |
+| ID | Present behavior | Product feature |
+| --- | --- | --- |
+| F-01 | Workspace, help and confirmed reset. | PF-10 |
+| F-02 | OS-initialized light/dark switch. | PF-11 |
+| F-03 | Choose/drop and strictly validate a local SRT. | PF-01 |
+| F-04 | Preserve source cue text, indexes and exact timecodes. | PF-01 |
+| F-05 | Show cue count and a contained full filename. | PF-01 |
+| F-06 | Load/search target languages; retry discovery errors. | PF-02 |
+| F-07 | Select official NMT or TLLM. | PF-02 |
+| F-08 | Require Adult/Children profile and valid setup before Start. | PF-02 |
+| F-09 | Show model-specific input, requests and estimated cost. | PF-02 |
+| F-10 | Form bounded continuation groups. | PF-03 |
+| F-11 | Send joined speech to either model. | PF-03 |
+| F-12 | Reject malformed provider results. | PF-03 |
+| F-13 | Redistribute translated text approximately into original cues. | PF-03 |
+| F-14 | Wrap text without silent loss or retiming. | PF-07 |
+| F-15 | Show status, cue progress, elapsed time and attempts. | PF-04 |
+| F-16 | Mark per-cue state and failures. | PF-04 |
+| F-17 | Bound retries and show quota cooldown. | PF-05 |
+| F-18 | Cancel and ignore stale results. | PF-05 |
+| F-19 | Retry unfinished groups within the tab, preserving edits. | PF-05 |
+| F-20 | Show paired grouped original/translation cards. | PF-06 |
+| F-21 | Follow the active cue or return to it after scrolling. | PF-06 |
+| F-22 | Flag line, CPS and capacity warnings. | PF-07 |
+| F-23 | Edit and save a translation locally. | PF-08 |
+| F-24 | Download only a complete valid SRT. | PF-09 |
 
-## Evidence boundary
+Earlier labels F-25 (virtualization) and F-26 (automated checks) describe **engineering evidence**, not separate user features. Virtualization supports PF-06; tests support confidence across features. This correction is recorded in the [creep audit](creep-audit.md), not presented as removed runtime behavior.
 
-The public URL and language route were reported working on 2026-10-08, but that does not prove paid NMT/TLLM output quality, every language/model pair, an owner allowance, or abuse controls. Reload recovery, telemetry, metadata, lives, Gemini, cloud subtitle storage, automatic retiming and closed-tab continuation are absent or deferred. See [project state](../../PROJECT_STATE.md), [build log](../../BUILD_LOG.md) and [requirements](../requirements/PRODUCT_REQUIREMENTS.md) for exact constraints.
+No reload recovery, telemetry, movie metadata, lives, Gemini, cloud subtitle storage or automatic retiming is implemented. The public language route has been observed, but paid grouped NMT/TLLM quality and spending controls still need evidence; see [project state](../../PROJECT_STATE.md).

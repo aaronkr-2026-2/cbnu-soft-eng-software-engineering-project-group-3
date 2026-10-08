@@ -2,6 +2,8 @@
 
 Scope: tracked application code, adapters, tests, build/deploy configuration, current product documents and the original MVP's Git provenance. This is a static/code-and-mocked-test evaluation, **not** a live provider, penetration, cost-control or human translation-quality audit. The attached “5. Literature Review” PDF is a research-methodology lecture; its comparison/evidence/gap approach informed the product tables, but it supplies no persona template.
 
+Correction after this dated audit: the owner supplied the intended *5. Features, Stories* lecture later on 2026-10-08. The product documents were then revised to its persona/scenario/story/feature/gap/creep-audit structure; see [product index](../product/README.md). The original audit findings below remain a historical snapshot.
+
 ## Findings and action
 
 | Area | Evidence | Result / action | Residual limit |

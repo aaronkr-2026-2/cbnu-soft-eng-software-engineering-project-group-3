@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 2026-10-08 — frontend/backend and documentation refactor audit
+Last updated: 2026-10-08 — product documents aligned to Chapter 3 lecture
 
 ## Confirmed product
 
@@ -44,7 +44,7 @@ The Vercel frontend is deployed at `https://srt-translator-tawny.vercel.app`. Be
 
 The responsive feedback revision passed formatting, typecheck, zero-warning lint, 94 Vitest tests across nine files, the production build and artifact scan, whitespace validation, and 13 mocked Chromium workflows. The new workflow verifies the language-error message/action geometry and horizontal containment at 1024 px and 390 px; temporary desktop/mobile screenshots were visually inspected and were not committed.
 
-The folder/refactor audit is recorded in `docs/audits/CODE_AUDIT_2026-10-08.md`. During implementation, typecheck/lint/108 Vitest tests/build passed, and 15 mocked Chromium workflows passed after local socket permission was granted. A final verification after all documentation edits remains required. The README now uses a screenshot from a mocked browser run, not live provider evidence. A local Markdown-link check guards the reorganized docs.
+The folder/refactor audit is recorded in `docs/audits/CODE_AUDIT_2026-10-08.md`. Its final typecheck/lint/108 Vitest tests/build, documentation-link check and 15 mocked Chromium workflows passed after local socket permission was granted. The README uses a screenshot from a mocked browser run, not live provider evidence. The lecture-alignment documentation change requires its own current verification, recorded in `BUILD_LOG.md`.
 
 The owner budget/allowance, Vercel Firewall rate limit, exhaustion behavior, the project's actual Google quota settings, live grouped-subtitle language/timing review and controlled paid-translation smoke evidence remain outstanding. The enablement switch and existing Google cooldown are not a production allowance or spending control. Current desktop compatibility targets exceed the browsers actually tested. A bundle-size warning remains documented with build evidence.
 
@@ -62,8 +62,8 @@ No reproducing deadlock was found in the inspected sequential flow, but the loca
 
 `AGENTS.md` is canonical. `docs/requirements/REQUIREMENTS_REVISION_PROMPT.md` is the extracted executable memo; `docs/audits/REQUIREMENTS_REVISION_AUDIT.md` records the gap analysis and course check. The short `AI_LOG.md` links detailed course-format evidence in `docs/AI_DETAILED_LOG.md`. Every completed file-changing prompt requires documentation, verification and a local commit; a remote push requires an explicit request.
 
-`docs/product/` now contains the verified current-feature inventory, provisional Teddy and Jenna persona hypotheses, prioritized initial user stories, and the feature-to-story gap map. Teddy and Jenna were supplied by the project owner and have not been interviewed or validated. Real-user validation, revisions based on that evidence, and human translation/timing review remain required; creating these documents alone does not complete the Week 4 milestone.
+`docs/product/` contains the source-checked current-feature inventory and the lecture-aligned, provisional persona → scenario → story → feature → gap/creep-audit trail described below. Teddy and Jenna were supplied by the project owner and have not been interviewed or validated. Real-user validation, revisions based on that evidence, and human translation/timing review remain required; creating these documents alone does not complete the Week 4 milestone.
 
 `docs/sprints/` now includes retrospective Week 2-4 summaries alongside the existing Week 5 record. They cite Git/document evidence and mark missing pitch, public MVP deployment, real-user validation, review, capacity, and human retrospective details as gaps rather than reconstructing events that were not recorded contemporaneously.
 
-`docs/README.md` is the navigation map. Decisions, requirements, guides, planning and audits now have their own folders; `docs/mvp/` holds the unchanged archived HTML. Product docs use concise comparison tables and provisional Teddy/Jenna scenarios. The attached lecture covers literature reviews, not persona formatting; its evidence/gap comparison approach was applied without claiming interviews or a lecturer-provided persona template.
+`docs/README.md` is the navigation map. Decisions, requirements, guides, planning and audits now have their own folders; `docs/mvp/` holds the unchanged archived HTML. The owner subsequently supplied the correct *5. Features, Stories* lecture. `docs/product/` now separates two proto-persona cards, two named scenarios, 11 provisional stories, an 11-feature activation/input/action/output list, a feature ↔ story ↔ issue gap map and a four-question creep audit. The earlier literature-review PDF was the wrong lecture for this task; no real-person check, third persona/scenario, issue creation, or runtime feature cut is claimed. The owner explicitly chose to leave the third role TBD.

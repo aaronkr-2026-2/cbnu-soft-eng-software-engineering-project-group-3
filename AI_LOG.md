@@ -28,3 +28,4 @@ Short, professor-readable record of AI-assisted work. Detailed evidence, command
 - 2026-10-08 — Added same-origin Vercel translation Functions backed by the shared local gateway core, retained fail-closed production enablement, and changed GitHub Actions from broken Pages deployment to CI-only verification.
 - 2026-10-08 — Fixed the collapsed language-error Alert and hardened the Ant Design sidebar, cards, feedback, and mobile layout against horizontal overflow with focused browser regression coverage.
 - 2026-10-08 — Separated frontend and backend code, organized docs and the archived MVP, simplified product/README pages, and audited malformed API responses and obsolete code without changing Classroom50 starter files.
+- 2026-10-08 — Reworked product personas, scenarios, stories, features, gaps and creep audit to match the correct Features, Stories lecture, leaving unverified human work and the third role TBD.

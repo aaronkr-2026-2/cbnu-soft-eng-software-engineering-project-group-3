@@ -28,7 +28,7 @@ No key or billing values need to be pasted into a conversation. The ignored loca
 ## Human/course work still required
 
 7. Confirm semester dates, weekly capacity and a real sprint review/retrospective schedule. Local draft backlog entries are not published GitHub issues.
-8. Validate the audience/personas/user stories with real people; provide interview evidence rather than AI-invented users.
+8. Validate the audience/personas/user stories with real people; provide interview evidence rather than AI-invented users. The Chapter 3 lecture asks for one real-person check with three corrections, plus an additional role/scenario. The owner chose to leave the third role TBD for now; do not invent one.
 9. Arrange the external classmate/instructor review required by Week 12; self-review is not equivalent.
 10. Complete the human kept/rejected/mistakes reflections in the linked detailed AI log and rehearse explaining actual source files.
 11. Sync this refactor commit into the personal fork when ready; verify remote CI and the Vercel frontend/Function deployment at that exact commit. The earlier public language-route check does not verify this commit or paid translation. Decide which additional desktop browsers to verify.
