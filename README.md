@@ -55,11 +55,19 @@ npm run check:build
 
 Routine tests use mocked provider responses, never a live key. Actual results are recorded in [BUILD_LOG.md](BUILD_LOG.md).
 
+## Deploy with Vercel
+
+Vercel is the production target for both the Vite frontend and the same-origin `/api/translation` Functions. `vercel.json` uses `npm run build`, serves `dist`, and gives each translation Function a 30-second maximum duration. The Functions and local Node server reuse the same validated gateway core.
+
+Configure `GOOGLE_CLOUD_API_KEY`, `GOOGLE_CLOUD_PROJECT_ID`, and `GOOGLE_TRANSLATE_TLLM_LOCATION` as server-side Vercel environment variables. Never use `VITE_*` for them. Production translation fails closed until `TRANSLATION_GATEWAY_ENABLED=true` is configured. Enable it only after applying an owner-approved Vercel Firewall rate limit to `/api/translation*` and setting Google Cloud budget/quota controls. See [gateway setup](docs/GOOGLE_TRANSLATE_SETUP.md).
+
+If Vercel is connected to a personal fork because the Classroom organization cannot grant the required role, sync this repository change into that fork before redeploying. A successful frontend build alone does not prove that the Functions, secrets, limits, NMT, or TLLM work in production.
+
 ## Scope and evidence
 
 The React/TypeScript/Vite/Ant Design app includes local parsing, supported i/b/u markup, grouped provider input, readable output checks, editing, cancellation, retry and virtualized review. Statistics, metadata, lives and cloud subtitle storage are outside the active increment. Local checkpoint/resume remains a later course milestone.
 
-GitHub Pages serves only the frontend. Public working translation requires a separately deployed gateway with a budget, rate limits and abuse controls. These production decisions and live grouped-translation quality review remain open. The [archived MVP](archive/mvp/srt-translator-beta-3.html) preserves the before-state and is excluded from the production build.
+The repository now contains Vercel Function adapters for the private gateway, but a working public frontend-to-gateway deployment is not claimed until the personal fork is synchronized, environment variables and abuse controls are configured, the gateway is explicitly enabled, and live smoke checks pass. Live grouped-translation quality review also remains open. The [archived MVP](archive/mvp/srt-translator-beta-3.html) preserves the before-state and is excluded from the production build.
 
 ## Project records
 

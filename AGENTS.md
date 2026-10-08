@@ -34,6 +34,7 @@ Before changing anything, read:
 - Never expose, commit, persist, log, or place secrets in public Vite environment variables.
 - Translation is owner-funded through a server-side gateway. Never expose, commit, persist in browser storage, log, or place the project-owner key in URLs, downloaded files, public Vite variables, or frontend source.
 - The browser must call only the project gateway. The gateway reads its local development credential from gitignored `.env`; production uses the deployment secret manager. Enforce a documented cost/abuse limit before public deployment.
+- Vercel is the confirmed production target. Keep provider logic in the shared gateway core and expose only same-origin Vercel Function adapters under `/api`. Production must fail closed unless `TRANSLATION_GATEWAY_ENABLED=true`; set it only after an owner-approved Vercel Firewall rate limit and Google budget/quota controls are configured.
 - Developer-owned local server secrets belong in a gitignored `.env`; production secrets belong in the deployment secret manager. `VITE_*` values are public and must never contain secrets. Commit only placeholder names in `.env.example`.
 - Never claim frontend translation is guaranteed to continue after a tab is frozen, discarded, or closed.
 - Current cloud scope is telemetry only: location, target language, and movie identity. Never upload source/translated subtitle text, completed SRT files, raw filenames, or API keys as telemetry. Sending required subtitle text to the chosen translation provider is a separate translation operation.
@@ -51,7 +52,7 @@ Before changing anything, read:
 - React + TypeScript using a mutually compatible stable set pinned by the lockfile.
 - Vite.
 - Ant Design and its theme tokens.
-- GitHub Actions CI and GitHub Pages frontend deployment.
+- GitHub Actions CI and Vercel deployment for the Vite frontend plus same-origin Functions.
 - Moderate official recommended ESLint/typescript-eslint/React Hooks rules plus Prettier.
 - Exact testing and backend packages are chosen only when implemented and documented.
 
@@ -66,7 +67,7 @@ Before changing anything, read:
 
 1. Reconcile actual repository state with `PROJECT_STATE.md`.
 2. Preserve/tag/deploy the standalone MVP as the before-state.
-3. Verify the local owner-funded NMT/TLLM gateway and define its production host, allowance and abuse controls before public release.
+3. Configure and verify the Vercel NMT/TLLM gateway, owner allowance, Firewall rate limit and Google budget/quota controls before enabling public translation.
 4. Maintain the joined-speech behavior and approximate cue redistribution in ADR-006; benchmark live quality, then progress reliability, security and course evidence.
 5. Implement the confirmed telemetry-only feature after its open data decisions are resolved; movie matching/lives remain conditional. File storage/reuse are deferred, not active stretch milestones.
 

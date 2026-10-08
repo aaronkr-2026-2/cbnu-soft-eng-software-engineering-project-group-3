@@ -1,17 +1,18 @@
 # Architecture
 
-Updated: 2026-09-18 — voice memo revision; ADR-004 and ADR-006 are current.
+Updated: 2026-10-08 — Vercel gateway adapters; ADR-004 and ADR-006 are current.
 
 ## Current running system
 
-The app is one React/TypeScript/Vite frontend with a small Node gateway. Ant Design supplies the standard UI, theme and layout. Domain code performs SRT parsing, continuation detection, normalization, redistribution, line wrapping and validation. The gateway owns the Cloud API key and forwards only official NMT/TLLM requests. No browser key field, Gemini adapter, database or subtitle upload store exists.
+The app is one React/TypeScript/Vite frontend with a small shared gateway core. A Node HTTP adapter runs locally; two same-origin Vercel Functions expose the production language and translation routes. Ant Design supplies the standard UI, theme and layout. Domain code performs SRT parsing, continuation detection, normalization, redistribution, line wrapping and validation. The gateway owns the Cloud API key and forwards only official NMT/TLLM requests. No browser key field, Gemini adapter, database or subtitle upload store exists.
 
 ```mermaid
 flowchart LR
     FILE[Local English SRT] --> DOMAIN[Parse and group speech]
     DOMAIN --> JOB[Job controller]
     JOB --> CLIENT[Translation provider adapter]
-    CLIENT --> API[Node gateway]
+    CLIENT --> ADAPTER[Local Node or Vercel Function adapter]
+    ADAPTER --> API[Shared gateway core]
     SECRET[Ignored env or production secret manager] --> API
     API --> GOOGLE[Cloud Translation NMT / TLLM]
     GOOGLE --> API
@@ -21,7 +22,7 @@ flowchart LR
     UI --> DOWNLOAD[Validated local SRT download]
 ```
 
-`npm run dev` starts both processes. Vite proxies `/api` locally; it does not load `.env`. The gateway forwards text transiently and logs only safe error categories/statuses. It is a local development service, not a production service with authentication/rate limiting. Public gateway hosting and enforcement remain open.
+`npm run dev` starts Vite and the local Node adapter. Vite proxies `/api` locally; it does not load `.env`. On Vercel, `api/translation.mjs` and `api/translation/languages.mjs` call the same core without a cross-origin request. The gateway forwards text transiently and logs only safe error categories/statuses. Production fails closed unless `TRANSLATION_GATEWAY_ENABLED=true`; that switch is an operator gate, not a rate limiter or proof that abuse controls exist.
 
 ## Module responsibilities
 
@@ -34,7 +35,9 @@ flowchart LR
 | `src/core/subtitles/groups.ts` | Shared bounded grouping, structural sections and approximate target-text distribution. |
 | `src/core/subtitles/subtitles.ts` | Display grouping, line wrapping, CPS and readability warnings. |
 | `src/services/translation/` | Provider interface, exact request preparation, estimates, timeout/retry and response validation. |
-| `server/index.mjs` | Private credential boundary and official Google requests. |
+| `server/translationGateway.mjs` | Shared request/model validation, private credential boundary, official Google requests and sanitized upstream errors. |
+| `server/index.mjs` | Local Node HTTP adapter used behind Vite's development proxy. |
+| `api/translation*.mjs` | Same-origin Vercel Function adapters for translation and language discovery. |
 | `CueRow.tsx`, `VirtualCueList.tsx` | Paired Ant Design cards, editing, per-cue failure/review and bounded mounted rows. |
 
 No new state-management or theming framework is needed. Standard UI uses Ant Design; virtual positioning and subtitle text/markup retain focused custom code.
@@ -67,6 +70,8 @@ Cloud subtitle storage, durable cloud jobs, sharing and reuse remain deferred. T
 
 ## Deployment and course architecture
 
-GitHub Pages can serve `dist` only. The private gateway requires separate hosting and secret management. Before public translation, define owner budget, allowance, authentication/abuse strategy, server rate/concurrency limits and approved frontend origin. The existing Actions configuration performs checks and frontend deployment; current remote success must be verified separately.
+Vercel is the confirmed target for `dist` and the same-origin Functions. `vercel.json` selects the Vite build/output and a 30-second Function limit. The Google credential and project configuration belong only in Vercel environment variables; they are not Vite values. GitHub Actions remains an independent verification gate and no longer attempts a Pages deployment.
+
+The Function routes are code-complete but not proof of a working public deployment. The personal fork connected to Vercel must receive the merged commit, and the owner must configure environment variables, an explicit public allowance, Vercel Firewall rate limiting, Google budget/quota controls, and `TRANSLATION_GATEWAY_ENABLED=true`. Until then, production deliberately returns `gateway_disabled`. Afterward, retain dated language-list and minimal NMT/TLLM smoke evidence without logging text or credentials.
 
 A modular frontend plus one gateway is enough for this solo product. The course's microservices week requires reasoned decomposition discussion, not unnecessary services. Preserve the archived MVP for the before/after demonstration. Superseded credential and mapping designs remain in historical ADRs rather than active instructions.

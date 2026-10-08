@@ -71,6 +71,8 @@ function retryDelayMs(value: unknown): number | undefined {
 }
 
 function failureMessage(status: number, category: string | undefined): string {
+  if (category === 'gateway_disabled')
+    return 'Public translation is disabled until the project owner configures production usage and abuse controls.';
   if (category === 'key_restriction')
     return 'Google blocked this server key restriction. A local gateway key must not use a Websites/referrer restriction.';
   if (category === 'billing')
@@ -159,9 +161,12 @@ export class GoogleTranslate implements TranslationProvider {
               'The translation connection is unavailable. If you are working locally, stop both servers and run npm run dev again.',
               true,
             );
+          const retryableStatus =
+            category !== 'gateway_disabled' &&
+            (rateLimited || response.status === 429 || response.status >= 500);
           throw new ProviderError(
             failureMessage(response.status, category),
-            rateLimited || response.status === 429 || response.status >= 500,
+            retryableStatus,
             rateLimited ? (retryDelayMs(data) ?? 60000) : undefined,
           );
         }

@@ -97,6 +97,18 @@ describe('official Google adapter', () => {
       new GoogleTranslate('nmt').translateBatch(input, 'es', signal()),
     ).rejects.toThrow('quota was reached');
   });
+  it('does not retry a production gateway that is deliberately disabled', async () => {
+    const fetcher = vi
+      .fn()
+      .mockResolvedValue(
+        response({ error: { category: 'gateway_disabled' } }, 503),
+      );
+    vi.stubGlobal('fetch', fetcher);
+    await expect(
+      new GoogleTranslate('nmt').translateBatch(input, 'es', signal()),
+    ).rejects.toThrow('production usage and abuse controls');
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
   it('distinguishes a daily quota from a short rate-limit window', async () => {
     vi.stubGlobal(
       'fetch',

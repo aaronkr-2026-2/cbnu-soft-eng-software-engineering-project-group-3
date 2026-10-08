@@ -16,12 +16,12 @@ The project should be evaluated through the engineering changes made to the same
 | Personas/features/scenarios/stories | Validate who translates subtitles and write outcome-based stories/acceptance criteria. | Interview notes, personas, story map, accepted/rejected assumptions. |
 | Agile engineering | Prioritize small vertical changes and adapt from measured results. | Backlog, sprint goals, Definition of Done, reviews/retrospectives. |
 | Architecture | Turn a single HTML file into separated domain, application, provider, UI, and persistence boundaries. | Before/after diagrams, critique, ADRs. |
-| Cloud software | Reproducible frontend deployment and, only if needed, a small serverless boundary. | Pages workflow, deployment URL, optional backend/data-flow ADR. |
+| Cloud software | Reproducible Vercel frontend deployment with a small same-origin Function boundary for the private provider credential. | Vercel configuration, deployment URL, Function smoke evidence and data-flow ADR. |
 | Microservices | Analyze whether independently deployed services help. Current answer: they add complexity without demonstrated need. | A reasoned decomposition discussion/ADR rather than forced microservices. |
 | Security & privacy | Protect keys, validate untrusted SRT/API data, model threats, limit abuse/cost, and govern location/movie telemetry. | Threat model, audit findings/fixes, rules tests, privacy decisions. |
 | Reliable programming/style | Typed states, cancellation, bounded retries, checkpoints, validated outputs, moderate shared style rules. | Lint/typecheck output, failure tests, code-style PR. |
 | Testing/code review | Test parsing/serialization and the failure-prone translation/formatting state machine. | Real fixtures, automated suite, peer-review record and fixes. |
-| DevOps/code management/docs | CI gates, GitHub Pages deployment, README, API docs, ADRs, state and operations notes. | Passing workflows, release tag, documentation set. |
+| DevOps/code management/docs | GitHub Actions verification, Vercel deployment, README, API docs, ADRs, state and operations notes. | Passing workflows, verified deployment, release tag and documentation set. |
 | Licensing/AI authorship | Review package/data/API licenses and honestly record AI use and errors. | Dependency/data source audit and complete `AI_LOG.md`. |
 
 ## Features that fit the protected core

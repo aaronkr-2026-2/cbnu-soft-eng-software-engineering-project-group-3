@@ -120,3 +120,20 @@ Branch: `fix/upload-name-and-quota-cooldown`. GitHub issue: #2 with the user-sup
 The gateway now treats only its sanitized per-minute `rate_limited` category as a long cooldown retry, forwards a usable numeric `Retry-After` with a 120-second cap, and defaults to 60 seconds. The client keeps the existing three-attempt ceiling and lets cancellation interrupt the wait. Successful batches are not artificially delayed. Long upload names stay inside Ant Design's actual drag container and expose the full value in a tooltip.
 
 The production build is approximately 827 kB JavaScript (267 kB gzip) and retains the existing >500 kB chunk warning. The observed live account's quota configuration, other same-project traffic, a paid full-file rerun, additional browsers, production allowance/abuse controls, and external human review remain unverified.
+
+## 2026-10-08 — Vercel translation gateway adapters
+
+Branch: `feat/vercel-translation-gateway`. The existing Vercel frontend returned HTTP 200 while its language route returned Vercel `404 NOT_FOUND` before this change. Automated provider requests were mocked; no `.env` value was read and no paid Google call was made.
+
+| Command/check | Outcome |
+| --- | --- |
+| `npm run format:check` | Passed. |
+| `npm run check` | Passed: TypeScript, zero-warning ESLint, 94 Vitest tests across nine files, and the production build. |
+| Node syntax checks | Passed for the local adapter, shared gateway core, Vercel adapter, and both Function entry points. |
+| `npm run check:build` | Passed: no legacy endpoint, environment-key marker, key-shaped literal, source maps, or historical HTML in `dist`. |
+| `npm run test:e2e` | Passed all 12 mocked Chromium workflows in 12.0 seconds. The first sandboxed attempt could not bind localhost; the permitted rerun passed. |
+| `git diff --check` | Passed before the task commit. |
+
+The Vite client now builds at the Vercel root and calls same-origin Function routes. Local Node and Vercel adapters share the same request validation, Cloud Translation model selection, safe error mapping, request-size limits, and bounded rate-limit metadata. Deployment fails closed with `gateway_disabled` unless `TRANSLATION_GATEWAY_ENABLED=true`; the Vercel environment is detected even if `NODE_ENV` is not set as expected. GitHub Actions remains as CI and no longer attempts the retired GitHub Pages deployment.
+
+The production build is approximately 827 kB JavaScript (267 kB gzip) and retains the existing >500 kB chunk warning. The personal fork synchronization, Vercel server-only variables, Firewall rate rule, owner allowance, Google budget/quota controls, explicit enablement, new deployment, live Function smoke test, paid provider behavior, and human translation/timing review remain unverified.

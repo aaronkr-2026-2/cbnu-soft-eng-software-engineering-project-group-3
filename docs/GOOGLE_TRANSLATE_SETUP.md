@@ -1,6 +1,6 @@
 # Cloud Translation gateway setup
 
-Updated: 2026-09-18
+Updated: 2026-10-08 — Vercel Functions deployment
 
 The project owner funds translation. Visitors need neither a Google account nor an API key.
 
@@ -27,6 +27,25 @@ Run `npm run check`, `npm run format:check`, `npm run test:e2e` and `npm run che
 
 ## Public deployment
 
-GitHub Pages can host the frontend but cannot run the private Node gateway. Select a gateway host, configure its secrets and allowed frontend origin, and implement the owner budget/allowance and abuse/rate controls before public translation. No production gateway, authentication or enforced public allowance is currently claimed. GitHub build-time environment values embedded into a Vite bundle are public.
+Vercel is the confirmed production target. The repository contains two same-origin Functions:
 
-Sources: [Cloud Translation setup](https://docs.cloud.google.com/translate/docs/setup), [v2 translate contract](https://docs.cloud.google.com/translate/docs/reference/rest/v2/translate), [API-key practices](https://docs.cloud.google.com/docs/authentication/api-keys-best-practices).
+- `GET /api/translation/languages?model=nmt|tllm`;
+- `POST /api/translation`.
+
+The Functions and local Node server use `server/translationGateway.mjs`, so provider validation and sanitized failures stay aligned. `vercel.json` builds the Vite frontend into `dist` and configures both Functions with a 30-second maximum duration.
+
+Deployment checklist:
+
+1. Sync the merged Classroom repository commit into the personal fork connected to Vercel.
+2. Confirm Vercel detects Vite, runs `npm run build`, and uses `dist` as the output directory.
+3. In Vercel Project Settings, add `GOOGLE_CLOUD_API_KEY`, `GOOGLE_CLOUD_PROJECT_ID`, and `GOOGLE_TRANSLATE_TLLM_LOCATION` to the required Production/Preview environments. Never use `VITE_*` and never commit or print their values. Environment changes apply only to a new deployment.
+4. Leave `TRANSLATION_GATEWAY_ENABLED` absent or `false` initially. A production Function then returns the sanitized `gateway_disabled` category without calling Google.
+5. Choose the monthly owner budget, public allowance, and exhaustion behavior. Configure Google Cloud quota/budget controls and publish a Vercel Firewall rate-limit rule covering `/api/translation` and `/api/translation/languages`. The exact allowance remains an owner decision; do not invent it. CORS is not a rate limit and does not stop direct scripted calls.
+6. Set `TRANSLATION_GATEWAY_ENABLED=true` in the intended Vercel environment and redeploy.
+7. Verify the language route, then perform one controlled minimal NMT and TLLM smoke translation. Record the deployment URL, commit, date, status, request count and sanitized failure category. Do not record subtitle text, keys, project identifiers, or raw provider errors.
+
+The browser uses relative `/api` paths, so frontend and Functions are same-origin and no production CORS allowlist is required. The former hardcoded `http://localhost:5173` CORS header has been removed; local development continues through Vite's proxy.
+
+Official references: [Vite on Vercel](https://vercel.com/docs/frameworks/frontend/vite), [Node.js Functions](https://vercel.com/docs/functions/runtimes/node-js), [environment variables](https://vercel.com/docs/environment-variables), [Function limits](https://vercel.com/docs/functions/limitations), and [Vercel rate limiting](https://vercel.com/kb/guide/add-rate-limiting-vercel).
+
+Google sources: [Cloud Translation setup](https://docs.cloud.google.com/translate/docs/setup), [v2 translate contract](https://docs.cloud.google.com/translate/docs/reference/rest/v2/translate), [API-key practices](https://docs.cloud.google.com/docs/authentication/api-keys-best-practices).

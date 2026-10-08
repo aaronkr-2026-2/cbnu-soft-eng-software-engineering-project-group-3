@@ -1,12 +1,12 @@
 # Project State
 
-Last updated: 2026-10-08 — product and retrospective sprint documentation
+Last updated: 2026-10-08 — Vercel gateway deployment adapters
 
 ## Confirmed product
 
 This is a solo project for movie viewers who can obtain an English SRT and want subtitles in their preferred language. The core flow is choose file → select NMT/TLLM, target language and explicit Adult/Children profile → start → review/edit → download. Original cue indexes/order/timecodes remain intact.
 
-Both official Cloud Translation models use the owner's server-side gateway. The local server reads ignored `.env`; the browser never sees the credential. No visitor key field or Gemini product integration exists. See ADR-004 and ADR-006.
+Both official Cloud Translation models use the owner's server-side gateway. The local server reads ignored `.env`; Vercel Functions read server-only project environment variables; the browser never sees the credential. No visitor key field or Gemini product integration exists. See ADR-004 and ADR-006.
 
 ## Current implementation
 
@@ -20,7 +20,7 @@ Both official Cloud Translation models use the owner's server-side gateway. The 
 - Progress, elapsed time, cumulative translation-attempt count, cancellation, per-cue errors, editing and complete-only download exist. Retry retains the first start time; elapsed time spans from first Start to the latest stop, including the gap when resumed. Reload recovery is not implemented.
 - The gateway recognizes Google's per-minute quota response as an allowlisted `rate_limited` 403 and supplies a bounded retry delay. The browser waits for that cancelable cooldown (60 seconds when Google supplies no usable `Retry-After`) and retries the same batch, up to three total attempts. The UI shows `cooldown` and the scheduled retry time. Other transient failures retain short bounded backoff; daily quota, permission, billing and invalid requests are not retried.
 - Cost estimates show the selected engine's whole file and remaining work. NMT counts prepared input; TLLM assumes output length equals input and labels that assumption. Credits and final billing are unknown. No guaranteed cost ceiling is claimed.
-- The local Node gateway proxies official NMT/TLLM only, validates request shape/size and sanitizes failure categories. TLLM input is capped at 30,000 code points. Routine tests mock Google. Requests are currently sequential; concurrency is not part of this revision.
+- A shared gateway core proxies official NMT/TLLM only, validates request shape/size and sanitizes failure categories. The local Node adapter remains behind Vite's development proxy; same-origin Vercel Functions now expose the production language and translation routes. TLLM input is capped at 30,000 code points. Production fails closed until `TRANSLATION_GATEWAY_ENABLED=true`. Routine tests mock Google. Requests are currently sequential; concurrency is not part of this revision.
 
 The 43-cue original `examples/demo.srt` remains available. Dedicated regression fixtures exercise continuation gathering, annotations, output distribution and large lists. Complete downloaded movie subtitles remain local manual inputs rather than repository fixtures.
 
@@ -36,12 +36,14 @@ The archived HTML at `archive/mvp/srt-translator-beta-3.html` and local `mvp-bas
 
 Earlier logs record minimal live NMT/TLLM requests on 2026-09-18 using `us-central1`; Seoul `asia-northeast3` failed that smoke test. The user also reported full-file attempts and UI/quality problems. Neither is controlled live acceptance evidence for the revised grouped pipeline. On 2026-10-01, the upload-name and quota-cooldown revision passed typecheck, zero-warning lint, 84 Vitest tests, the production build, formatting, the build-artifact check and 12 mocked Chromium workflows. Current automated verification is recorded in BUILD_LOG.md, with mocked provider quality clearly separated from human review.
 
-Public gateway hosting, owner budget/allowance, server-enforced abuse/rate controls, the project's actual Cloud quota settings, live grouped-subtitle language/timing review and current remote deployment evidence remain outstanding. The cooldown is recovery from a provider limit, not a production allowance or spending control. Current desktop compatibility targets exceed the browsers actually tested. A bundle-size warning remains documented with build evidence.
+The owner reported a Vercel frontend deployment at `https://srt-translator-tawny.vercel.app`; a read-only check on 2026-10-08 returned the frontend but `404 NOT_FOUND` for the language Function before this change. Vercel is now the confirmed host and Function adapters exist in the repository. Current local verification passed formatting, typecheck, zero-warning lint, 94 Vitest tests across nine files, the production build and artifact scan, Node syntax checks, whitespace validation, and all 12 mocked Chromium workflows. The personal fork has not yet been synchronized or redeployed and no live Function result is claimed.
+
+The owner budget/allowance, Vercel Firewall rate limit, exhaustion behavior, explicit production enablement, the project's actual Google quota settings, live grouped-subtitle language/timing review and post-deployment smoke evidence remain outstanding. The gateway deliberately returns `gateway_disabled` in production until enabled. That switch and the existing Google cooldown are not a production allowance or spending control. Current desktop compatibility targets exceed the browsers actually tested. A bundle-size warning remains documented with build evidence.
 
 ## Next work
 
 1. Human-review grouped NMT/TLLM output and timing on a small original fixture in representative target languages; define acceptance and model/language coverage.
-2. Choose production gateway host and budget/allowance/abuse controls; verify the deployed frontend-to-gateway flow.
+2. Sync the merged change to the personal fork; configure Vercel server secrets, owner allowance, Firewall rate limit and Google budget/quota controls; explicitly enable the gateway; verify the deployed NMT/TLLM flow.
 3. Complete dated user/persona, sprint/review, security and external peer-review evidence under the existing semester plan.
 4. Implement browser-local checkpoint/resume at its planned milestone. Current retry is in-tab only.
 5. Keep Statistics/metadata/lives/telemetry conditional. Country/city acquisition, retention and notice remain open. Cloud subtitle storage/reuse and durable persisted jobs remain deferred.
