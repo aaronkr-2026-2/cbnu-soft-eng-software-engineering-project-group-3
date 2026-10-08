@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 2026-10-01 — upload-name and quota-cooldown fix
+Last updated: 2026-10-08 — product discovery documentation
 
 ## Confirmed product
 
@@ -49,3 +49,5 @@ Public gateway hosting, owner budget/allowance, server-enforced abuse/rate contr
 ## Records and workflow
 
 `AGENTS.md` is canonical. `docs/REQUIREMENTS_REVISION_PROMPT.md` is the extracted executable memo; `docs/REQUIREMENTS_REVISION_AUDIT.md` records the gap analysis and course check. The short `AI_LOG.md` links detailed course-format evidence in `docs/AI_DETAILED_LOG.md`. Every completed file-changing prompt requires documentation, verification and a local commit; a remote push requires an explicit request.
+
+`docs/product/` now contains the verified current-feature inventory, provisional Teddy and Jenna persona hypotheses, prioritized initial user stories, and the feature-to-story gap map. Teddy and Jenna were supplied by the project owner and have not been interviewed or validated. Real-user validation, revisions based on that evidence, and human translation/timing review remain required; creating these documents alone does not complete the Week 4 milestone.

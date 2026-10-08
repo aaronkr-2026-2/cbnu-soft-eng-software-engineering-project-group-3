@@ -402,3 +402,15 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** Created GitHub issue #2 with the supplied screenshot and acceptance criteria on branch `fix/upload-name-and-quota-cooldown`. Constrained Ant Design's rendered upload drag container, clamped long names to three lines, used anywhere wrapping, and kept the complete name in a tooltip. Google documents per-minute quota exhaustion as HTTP 403, but the client previously retried only 429/5xx and waited only 0.5/1 seconds. The gateway now returns a safe bounded retry delay for allowlisted `rate_limited` failures, using a usable numeric `Retry-After` or 60 seconds. The browser shows the cancelable cooldown and retry time, then retries the same batch; other transient failures use short bounded exponential backoff, while daily quota, permission, billing, and invalid requests still stop. `npm run check` passed typecheck, zero-warning lint, 84 tests and the build; formatting, Node syntax, artifact inspection and all 12 mocked Chromium workflows passed. The build retains its existing >500 kB chunk warning.
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. The reported `rate_limited` result after two application requests does not establish whether the cause was a reduced project quota, other same-project usage, or a model-specific limit. The project's actual Cloud quota configuration, a live full-file rerun, external peer feedback, and human UI review remain required.
+
+## Product feature, persona, story, and gap documentation — 2026-10-08
+
+**Tool(s) used:** ChatGPT/Codex; local repository, source, test, build-log, project-state, requirements, architecture, ADR, and Git inspection.
+
+**What I asked for:** Inventory the user-visible MVP features actually present in the current repository; record the owner-supplied Teddy and Jenna persona hypotheses without inventing research; derive prioritized, testable user stories; map every story to current features and evidence gaps; update project records; verify, commit, and publish the documentation to `origin/main`.
+
+**What I kept as-is:** TBD - human review required
+
+**What I changed or rejected, and why:** TBD - human review required
+
+**Something the AI got wrong that I had to catch:** TBD - human review required
