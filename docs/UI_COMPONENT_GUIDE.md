@@ -1,8 +1,8 @@
 # UI Component Guide
 
-Version: 0.1
+Version: 0.2
 
-Updated: 2026-09-18
+Updated: 2026-10-08
 
 Ant Design is the project's standard UI library. Its components provide the shared behavior, accessibility baseline, theme-token integration, and responsive structure for ordinary product UI. The app uses `ConfigProvider` theme tokens rather than introducing a second design system.
 
@@ -27,6 +27,8 @@ Custom CSS may set product identity and layout behavior around Ant Design compon
 The long subtitle review list uses `@tanstack/react-virtual` because Ant Design does not provide a variable-height virtual list with retained editing rows. It is a focused performance dependency: it measures cue rows, mounts the viewport plus a small buffer, and lets the app scroll to the active translation cue.
 
 Inspect the rendered DOM when styling an Ant Design composite component. `Sider` wraps its supplied content in `.ant-layout-sider-children`; sidebar gaps and the bottom action region belong on that actual layout container. The desktop translator uses 24 px between major controls, a stationary action group below the scrollable sidebar controls, and a compact sticky preview/column-label header in the content pane.
+
+Composite feedback must also be checked at its real child boundaries. Ant Design 6 renders descriptive Alert content in `.ant-alert-section` and its action in `.ant-alert-actions`. In the narrow translator sidebar, keep the icon and readable message together and place a long retry action on a full-width row below them. Give flex/grid children `min-width: 0`, wrap dynamic feedback text, and verify both component-level and document-level horizontal overflow at desktop and mobile widths. Do not apply an unscoped rule to every `div` or replace Alert with a custom panel.
 
 `Upload.Dragger` also renders an internal drag container. Loaded filenames must be constrained on that actual container: use safe anywhere-wrapping with a bounded visible line count, and keep the complete name available through a tooltip. Do not let a local filename widen or escape the sidebar.
 

@@ -197,7 +197,7 @@ function Translator({
       <Layout className="workspace">
         <Sider
           className="sidebar"
-          width="20%"
+          width="clamp(240px, 20vw, 384px)"
           theme={dark ? 'dark' : 'light'}
           aria-label="Translation controls"
         >
@@ -267,6 +267,7 @@ function Translator({
             </Flex>
             {app.serviceError && (
               <Alert
+                className="sidebar-alert language-load-error"
                 type="error"
                 title="Could not load languages"
                 description={app.serviceError}
@@ -362,10 +363,16 @@ function Translator({
               </Card>
             )}
             {app.estimate.error && (
-              <Alert type="error" title={app.estimate.error} showIcon />
+              <Alert
+                className="sidebar-alert"
+                type="error"
+                title={app.estimate.error}
+                showIcon
+              />
             )}
             {app.remainingEstimate.error && (
               <Alert
+                className="sidebar-alert"
                 type="error"
                 title={app.remainingEstimate.error}
                 showIcon

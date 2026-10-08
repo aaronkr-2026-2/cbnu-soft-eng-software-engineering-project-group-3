@@ -137,3 +137,19 @@ Branch: `feat/vercel-translation-gateway`. The existing Vercel frontend returned
 The Vite client now builds at the Vercel root and calls same-origin Function routes. Local Node and Vercel adapters share the same request validation, Cloud Translation model selection, safe error mapping, request-size limits, and bounded rate-limit metadata. Deployment fails closed with `gateway_disabled` unless `TRANSLATION_GATEWAY_ENABLED=true`; the Vercel environment is detected even if `NODE_ENV` is not set as expected. GitHub Actions remains as CI and no longer attempts the retired GitHub Pages deployment.
 
 The production build is approximately 827 kB JavaScript (267 kB gzip) and retains the existing >500 kB chunk warning. The personal fork synchronization, Vercel server-only variables, Firewall rate rule, owner allowance, Google budget/quota controls, explicit enablement, new deployment, live Function smoke test, paid provider behavior, and human translation/timing review remain unverified.
+
+## 2026-10-08 — Responsive feedback and layout containment
+
+Branch: `fix/responsive-feedback-layout`. The owner supplied a production screenshot showing the language-load Alert description collapsed into one-character columns while its retry button consumed the same row. The reproduced Ant Design 6 DOM left about 70 px for `.ant-alert-section` beside a 187 px `.ant-alert-actions` region.
+
+| Command/check | Outcome |
+| --- | --- |
+| `npm run format:check` | Passed. |
+| `npm run check` | Passed: TypeScript, zero-warning ESLint, 94 Vitest tests across nine files, and the production build. |
+| `npm run check:build` | Passed: no legacy endpoint, environment-key marker, key-shaped literal, source maps, or historical HTML in `dist`. |
+| `npm run test:e2e` | Passed all 13 mocked Chromium workflows in 11.1 seconds. New coverage verifies readable stacked language-error feedback, a contained retry action, the 240 px desktop sidebar minimum, full-width mobile stacking, and no horizontal overflow in major regions at 1024 px and 390 px. |
+| `git diff --check` | Passed before the task commit. |
+
+The language-load Alert now uses the inspected icon/section/action structure: readable content on the first row and a full-width wrapping retry button below it. Major app flex/grid children, Ant Design cards and feedback surfaces have scoped minimum-width and wrapping containment. The desktop sidebar uses a 240-384 px responsive width. The responsive audit also found that Ant Design's `Layout` row and zero-width `Content` selectors overrode the intended mobile stack; focused higher-specificity rules now make both sidebar and preview full-width below 640 px. Temporary desktop/mobile screenshots were visually inspected and were not committed.
+
+The production build is approximately 827 kB JavaScript (267 kB gzip) and retains the existing >500 kB chunk warning. Provider traffic was mocked; no `.env` value was read and no paid translation request was made. Firefox, Safari, Edge and human review on additional device sizes remain unverified.

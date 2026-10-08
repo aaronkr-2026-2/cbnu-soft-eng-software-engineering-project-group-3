@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 2026-10-08 — Vercel gateway deployment adapters
+Last updated: 2026-10-08 — responsive feedback and layout containment
 
 ## Confirmed product
 
@@ -11,6 +11,7 @@ Both official Cloud Translation models use the owner's server-side gateway. The 
 ## Current implementation
 
 - React/TypeScript/Vite/Ant Design with a compact header, approximate 20/80 desktop layout and virtualized paired cue cards. Theme starts from the OS; shared configuration lives in `src/app/theme.ts`. Major controls use 24 px spacing within an 8/16/24/32 px scale. Ant Design Upload handles choose/drop.
+- Desktop controls use a responsive 240-384 px sidebar before switching to the stacked mobile layout. Major flex/grid children, cards and feedback surfaces can shrink without horizontal overflow; the language-load Alert keeps its message readable and stacks its retry action below the text.
 - English UTF-8 SRT up to 5 MiB; balanced i/b/u markup; strict import errors; original source identity/times preserved. The header brand confirms before resetting loaded work. Help has X and OK; repository/theme controls remain compact.
 - Long loaded filenames stay within the Ant Design upload card, clamp to three visible lines and expose the complete name in a tooltip.
 - Languages load automatically through the gateway, without a paid Hello probe. The picker uses Google's NMT catalogue; not every TLLM language/model/location is independently verified.
@@ -36,14 +37,16 @@ The archived HTML at `archive/mvp/srt-translator-beta-3.html` and local `mvp-bas
 
 Earlier logs record minimal live NMT/TLLM requests on 2026-09-18 using `us-central1`; Seoul `asia-northeast3` failed that smoke test. The user also reported full-file attempts and UI/quality problems. Neither is controlled live acceptance evidence for the revised grouped pipeline. On 2026-10-01, the upload-name and quota-cooldown revision passed typecheck, zero-warning lint, 84 Vitest tests, the production build, formatting, the build-artifact check and 12 mocked Chromium workflows. Current automated verification is recorded in BUILD_LOG.md, with mocked provider quality clearly separated from human review.
 
-The owner reported a Vercel frontend deployment at `https://srt-translator-tawny.vercel.app`; a read-only check on 2026-10-08 returned the frontend but `404 NOT_FOUND` for the language Function before this change. Vercel is now the confirmed host and Function adapters exist in the repository. Current local verification passed formatting, typecheck, zero-warning lint, 94 Vitest tests across nine files, the production build and artifact scan, Node syntax checks, whitespace validation, and all 12 mocked Chromium workflows. The personal fork has not yet been synchronized or redeployed and no live Function result is claimed.
+The Vercel frontend is deployed at `https://srt-translator-tawny.vercel.app`. Before the Function change, a read-only check returned the frontend but `404 NOT_FOUND` for language discovery. After the owner synchronized and configured the deployment on 2026-10-08, the owner reported the web flow working and a read-only check returned 195 languages with HTTP 200. This establishes frontend-to-Function language discovery, not paid grouped-translation quality. Current automated verification is recorded in BUILD_LOG.md.
 
-The owner budget/allowance, Vercel Firewall rate limit, exhaustion behavior, explicit production enablement, the project's actual Google quota settings, live grouped-subtitle language/timing review and post-deployment smoke evidence remain outstanding. The gateway deliberately returns `gateway_disabled` in production until enabled. That switch and the existing Google cooldown are not a production allowance or spending control. Current desktop compatibility targets exceed the browsers actually tested. A bundle-size warning remains documented with build evidence.
+The responsive feedback revision passed formatting, typecheck, zero-warning lint, 94 Vitest tests across nine files, the production build and artifact scan, whitespace validation, and 13 mocked Chromium workflows. The new workflow verifies the language-error message/action geometry and horizontal containment at 1024 px and 390 px; temporary desktop/mobile screenshots were visually inspected and were not committed.
+
+The owner budget/allowance, Vercel Firewall rate limit, exhaustion behavior, the project's actual Google quota settings, live grouped-subtitle language/timing review and controlled paid-translation smoke evidence remain outstanding. The enablement switch and existing Google cooldown are not a production allowance or spending control. Current desktop compatibility targets exceed the browsers actually tested. A bundle-size warning remains documented with build evidence.
 
 ## Next work
 
 1. Human-review grouped NMT/TLLM output and timing on a small original fixture in representative target languages; define acceptance and model/language coverage.
-2. Sync the merged change to the personal fork; configure Vercel server secrets, owner allowance, Firewall rate limit and Google budget/quota controls; explicitly enable the gateway; verify the deployed NMT/TLLM flow.
+2. Confirm and retain evidence for the owner allowance, Firewall rate limit and Google budget/quota controls; record controlled deployed NMT/TLLM smoke results without exposing subtitles or credentials.
 3. Complete dated user/persona, sprint/review, security and external peer-review evidence under the existing semester plan.
 4. Implement browser-local checkpoint/resume at its planned milestone. Current retry is in-tab only.
 5. Keep Statistics/metadata/lives/telemetry conditional. Country/city acquisition, retention and notice remain open. Cloud subtitle storage/reuse and durable persisted jobs remain deferred.

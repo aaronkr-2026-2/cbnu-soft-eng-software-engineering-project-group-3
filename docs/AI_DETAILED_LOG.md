@@ -438,3 +438,15 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** TBD - human review required
 
 **Something the AI got wrong that I had to catch:** TBD - human review required
+
+## Responsive feedback and layout containment — 2026-10-08
+
+**Tool(s) used:** ChatGPT/Codex; user-supplied production screenshot; local React/CSS and Ant Design rendered-DOM inspection; Playwright Chromium; TypeScript, ESLint, Prettier and Vitest.
+
+**What I asked for:** Repair the language-loading error card whose message collapsed into one-character columns and whose retry button escaped the card, then make the surrounding components and layout resilient at desktop and mobile widths.
+
+**What I kept as-is:** TBD - human review required
+
+**What I changed or rejected, and why:** TBD - human review required
+
+**Something the AI got wrong that I had to catch:** TBD - human review required

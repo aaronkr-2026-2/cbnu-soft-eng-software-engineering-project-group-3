@@ -26,3 +26,4 @@ Short, professor-readable record of AI-assisted work. Detailed evidence, command
 - 2026-10-08 — Added a verified current-feature inventory, provisional Teddy and Jenna personas, prioritized user stories, and a feature-to-story gap map without claiming real-user or human translation-quality validation.
 - 2026-10-08 — Added evidence-based retrospective Week 2-4 sprint summaries while leaving unrecorded pitch, deployment, user-validation, review, and human-reflection details explicitly TBD.
 - 2026-10-08 — Added same-origin Vercel translation Functions backed by the shared local gateway core, retained fail-closed production enablement, and changed GitHub Actions from broken Pages deployment to CI-only verification.
+- 2026-10-08 — Fixed the collapsed language-error Alert and hardened the Ant Design sidebar, cards, feedback, and mobile layout against horizontal overflow with focused browser regression coverage.

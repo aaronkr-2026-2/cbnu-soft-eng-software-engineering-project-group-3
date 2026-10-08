@@ -2,7 +2,7 @@
 
 Version: 0.2 — voice memo revision
 
-Updated: 2026-09-18
+Updated: 2026-10-08 — responsive feedback containment
 
 Owner: one developer. Current decisions: ADR-001 (conditional telemetry only), ADR-004 (owner-funded NMT/TLLM gateway), ADR-006 (joined speech and approximate redistribution). The voice memo supersedes earlier NMT-per-cue and visitor-key instructions. [Revision prompt](REQUIREMENTS_REVISION_PROMPT.md) records the requested work; [revision audit](REQUIREMENTS_REVISION_AUDIT.md) records evidence and gaps.
 
@@ -28,14 +28,14 @@ Not in this increment: Gemini, visitor keys, accounts/payments, statistics, movi
 | --- | --- | --- |
 | FR-001 | Compact header with logo/name, theme switch, help and repository link. Brand resets file/settings/job after confirming loss of loaded work. Help has X and OK only. | Browser reset/help tests; no Cancel action in the help modal. |
 | FR-002 | No footer. | Shell review. |
-| FR-003 | Approximately 20% desktop controls / 80% preview, usable at narrower widths. | Browser/visual review. |
+| FR-003 | Approximately 20% desktop controls / 80% preview, usable at narrower widths. Major panels, cards, feedback and actions must shrink or wrap without horizontal overflow; mobile stacks the sidebar and preview at full width. | Desktop/mobile browser overflow checks and visual review. |
 | FR-004 | Initialize theme from OS on page load; manual sun/moon switch and next-theme tooltip; all standard components use the shared theme. | Dark OS load and switch tests. |
 | FR-010 | Local choose/drop English UTF-8 SRT, at most 5 MiB; report malformed, unsupported or empty files. Long loaded names remain inside the upload card and the complete name is discoverable. | Parser/file tests and browser upload/overflow check. |
 | FR-011 | Retain source order, indexes, exact time strings, multiline source and supported markup. | Round trips and downloaded output. |
 | FR-012 | Searchable target-language names/codes loaded automatically from official provider data. Exclude English as the fixed source. | Language-loading and selection tests. |
 | FR-013 | Non-searchable NMT/TLLM picker with concise, accurate explanations; both use joined speech. | Provider payload tests for both models. |
 | FR-014 | Start requires valid file, model, target and explicit Adult/Children profile; disable conflicting settings during work and after output exists until reset. | State/browser tests. |
-| FR-015 | No visitor key field or paid Hello service-check prerequisite. Gateway/language errors have a retry action. | No probe requests; key absent from client/build. |
+| FR-015 | No visitor key field or paid Hello service-check prerequisite. Gateway/language errors have a retry action that remains readable and contained at supported widths. | No probe requests; key absent from client/build; mocked language-failure browser check. |
 | FR-016 | Show selected model's whole-file list-price estimate, input characters and request count; distinguish remaining work. TLLM shows its output-length assumption. | Same builder used for estimates and requests; estimate tests. |
 | FR-017 | Cost card scrolls with settings and states estimate ≠ final bill, unknown credits, retries and official pricing link/date. | Browser/content review. |
 

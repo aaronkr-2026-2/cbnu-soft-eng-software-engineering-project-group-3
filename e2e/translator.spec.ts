@@ -171,6 +171,89 @@ test('invalid input is visible and cannot start a job', async ({ page }) => {
   ).toBeDisabled();
 });
 
+test('language failure feedback stays readable and contained', async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 1024, height: 900 });
+  await page.unroute('**/api/**');
+  await page.route('**/api/translation/languages**', async (route) => {
+    await route.fulfill({
+      status: 503,
+      json: { error: { category: 'gateway_disabled' } },
+    });
+  });
+  await page.goto('./');
+
+  const alert = page.locator('.language-load-error');
+  const retry = page.getByRole('button', {
+    name: 'Retry loading languages',
+    exact: true,
+  });
+  await expect(alert).toBeVisible();
+  await expect(retry).toBeVisible();
+
+  const geometry = await alert.evaluate((element) => {
+    const section = element.querySelector('.ant-alert-section');
+    const actions = element.querySelector('.ant-alert-actions');
+    const button = actions?.querySelector('button');
+    if (!section || !actions || !button)
+      throw new Error('Expected the rendered Ant Design alert structure.');
+    const alertBox = element.getBoundingClientRect();
+    const sectionBox = section.getBoundingClientRect();
+    const actionsBox = actions.getBoundingClientRect();
+    const buttonBox = button.getBoundingClientRect();
+    return {
+      alertBox: {
+        left: alertBox.left,
+        right: alertBox.right,
+      },
+      sectionWidth: sectionBox.width,
+      sectionBottom: sectionBox.bottom,
+      actionsTop: actionsBox.top,
+      buttonLeft: buttonBox.left,
+      buttonRight: buttonBox.right,
+      scrollWidth: element.scrollWidth,
+      clientWidth: element.clientWidth,
+    };
+  });
+
+  expect(geometry.sectionWidth).toBeGreaterThan(100);
+  expect(geometry.actionsTop).toBeGreaterThanOrEqual(geometry.sectionBottom);
+  expect(geometry.buttonLeft).toBeGreaterThanOrEqual(geometry.alertBox.left);
+  expect(geometry.buttonRight).toBeLessThanOrEqual(geometry.alertBox.right);
+  expect(geometry.scrollWidth).toBeLessThanOrEqual(geometry.clientWidth + 1);
+  await expect(page.locator('.sidebar')).toHaveCSS('min-width', '240px');
+
+  const assertMajorRegionsFit = async () => {
+    const overflows = await page
+      .locator(
+        '.app-header, .sidebar, .sidebar-controls, .sidebar-actions, .content, .language-load-error',
+      )
+      .evaluateAll((elements) =>
+        elements
+          .filter((element) => element.scrollWidth > element.clientWidth + 1)
+          .map((element) => ({
+            className: element.className,
+            clientWidth: element.clientWidth,
+            scrollWidth: element.scrollWidth,
+          })),
+      );
+    expect(overflows).toEqual([]);
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBeLessThanOrEqual(await page.evaluate(() => window.innerWidth));
+  };
+
+  await assertMajorRegionsFit();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.locator('.workspace')).toHaveCSS(
+    'flex-direction',
+    'column',
+  );
+  await expect(page.locator('.sidebar')).toHaveCSS('width', '390px');
+  await assertMajorRegionsFit();
+});
+
 test('long uploaded filenames stay inside the upload card', async ({
   page,
 }) => {

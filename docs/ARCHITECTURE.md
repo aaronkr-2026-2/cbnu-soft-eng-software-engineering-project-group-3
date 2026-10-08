@@ -62,6 +62,8 @@ Shared theme configuration uses `ConfigProvider`; `theme.useToken` exposes dynam
 
 Desktop controls scroll above a stationary action/progress/download area. The preview heading and source/target labels are compact and sticky. `@tanstack/react-virtual` mounts only visible paired rows plus overscan and retains the editing row. Rendering yields between batches. Tests use a synthetic 2,500-cue file; this is not a claim about every browser or full-film workload.
 
+The desktop sidebar uses a bounded responsive width rather than an unconstrained percentage. Layout boundaries and Ant Design Card/Alert internals receive explicit minimum-width containment. The language-load Alert follows the inspected Ant Design DOM: its icon and text share the first grid row and its retry action occupies a full-width second row. At the mobile breakpoint, selectors override Ant Design's row-oriented `Layout` and zero-width `Content` rules so the sidebar and preview stack at the full viewport width.
+
 ## Persistence and lifecycle
 
 Current retry keeps completed work only in the open tab. Reload checkpoints are a planned Week 9 task, not implemented behavior. Browsers can throttle, freeze or discard pages; no closed-tab continuation is promised. Keep the active-job warning and stale-result protection.

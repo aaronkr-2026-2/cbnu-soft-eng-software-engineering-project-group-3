@@ -13,6 +13,7 @@ input {
   background: var(--page);
   color: var(--text);
   min-height: 100vh;
+  min-width: 0;
 }
 a {
   color: var(--accent);
@@ -27,6 +28,16 @@ a {
   gap: var(--space-small);
   background: var(--surface);
   border-bottom: 1px solid var(--border);
+  min-width: 0;
+}
+.app-header > *,
+.workspace > *,
+.sidebar .ant-layout-sider-children > *,
+.sidebar-controls > *,
+.sidebar-actions > *,
+.content > * {
+  min-width: 0;
+  max-width: 100%;
 }
 .brand.ant-btn {
   height: auto;
@@ -84,6 +95,56 @@ a {
 .sidebar-controls > * {
   flex-shrink: 0;
 }
+.app .ant-card,
+.app .ant-card-head,
+.app .ant-card-head-wrapper,
+.app .ant-card-head-title,
+.app .ant-card-body,
+.app .ant-alert,
+.app .ant-alert-section {
+  min-width: 0;
+  max-width: 100%;
+}
+.app .ant-alert-title,
+.app .ant-alert-description,
+.estimate,
+.job-summary,
+.quality-warning,
+.edit-form > [role='alert'] {
+  overflow-wrap: anywhere;
+}
+.sidebar-alert {
+  width: 100%;
+}
+.language-load-error.ant-alert {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-small) var(--space-small);
+}
+.language-load-error .ant-alert-icon {
+  grid-column: 1;
+  grid-row: 1;
+  margin-inline-end: 0;
+}
+.language-load-error .ant-alert-section {
+  grid-column: 2;
+  grid-row: 1;
+}
+.language-load-error .ant-alert-actions {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  min-width: 0;
+  max-width: 100%;
+  margin-inline-start: 0;
+}
+.language-load-error .ant-alert-actions .ant-btn {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  min-height: 32px;
+  white-space: normal;
+}
 .file-picker-heading {
   margin: 0;
   font-size: 16px;
@@ -133,6 +194,7 @@ a {
 .estimate {
   background: var(--hover);
   font-size: 11px;
+  width: 100%;
 }
 .estimate .ant-card-head {
   min-height: 34px;
@@ -166,11 +228,15 @@ a {
 }
 .job-summary > div:first-child {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  gap: var(--space-small);
 }
 .job-summary dl {
   display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-small);
   justify-content: space-between;
   margin: 6px 0;
 }
@@ -232,6 +298,7 @@ a {
   border-radius: 12px;
   margin-top: 30px;
   padding: 32px;
+  overflow-wrap: anywhere;
 }
 .empty-symbol {
   width: 88px;
@@ -394,7 +461,7 @@ a {
     padding: 18px;
     gap: 18px;
   }
-  .workspace {
+  .workspace.ant-layout-has-sider {
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
@@ -403,11 +470,11 @@ a {
   }
   .sidebar.ant-layout-sider {
     width: 100% !important;
-    max-width: none !important;
+    max-width: 100% !important;
     min-width: 0 !important;
     border-right: 0;
     border-bottom: 1px solid var(--border);
-    flex: 0 1 55dvh;
+    flex: 0 1 55dvh !important;
     overflow: hidden;
   }
   .sidebar .ant-layout-sider-children {
@@ -418,6 +485,10 @@ a {
   }
   .sidebar-actions {
     position: static;
+  }
+  .workspace.ant-layout-has-sider > .content.ant-layout-content {
+    width: 100%;
+    max-width: 100%;
   }
   .content {
     flex: 1 1 auto;
