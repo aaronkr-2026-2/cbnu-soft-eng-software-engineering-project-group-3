@@ -66,6 +66,7 @@ GitHub Pages serves only the frontend. Public working translation requires a sep
 - [AGENTS.md](AGENTS.md): canonical working rules; `GEMINI.md` and `CLAUDE.md` point coding assistants here and are not product integrations.
 - [PROJECT_STATE.md](PROJECT_STATE.md): current implementation and evidence limits.
 - [Current features](docs/product/features-now.md), [provisional personas](docs/product/personas.md), [user stories](docs/product/stories.md), and [feature-to-story gap map](docs/product/gap-map.md): the Week 4 product-discovery record and its outstanding validation gaps.
+- [Week 2](docs/sprints/WEEK_02.md), [Week 3](docs/sprints/WEEK_03.md), [Week 4](docs/sprints/WEEK_04.md), and [Week 5](docs/sprints/WEEK_05.md) sprint records: evidence-based summaries with unrecorded human review and validation left explicitly TBD.
 - [Revision prompt](docs/REQUIREMENTS_REVISION_PROMPT.md) and [revision audit](docs/REQUIREMENTS_REVISION_AUDIT.md): the voice memo translated into work and its implementation findings.
 - [Product requirements](docs/PRODUCT_REQUIREMENTS.md), [formatting specification](docs/SUBTITLE_FORMATTING_SPEC.md), and [architecture](docs/ARCHITECTURE.md): the current contract.
 - [AI_LOG.md](AI_LOG.md): short classroom summary; [detailed AI log](docs/AI_DETAILED_LOG.md): course-format evidence and human reflections.

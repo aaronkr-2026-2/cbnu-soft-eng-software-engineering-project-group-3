@@ -1,5 +1,7 @@
 # Week 5: React migration and official provider
 
+Earlier retrospective sprint records: [Week 2](WEEK_02.md), [Week 3](WEEK_03.md), and [Week 4](WEEK_04.md).
+
 Sprint dates / capacity: TBD — confirm against the course calendar and personal availability. This record tracks work, not an invented completed week.
 
 Goal: establish a weekly workflow and implement a local, verified React upload-to-download increment using official Cloud Translation. The expanded provider/editing work may span multiple sprints.

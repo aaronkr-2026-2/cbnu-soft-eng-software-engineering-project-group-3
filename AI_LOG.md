@@ -24,3 +24,4 @@ Short, professor-readable record of AI-assisted work. Detailed evidence, command
 - 2026-10-01 — Verified and prepared the joined-speech NMT/TLLM revision for GitHub, correcting stale fixture/browser assertions and preserving spaces before protected annotations.
 - 2026-10-01 — Opened GitHub issue #2 with the reported screenshot, contained long upload filenames, and added a visible cancelable cooldown for Google's per-minute quota response before bounded automatic retries.
 - 2026-10-08 — Added a verified current-feature inventory, provisional Teddy and Jenna personas, prioritized user stories, and a feature-to-story gap map without claiming real-user or human translation-quality validation.
+- 2026-10-08 — Added evidence-based retrospective Week 2-4 sprint summaries while leaving unrecorded pitch, deployment, user-validation, review, and human-reflection details explicitly TBD.

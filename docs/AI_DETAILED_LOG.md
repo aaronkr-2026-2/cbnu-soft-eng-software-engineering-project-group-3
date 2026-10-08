@@ -414,3 +414,15 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** TBD - human review required
 
 **Something the AI got wrong that I had to catch:** TBD - human review required
+
+## Retrospective Week 2-4 sprint summaries — 2026-10-08
+
+**Tool(s) used:** ChatGPT/Codex; local Git history; current and historical project records; semester plan; course guide; build log; source/test evidence; AI logs.
+
+**What I asked for:** Summarize the work from the weeks before the existing Week 5 sprint record and add those summaries under `docs/sprints/`.
+
+**What I kept as-is:** TBD - human review required
+
+**What I changed or rejected, and why:** TBD - human review required
+
+**Something the AI got wrong that I had to catch:** TBD - human review required
