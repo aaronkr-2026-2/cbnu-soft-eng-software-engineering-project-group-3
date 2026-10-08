@@ -2,7 +2,7 @@
 
 Version: 0.1
 
-Updated: 2026-09-18
+Updated: 2026-10-08 — modular folder and documentation checks
 
 These rules apply to humans and AI coding tools.
 
@@ -25,7 +25,8 @@ These rules apply to humans and AI coding tools.
 2. State the goal, constraints, acceptance criteria, and verification commands.
 3. Identify existing behavior that must not change.
 4. Prefer a focused change that can be run, verified, reviewed, and committed independently.
-5. Do not rewrite or delete working code merely to match a preferred style. Explain and test any replacement.
+5. Keep browser implementation/tests under `frontend/` and gateway implementation/tests under `backend/`; root `api/` holds only Vercel Function entrypoints. Use `docs/README.md` for document locations.
+6. Do not rewrite or delete working code merely to match a preferred style. Explain and test any replacement.
 
 ## 3. Implementation style
 
@@ -40,7 +41,7 @@ These rules apply to humans and AI coding tools.
 - Do not leave dead code, duplicate logic, commented-out implementations, or placeholder providers presented as real.
 - Preserve user-edited subtitle text unless an explicit action authorizes replacement.
 - Treat file content, API output, metadata, and restored local state as untrusted input.
-- Define shared global/component tokens in `src/app/theme.ts` and consume them through ConfigProvider. Use the 8/16/24/32 px spacing scale; avoid conflicting one-off global overrides of component internals. Focused layout/style props remain valid for measured virtual positions and subtitle markup.
+- Define shared global/component tokens in `frontend/src/app/theme.ts` and consume them through ConfigProvider. Use the 8/16/24/32 px spacing scale; avoid conflicting one-off global overrides of component internals. Focused layout/style props remain valid for measured virtual positions and subtitle markup.
 - Prefer Ant Design components for the application shell, standard controls, feedback, spacing, and generic panels. Use custom semantic elements and CSS only where the product needs subtitle-specific structure, interaction, or rendering-performance behavior. See `UI_COMPONENT_GUIDE.md`.
 - Inspect a library component's rendered DOM before applying child spacing or sticky layout rules. The desktop translator sidebar must apply the shared 24 px major-control rhythm to Ant Design's actual child container, not the outer `Sider`. Keep translation actions, progress, and download in one stationary bottom region outside the scrollable controls. Keep the subtitle-preview heading and column labels compact and sticky in the content scroll container.
 
@@ -148,4 +149,4 @@ If an AI cannot access a referenced repository/file/service, it must say so and 
 
 ## 11. Definition of Done
 
-Use the Definition of Done in `PRODUCT_REQUIREMENTS.md`. "The code looks right" or "the AI says it should work" is not completion evidence.
+Use the Definition of Done in `docs/requirements/PRODUCT_REQUIREMENTS.md`. Run `npm run check:docs` after documentation moves. "The code looks right" or "the AI says it should work" is not completion evidence.

@@ -11,7 +11,7 @@ Local branch: `feat/react-official-translate`. Node 24.19.0 / npm 11.17.0. This 
 | `npm run format:check`                                                   | Passed.                                                                                                                                                                                 |
 | `GITHUB_ACTIONS=true npm run test:e2e`                                   | Passed: four Chromium browser workflows against the production build under the repository subpath; final run 7.6 seconds. Light/dark screenshots inspected in test-results.             |
 | `npm run check:build`                                                    | Passed: no legacy endpoint, environment-key marker, key-shaped literal, source maps, or historical HTML in dist. This is a targeted artifact check, not a comprehensive security audit. |
-| `git diff --exit-code b64bc59 -- archive/mvp/srt-translator-beta-3.html` | Passed before the file was moved: original MVP unchanged. Local annotated mvp-baseline tag preserves b64bc59.                                                                           |
+| `git diff --exit-code b64bc59 -- docs/mvp/srt-translator-beta-3.html` | Passed before the file was moved: original MVP unchanged. Local annotated mvp-baseline tag preserves b64bc59.                                                                           |
 | `git check-ignore .env .nev` / tracked-file query                        | Both ignored; .env is untracked. No secret file content read.                                                                                                                           |
 | `git diff --check`                                                       | Passed.                                                                                                                                                                                 |
 
@@ -34,7 +34,7 @@ Human walkthrough / external review / retrospective: TBD - human review required
 
 ## 2026-09-18 — Owner-funded NMT/TLLM gateway refactor
 
-`npm run check`, `npm run format:check`, `node --check server/index.mjs`, and `GITHUB_ACTIONS=true npm run test:e2e` passed. Unit tests use mocked gateway responses; browser tests intercept `/api` and do not start the local gateway or read `.env`. No real API key was read and no billable Google request was made. The production gateway host, rate limits, abuse controls, live-provider smoke test, and NMT/TLLM quality benchmark remain pending.
+`npm run check`, `npm run format:check`, `node --check backend/server/index.mjs`, and `GITHUB_ACTIONS=true npm run test:e2e` passed. Unit tests use mocked gateway responses; browser tests intercept `/api` and do not start the local gateway or read `.env`. No real API key was read and no billable Google request was made. The production gateway host, rate limits, abuse controls, live-provider smoke test, and NMT/TLLM quality benchmark remain pending.
 
 ## 2026-09-18 — Live gateway configuration diagnosis
 
@@ -52,7 +52,7 @@ This confirms only minimal provider connectivity. It is not real-subtitle qualit
 
 ## 2026-09-18 — Gateway error-category verification
 
-`npm run check` passed: TypeScript, zero-warning ESLint, 57 unit tests, and production build. `npm run format:check` and `node --check server/index.mjs` passed. The build retains its existing >500 kB chunk warning. The full `git diff --check` also reports the separately modified user fixture `examples/demo.srt`; it was not changed as part of the gateway diagnosis.
+`npm run check` passed: TypeScript, zero-warning ESLint, 57 unit tests, and production build. `npm run format:check` and `node --check backend/server/index.mjs` passed. The build retains its existing >500 kB chunk warning. The full `git diff --check` also reports the separately modified user fixture `examples/demo.srt`; it was not changed as part of the gateway diagnosis.
 
 The gateway now writes only a sanitized Cloud Translation HTTP status/category on upstream failure and returns an allowlisted category to the client. A unit test verifies that arbitrary upstream error text is not echoed. Restarting the local development command is required before this new diagnostic is active.
 
@@ -112,7 +112,7 @@ Branch: `fix/upload-name-and-quota-cooldown`. GitHub issue: #2 with the user-sup
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `npm run check`                 | Passed: TypeScript, zero-warning ESLint, 84 Vitest tests across seven files, and production build.                                                                                          |
 | `npm run format:check`          | Passed.                                                                                                                                                                                     |
-| `node --check server/index.mjs` | Passed.                                                                                                                                                                                     |
+| `node --check backend/server/index.mjs` | Passed.                                                                                                                                                                                     |
 | `npm run check:build`           | Passed: no legacy endpoint, environment-key marker, key-shaped literal, source maps, or historical HTML in `dist`.                                                                          |
 | `npm run test:e2e`              | Passed all 12 mocked Chromium workflows in 9.4 seconds. New coverage verifies the long filename's rendered bounds/full-name tooltip and the visible quota cooldown before same-batch retry. |
 | `git diff --check`              | Passed before the task commit.                                                                                                                                                              |
@@ -153,3 +153,20 @@ Branch: `fix/responsive-feedback-layout`. The owner supplied a production screen
 The language-load Alert now uses the inspected icon/section/action structure: readable content on the first row and a full-width wrapping retry button below it. Major app flex/grid children, Ant Design cards and feedback surfaces have scoped minimum-width and wrapping containment. The desktop sidebar uses a 240-384 px responsive width. The responsive audit also found that Ant Design's `Layout` row and zero-width `Content` selectors overrode the intended mobile stack; focused higher-specificity rules now make both sidebar and preview full-width below 640 px. Temporary desktop/mobile screenshots were visually inspected and were not committed.
 
 The production build is approximately 827 kB JavaScript (267 kB gzip) and retains the existing >500 kB chunk warning. Provider traffic was mocked; no `.env` value was read and no paid translation request was made. Firefox, Safari, Edge and human review on additional device sizes remain unverified.
+
+## 2026-10-08 — Modular folder and documentation refactor
+
+Branch: `fix/responsive-feedback-layout`. This local refactor was not pushed or deployed. The professor/Classroom50 `.classroom50.yaml`, `.github/` workflow and `resources/` were not edited. The historical MVP HTML was moved unchanged to `docs/mvp/`; a screenshot generated from a mocked Chromium workflow was added to the README. No `.env` value was read, and no paid provider call was made.
+
+| Command/check | Outcome |
+| --- | --- |
+| `npm run format:check` | Passed. |
+| `npm run check` | Passed: TypeScript, zero-warning ESLint, 108 Vitest tests across nine files, production build and local Markdown-link check across 42 files. |
+| `npm run check:build` | Passed: no legacy endpoint, credential/configuration marker, source map or historical HTML in `dist`. |
+| Node syntax checks | Passed for the local adapter, gateway core, Vercel adapter and both Function entrypoints. |
+| `npm run test:e2e` | Passed all 15 mocked Chromium workflows in 12.9 seconds, including irregular language/translation JSON recovery. The sandbox-only localhost restriction required a permitted rerun. |
+| `git diff --check` | Passed before logging; repeat before commit. |
+
+The browser code and tests now live under `frontend/`; the gateway core/local adapter/tests live under `backend/`. Root `api/` remains a pair of thin Vercel entrypoints so same-origin Function discovery continues. The Function adapter now bounds streamed request bytes, the gateway rejects empty translation inputs, and an English-only catalogue cannot mark the language setup ready. Malformed 200 translation JSON is rejected before download; no-op `TranslationProvider.clear()` was removed as obsolete visitor-key-era code.
+
+The build remains approximately 828 kB JavaScript (267 kB gzip) and retains Vite's >500 kB chunk warning. The code audit does not certify absence of every hang or malformed provider case: local upstream fetch has no independent server timeout, provider output size is not capped here, public allowance/rate controls are unresolved, and paid/human language-timing review has not been performed. See `docs/audits/CODE_AUDIT_2026-10-08.md`.

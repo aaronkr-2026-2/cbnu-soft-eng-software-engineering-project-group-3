@@ -7,15 +7,15 @@ This file is the canonical repository memory for every AI coding tool. Model-spe
 Before changing anything, read:
 
 1. `PROJECT_STATE.md`
-2. `docs/PRODUCT_REQUIREMENTS.md`
+2. `docs/requirements/PRODUCT_REQUIREMENTS.md`
 3. `docs/ARCHITECTURE.md`
 4. `docs/DEVELOPMENT_RULES.md`
-5. `docs/SEMESTER_PLAN.md`
-6. `docs/COURSE_ALIGNMENT.md`
-7. `docs/SUBTITLE_FORMATTING_SPEC.md`
-8. `docs/PROVIDER_AUTH_AND_COST.md`
-9. `docs/UI_COMPONENT_GUIDE.md`
-10. accepted ADRs, then `docs/OPEN_QUESTIONS.md`
+5. `docs/planning/SEMESTER_PLAN.md`
+6. `docs/planning/COURSE_ALIGNMENT.md`
+7. `docs/requirements/SUBTITLE_FORMATTING_SPEC.md`
+8. `docs/guides/PROVIDER_AUTH_AND_COST.md`
+9. `docs/guides/UI_COMPONENT_GUIDE.md`
+10. accepted ADRs in `docs/decisions/`, then `docs/requirements/OPEN_QUESTIONS.md`
 11. recent entries in `AI_LOG.md` and `docs/AI_DETAILED_LOG.md`
 
 ## Non-negotiable rules
@@ -28,7 +28,8 @@ Before changing anything, read:
 - Keep SRT/subtitle domain logic independent of React and network providers.
 - Both NMT and TLLM use joined continuation speech under ADR-006. Never regress to visual-only grouping, source-word-ratio splitting, or an unverified promise that Google preserves invented cue markers. Distinguish structural mapping tests from human translation/timing quality.
 - Keep Cloud Translation model details behind the translation-provider interface.
-- Use Ant Design as the first choice for application layout, standard controls, feedback, navigation, spacing, and generic panels. Retain semantic HTML and focused custom CSS where the subtitle-review interface needs domain-specific behavior or performance control; do not add generic `div` wrappers when an appropriate Ant Design component exists. Follow `docs/UI_COMPONENT_GUIDE.md`.
+- Keep app code in `frontend/` and gateway code in `backend/`. Root `api/` contains only the two small Vercel Function entrypoints; Vercel requires these at the project root. Root npm/Vite/test configuration orchestrates both folders. Keep `AGENTS.md`, AI logs and project state at the root; use the [docs map](docs/README.md) for documentation paths.
+- Use Ant Design as the first choice for application layout, standard controls, feedback, navigation, spacing, and generic panels. Retain semantic HTML and focused custom CSS where the subtitle-review interface needs domain-specific behavior or performance control; do not add generic `div` wrappers when an appropriate Ant Design component exists. Follow `docs/guides/UI_COMPONENT_GUIDE.md`.
 - Verify the rendered DOM of library layout components before styling their child spacing or fixed regions. For the desktop translator sidebar, use the shared 8/16/24/32 px spacing scale (24 px between major sidebar controls) on the actual control container and keep loaded-file actions in a stationary bottom group outside the scrollable controls. Keep the subtitle-preview heading and its column labels compact and sticky at the top of the scrollable content pane.
 - Never use or describe the MVP's undocumented Google consumer endpoint as production-ready.
 - Never expose, commit, persist, log, or place secrets in public Vite environment variables.
@@ -42,10 +43,11 @@ Before changing anything, read:
 - Location precision is confirmed as country and city. Acquisition method and telemetry retention/notice remain TBD; do not silently add GPS, an IP lookup service, raw IP storage, or persistent user tracking.
 - Do not implement microservices merely to match a lecture topic. Discuss and document why they fit or do not fit.
 - Run relevant typecheck, lint, tests, and build. Never claim they passed without current successful output.
+- Run `npm run check:docs` after moving or changing Markdown links. Keep historical ADRs and AI entries labelled as history, not active requirements.
 - After every material change, update `PROJECT_STATE.md` and affected documentation, append a one-line plain-language entry to `AI_LOG.md`, and append the evidence/detail to `docs/AI_DETAILED_LOG.md`.
 - After completing a user prompt that changes repository files, create one local commit for that completed logical change before reporting completion. Inspect Git status first; never include secrets, ignored files, unrelated user changes, or generated artifacts. Do not push, merge, amend published history, or use destructive Git commands unless the user explicitly asks.
 - Never fabricate the human-only `kept`, `changed/rejected`, or `AI got wrong` reflection. Use `TBD - human review required` when necessary.
-- Work must satisfy the Definition of Done in `docs/PRODUCT_REQUIREMENTS.md`.
+- Work must satisfy the Definition of Done in `docs/requirements/PRODUCT_REQUIREMENTS.md`.
 
 ## Current confirmed stack direction
 
@@ -60,7 +62,7 @@ Before changing anything, read:
 
 - Confirmed 2026-09-16: this is a solo project. Do not allocate work to assumed teammates.
 - Confirmed 2026-09-18: use only Cloud Translation NMT and TLLM through an owner-funded server-side gateway. Gemini Developer API is removed from product scope. See ADR-004.
-- Telemetry-only scope supersedes prior Firebase/R2 file-storage proposals. Do not provision an object bucket or add upload credentials for this scope. Public gateway allowance and telemetry lifecycle remain open. Read `docs/ADR-001-TELEMETRY-ONLY.md`.
+- Telemetry-only scope supersedes prior Firebase/R2 file-storage proposals. Do not provision an object bucket or add upload credentials for this scope. Public gateway allowance and telemetry lifecycle remain open. Read `docs/decisions/ADR-001-TELEMETRY-ONLY.md`.
 - Recheck dated pricing before implementation; distinguish a no-cost quota from a no-billing account.
 
 ## Current priority

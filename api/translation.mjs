@@ -1,10 +1,10 @@
-import { translate } from '../server/translationGateway.mjs';
+import { translate } from '../backend/server/translationGateway.mjs';
 import {
   failureResponse,
   jsonResponse,
   methodNotAllowed,
   readRequestJson,
-} from '../server/vercelAdapter.mjs';
+} from '../backend/server/vercelAdapter.mjs';
 
 export default {
   async fetch(request) {

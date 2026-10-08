@@ -27,7 +27,7 @@ The repository and product idea existed, with an initial technology proposal and
 
 - Git commits `e47f9dd`, `17289a9`, `ca29286`, and `9c0fbb1`.
 - Historical `PROJECT.md` content available through Git history.
-- Current [product requirements](../PRODUCT_REQUIREMENTS.md), [semester plan](../SEMESTER_PLAN.md), and [project state](../../PROJECT_STATE.md).
+- Current [product requirements](../requirements/PRODUCT_REQUIREMENTS.md), [semester plan](../planning/SEMESTER_PLAN.md), and [project state](../../PROJECT_STATE.md).
 
 ## Carryover and gaps
 

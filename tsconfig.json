@@ -16,5 +16,10 @@
     "noEmit": true,
     "types": ["vite/client", "node"]
   },
-  "include": ["src", "vite.config.ts", "playwright.config.ts", "e2e"]
+  "include": [
+    "frontend/src",
+    "frontend/e2e",
+    "vite.config.ts",
+    "playwright.config.ts"
+  ]
 }
