@@ -48,6 +48,6 @@ Tests mock Google; live paid translation, language/model coverage and subtitle t
 | --- | --- |
 | How the parts fit | [Architecture](docs/ARCHITECTURE.md) · [frontend mechanism](docs/frontend/MECHANISM.md) · [backend mechanism](docs/backend/MECHANISM.md) |
 | Product and decisions | [Current stories/personas/gaps](docs/product/README.md) · [requirements](docs/requirements/PRODUCT_REQUIREMENTS.md) · [ADRs](docs/decisions/README.md) |
-| Course history | [Sprints](docs/sprints/README.md) · [archived MVP](docs/mvp/srt-translator-beta-3.html) · [build evidence](BUILD_LOG.md) |
+| Course history | [Issue backlog](docs/planning/BACKLOG.md) · [sprints](docs/sprints/README.md) · [archived MVP](docs/mvp/srt-translator-beta-3.html) · [build evidence](BUILD_LOG.md) |
 | AI use | [Short AI log](AI_LOG.md) · [detailed AI log](docs/AI_DETAILED_LOG.md) |
 | All documentation | [Docs index](docs/README.md) · [current project state](PROJECT_STATE.md) |

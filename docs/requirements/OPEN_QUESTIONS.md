@@ -1,6 +1,6 @@
 # Open Questions and Owner Decisions
 
-Updated: 2026-10-08 — Vercel deployment and refactor follow-up.
+Updated: 2026-10-09 — Vercel deployment and [issue backlog](../planning/BACKLOG.md) follow-up.
 
 Resolved decisions are not questions to ask again. Record new decisions in the affected requirements/ADR and project state.
 
@@ -27,7 +27,7 @@ No key or billing values need to be pasted into a conversation. The ignored loca
 
 ## Human/course work still required
 
-7. Confirm semester dates, weekly capacity and a real sprint review/retrospective schedule. Local draft backlog entries are not published GitHub issues.
+7. Confirm semester dates, weekly capacity and a real sprint review/retrospective schedule. The published [issue backlog](../planning/BACKLOG.md) covers verified milestones and selected open follow-ups; remaining draft tasks are not automatically published issues.
 8. Validate the audience/personas/user stories with real people; provide interview evidence rather than AI-invented users. The Chapter 3 lecture asks for one real-person check with three corrections, plus an additional role/scenario. The owner chose to leave the third role TBD for now; do not invent one.
 9. Arrange the external classmate/instructor review required by Week 12; self-review is not equivalent.
 10. Complete the human kept/rejected/mistakes reflections in the linked detailed AI log and rehearse explaining actual source files.
