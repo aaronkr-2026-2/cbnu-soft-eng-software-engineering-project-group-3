@@ -30,3 +30,4 @@ Short, professor-readable record of AI-assisted work. Detailed evidence, command
 - 2026-10-08 — Separated frontend and backend code, organized docs and the archived MVP, simplified product/README pages, and audited malformed API responses and obsolete code without changing Classroom50 starter files.
 - 2026-10-08 — Reworked product personas, scenarios, stories, features, gaps and creep audit to match the correct Features, Stories lecture, leaving unverified human work and the third role TBD.
 - 2026-10-09 — Published the verified refactor branch as PR #5, linked completed work to GitHub issues and commits, and created open issues for unresolved production, quality, recovery and review work.
+- 2026-10-09 — Restored the course-required FOR/WHO/THAT/UNLIKE product vision to the README without changing application behavior.

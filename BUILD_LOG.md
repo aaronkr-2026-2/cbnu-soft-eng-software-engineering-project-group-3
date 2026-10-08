@@ -191,3 +191,16 @@ Branch `fix/responsive-feedback-layout` was pushed and [PR #5](https://github.co
 | `git diff --check` | Passed after the backlog documentation edits; repeat on the staged diff. |
 
 The initial PR `verify` workflow passed on the published branch before the backlog documentation commit. Its final CI/merge result and the deployed Vercel state must be checked separately. This run made no paid provider request and did not read `.env`.
+
+## 2026-10-09 — README product vision restored
+
+The root README again contains the owner's exact lecture-required FOR/WHO/THAT/UNLIKE vision after the short description, live link and screenshot. No application code or deployment configuration changed. The earlier PR #5 merged to `main` at `d95c971`, with its final PR `verify` check passing; this README-only commit is local and has not been pushed or deployed.
+
+| Command/check | Outcome |
+| --- | --- |
+| `npm run format:check` | Passed. |
+| `npm run check` | Passed: TypeScript, zero-warning ESLint, 108 Vitest tests, production build and Markdown links across 46 files. |
+| `npm run check:build` | Passed: no legacy endpoint, credential marker, source map or historical HTML in `dist`. |
+| `git diff --check` | Passed before log updates; repeat on the staged diff. |
+
+Browser workflows were not rerun for this documentation-only change. The existing >500 kB JavaScript-chunk warning remains. No paid provider call or live translation-quality review was performed.

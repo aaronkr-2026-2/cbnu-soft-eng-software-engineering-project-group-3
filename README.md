@@ -8,6 +8,20 @@ Have an English subtitle file but want to watch in another language? Drop in an 
 
 _Screenshot from a mocked browser test. It demonstrates the interface, not live NMT/TLLM quality._
 
+## Product vision
+
+**FOR** tech-savvy movie viewers who already obtain and use subtitle files,
+
+**WHO** want to enjoy movies in their preferred or mother language,
+
+**THE SRT Translator IS AN** online subtitle translation and review tool
+
+**THAT** joins continuing speech before translation and produces an editable SRT with preserved timing.
+
+**UNLIKE** manually copying subtitle fragments into a general translation website,
+
+**OUR PRODUCT** handles continuation grouping, subtitle readability, progress, editing and download in one workflow.
+
 ## At a glance
 
 React, TypeScript, Vite and Ant Design power the browser UI. Node and same-origin Vercel Functions share a small gateway to official Google Cloud Translation NMT/TLLM. The browser calls `/api/translation` and `/api/translation/languages`; the gateway alone holds the owner key. The SRT stays local except for subtitle text sent to the selected translation provider. Joined dialogue is redistributed approximately into the original time slots, so review against the movie still matters.

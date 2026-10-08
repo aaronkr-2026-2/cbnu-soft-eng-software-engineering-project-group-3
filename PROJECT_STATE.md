@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 2026-10-09 — commit-traced GitHub backlog and PR preparation
+Last updated: 2026-10-09 — README product vision restored
 
 ## Confirmed product
 
@@ -32,7 +32,7 @@ The 43-cue original `examples/demo.srt` remains available. Dedicated regression 
 
 The React port previously grouped cues only on screen while sending separate strings. The voice memo explicitly restored real joined provider input for both models. ADR-006 supersedes ADR-005's marked-TLLM-only proposal. Arbitrary cue markers are not a Google-guaranteed alignment mechanism, and source-word ratios are not restored.
 
-README, architecture and migration plans no longer instruct visitor keys or describe the already implemented local gateway as future work. Historical ADR-002/003/005 and previous log entries remain labelled history. The empty `TranslationProvider.clear()` hook left by the visitor-key design was removed; no active Gemini/visitor-key/Firebase/Statistics implementation was found to delete. `GEMINI.md` and `CLAUDE.md` are coding-assistant pointers, not runtime features.
+README, architecture and migration plans no longer instruct visitor keys or describe the already implemented local gateway as future work. The README again includes the course-required FOR/WHO/THAT/UNLIKE product-vision statement after its brief public introduction and screenshot. Historical ADR-002/003/005 and previous log entries remain labelled history. The empty `TranslationProvider.clear()` hook left by the visitor-key design was removed; no active Gemini/visitor-key/Firebase/Statistics implementation was found to delete. `GEMINI.md` and `CLAUDE.md` are coding-assistant pointers, not runtime features.
 
 ## Evidence and remaining limits
 
@@ -68,4 +68,4 @@ No reproducing deadlock was found in the inspected sequential flow, but the loca
 
 `docs/README.md` is the navigation map. Decisions, requirements, guides, planning and audits now have their own folders; `docs/mvp/` holds the unchanged archived HTML. The owner subsequently supplied the correct *5. Features, Stories* lecture. `docs/product/` now separates two proto-persona cards, two named scenarios, 11 provisional stories, an 11-feature activation/input/action/output list, a feature ↔ story ↔ issue gap map and a four-question creep audit. The earlier literature-review PDF was the wrong lecture for this task; no real-person check, third persona/scenario, or runtime feature cut is claimed. The owner explicitly chose to leave the third role TBD.
 
-On 2026-10-09, the verified responsive/refactor/product-document branch was pushed and [PR #5](https://github.com/aaronkr-2026-2/cbnu-soft-eng-software-engineering-project-group-3/pull/5) opened against `main`; its initial `verify` workflow passed before the later backlog-documentation commit. [The GitHub backlog](docs/planning/BACKLOG.md) now traces historical implementation commits to retrospective issues and records six open follow-ups. GitHub issue/PR status is the live source of truth. The old root `archive/` contained only ignored `.DS_Store` metadata and was removed locally; Git does not track empty directories. `PROJECT_STATE.md` was already first in `AGENTS.md`'s required reading order and already required after material changes.
+On 2026-10-09, the verified responsive/refactor/product-document branch was merged through [PR #5](https://github.com/aaronkr-2026-2/cbnu-soft-eng-software-engineering-project-group-3/pull/5) into `main` (`d95c971`); its final `verify` check passed on the PR head. [The GitHub backlog](docs/planning/BACKLOG.md) now traces historical implementation commits to 12 closed issues and records six open follow-ups. GitHub issue/PR status is the live source of truth. The old root `archive/` contained only ignored `.DS_Store` metadata and was removed locally; Git does not track empty directories. `PROJECT_STATE.md` was already first in `AGENTS.md`'s required reading order and already required after material changes.

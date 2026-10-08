@@ -486,3 +486,15 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** TBD - human review required. Removed only an ignored `.DS_Store` from root `archive/` and removed the empty local directory; neither was tracked by Git. Published the branch and opened PR #5. Created retrospective GitHub issues for commit-backed implementation milestones, added the implementation commit to already-closed issue #2, and left unresolved production/quality/recovery/validation/reliability/review work open in #17–#22. Added a backlog index and connected it to the README, docs map, product gap map, state and open questions. Local verification before these documentation edits passed formatting, typecheck, lint, 108 tests, build, build-artifact scan and 15 mocked Chromium workflows; the first browser attempt hit sandbox-only localhost `EPERM`, then passed with local socket permission. Documentation links across 46 Markdown files and whitespace checks passed after the edits. The initial PR `verify` workflow passed before this final documentation commit.
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. The GitHub connected app returned 403 for writes and the local `gh` stored token was invalid; the existing Git credential worked for single GitHub commands without exposing its value. Retrospective issues document past work, not contemporaneous planning or missing human/production evidence. PR merge and remote CI results must be verified separately.
+
+## Restore README product vision — 2026-10-09
+
+**Tool(s) used:** ChatGPT/Codex; local Git and Markdown inspection; repository documentation and automated checks.
+
+**What I asked for:** Bring back the specified FOR/WHO/THAT/UNLIKE Product vision section in the root README because it is a weekly lecture requirement.
+
+**What I kept as-is:** TBD - human review required. The concise public description, live URL, screenshot, architecture/run guidance, links and application code remain unchanged.
+
+**What I changed or rejected, and why:** TBD - human review required. Restored the owner's exact six-part product-vision wording after the screenshot so the lecture artifact is visible without displacing the short README opening. Updated project state and short AI log. `npm run format:check`, `npm run check` (typecheck, zero-warning lint, 108 tests, build and 46 documentation links), `npm run check:build` and whitespace validation passed. Browser workflows were not rerun because only documentation changed; the existing bundle warning remains.
+
+**Something the AI got wrong that I had to catch:** TBD - human review required. The earlier README simplification removed this course-required vision; the owner identified the omission. No new user research or translation-quality claim is made.
