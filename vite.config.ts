@@ -6,10 +6,7 @@ export default defineConfig({
   // The private key is read only by `npm run dev:gateway`, never by Vite.
   envDir: false,
   optimizeDeps: { entries: ['index.html'] },
-  base:
-    process.env.GITHUB_ACTIONS === 'true'
-      ? '/cbnu-soft-eng-software-engineering-project-group-3/'
-      : '/',
+  base: '/',
   server: {
     host: 'localhost',
     port: 5173,
@@ -22,7 +19,7 @@ export default defineConfig({
     },
   },
   test: {
-    include: ['src/**/*.test.{ts,tsx}'],
+    include: ['src/**/*.test.{ts,tsx}', 'server/**/*.test.mjs'],
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     restoreMocks: true,

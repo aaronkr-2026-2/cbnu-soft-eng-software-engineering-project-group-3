@@ -426,3 +426,15 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** TBD - human review required
 
 **Something the AI got wrong that I had to catch:** TBD - human review required
+
+## Vercel translation gateway deployment adapters — 2026-10-08
+
+**Tool(s) used:** ChatGPT/Codex; local source, test, Git and documentation inspection; read-only deployed-route checks; official Vercel Vite, Functions, environment, limits and Firewall documentation; Vitest, ESLint, TypeScript, Prettier and Playwright.
+
+**What I asked for:** Convert the local owner-funded translation backend into Vercel-compatible same-origin Functions, preserve local development, document secure environment and cost/abuse setup, create a branch and pull request, verify it, and merge it to `main`.
+
+**What I kept as-is:** TBD - human review required
+
+**What I changed or rejected, and why:** TBD - human review required
+
+**Something the AI got wrong that I had to catch:** TBD - human review required

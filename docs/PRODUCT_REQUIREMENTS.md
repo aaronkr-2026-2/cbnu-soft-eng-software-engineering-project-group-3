@@ -94,6 +94,8 @@ Use small readable modules, pure domain logic and the provider boundary. Shared 
 
 Validate untrusted SRT and provider content. Render supported markup safely without executable HTML. Keys belong only in ignored server `.env` or a production secret manager; never in `VITE_*`, browser storage, logs, telemetry, URLs or output. Production needs a defined owner budget and server-enforced abuse/cost controls. No application authentication or production limit is claimed merely because a gateway exists.
 
+Vercel is the production target. The frontend must keep using same-origin `/api` routes, while Vercel Functions and the local Node adapter reuse the same gateway validation/provider core. Production Functions fail closed until the owner explicitly enables them after configuring the approved allowance, Vercel Firewall rate limit, and Google budget/quota controls.
+
 Keep keyboard access, visible focus, non-color status, theme contrast and reduced-motion behavior. Pin dependencies in the lockfile and gate deployment on relevant checks. The solo author must understand and explain every shipped module.
 
 ## 6. Deferred scope and decisions

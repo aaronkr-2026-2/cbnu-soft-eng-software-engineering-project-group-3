@@ -1,6 +1,6 @@
 # Cloud Translation access, models and cost
 
-Updated: 2026-10-01. Current decisions: [ADR-004](ADR-004-OWNER-FUNDED-CLOUD-TRANSLATION.md), [ADR-006](ADR-006-JOINED-SPEECH-REDISTRIBUTION.md).
+Updated: 2026-10-08. Current decisions: [ADR-004](ADR-004-OWNER-FUNDED-CLOUD-TRANSLATION.md), [ADR-006](ADR-006-JOINED-SPEECH-REDISTRIBUTION.md).
 
 ## Models and requests
 
@@ -11,7 +11,7 @@ Updated: 2026-10-01. Current decisions: [ADR-004](ADR-004-OWNER-FUNDED-CLOUD-TRA
 
 Both receive normalized joined continuation speech under the same domain rules. Batching several independent strings is a transport optimization, not a promise of context between them. Local distribution preserves cue identities/times but approximates placement of translated words. Gemini Developer API is excluded.
 
-The browser calls the local gateway without a provider credential. The gateway reads `GOOGLE_CLOUD_API_KEY` from ignored `.env` or a production secret manager and adds it to Google's `x-goog-api-key` header. There is currently no application authentication layer; do not describe these browser requests as authenticated jobs. [Google key guidance](https://docs.cloud.google.com/docs/authentication/api-keys-best-practices).
+The browser calls only same-origin `/api` routes without a provider credential. Locally, Vite proxies those routes to the Node adapter. On Vercel, Functions invoke the same gateway core directly. The core reads `GOOGLE_CLOUD_API_KEY` from ignored `.env` or Vercel environment variables and adds it to Google's `x-goog-api-key` header. There is currently no application authentication layer; do not describe these browser requests as authenticated jobs. [Google key guidance](https://docs.cloud.google.com/docs/authentication/api-keys-best-practices).
 
 ## Estimates shown in the app
 
@@ -29,7 +29,7 @@ Google documents per-minute quota exhaustion as HTTP 403 `User Rate Limit Exceed
 
 This recovery does not prove why one account reached its limit, change the Cloud project's quota, or enforce the future public allowance. The observed run reported a rate limit after two application requests, so the project's actual quota configuration and other same-project usage must be checked in Google Cloud before interpreting request count alone. Adding a fixed pause after every successful batch would reduce throughput without reliably matching a character- or request-based quota window.
 
-Before public translation, define a monthly owner budget, public allowance, gateway host, rate/concurrency limits and abuse controls. Budgets/alerts alone are not an application spending stop. Keep the API key out of `VITE_*`, browser persistence, URLs, telemetry, logs and downloads. Pages serves the frontend only; the private gateway deploys separately.
+Vercel is the selected gateway host. Production code fails closed unless `TRANSLATION_GATEWAY_ENABLED=true`, but that flag is not a usage limit. Before setting it, define a monthly owner budget, public allowance and exhaustion behavior; publish a Vercel Firewall rate limit for the Function paths; and configure appropriate Google quotas/budget alerts. Budgets/alerts alone are not an application spending stop. Keep the API key out of `VITE_*`, browser persistence, URLs, telemetry, logs and downloads.
 
 ## Local configuration
 
@@ -39,6 +39,7 @@ Only placeholder names belong in the repository:
 GOOGLE_CLOUD_API_KEY=replace-with-your-key
 GOOGLE_CLOUD_PROJECT_ID=replace-with-your-project-id
 GOOGLE_TRANSLATE_TLLM_LOCATION=us-central1
+TRANSLATION_GATEWAY_ENABLED=false
 ```
 
 See [setup](GOOGLE_TRANSLATE_SETUP.md). Prior minimal NMT/TLLM connectivity evidence is recorded separately from this revision's mocked tests. Full grouped-subtitle quality and the model-specific language catalogue still need human/live verification.

@@ -23,11 +23,11 @@ This map connects the [current feature inventory](features-now.md) to the [initi
 | US-07 | Find cues likely to be hard to read. | F-14, F-22 | Covered | Exact boundary tests exist, but the profile is an English-derived reference. Language-specific readability and real-user comprehension remain unvalidated. |
 | US-08 | Correct an important translation and keep the correction. | F-19, F-23, F-24 | Covered | Automated edit/retry/download evidence exists. Jenna's ability and willingness to identify and repair important target-language errors remains a persona hypothesis. |
 | US-09 | Download a structurally usable translated SRT. | F-04, F-12, F-24, F-26 | Covered | Structural round-trip and mocked browser-download evidence exists. Playback with representative media players and human timing/translation review still need evidence. |
-| US-10 | Use the complete translator from a public URL without local setup. | — | Gap | GitHub Pages can host only the frontend. A production gateway host, secret management, origin policy, allowance, budget, rate/concurrency and abuse controls, deployed frontend-to-gateway smoke evidence, and current CI/deployment verification are outstanding. |
+| US-10 | Use the complete translator from a public URL without local setup. | — | Gap | Vercel Function adapters now exist, but the personal fork must receive the change and production still needs server-only environment variables, an owner-approved allowance, Vercel Firewall rate limiting, Google budget/quota controls, explicit gateway enablement, and deployed frontend-to-gateway smoke evidence. |
 
 ## Prioritized gaps
 
-1. **Public end-to-end deployment (US-10).** Choose and secure the production gateway, define owner-funded allowance and abuse controls, deploy both parts, and retain dated smoke/CI evidence.
+1. **Public end-to-end deployment (US-10).** Sync the personal fork, configure and secure the Vercel gateway, define the owner-funded allowance and abuse controls, explicitly enable it, and retain dated smoke/CI evidence.
 2. **Human translation and timing validation (US-03).** Compare joined NMT/TLLM output with representative movie audio and target languages; record acceptable and unacceptable errors. Automated structural mapping tests are not human quality evidence.
 3. **Reload recovery (US-05).** Add a validated browser-local checkpoint and a reload test. Current retry/edit preservation is only in the open tab and must not be described as durable recovery.
 4. **Model/language coverage and real-user validation (US-02 and all persona-derived stories).** Confirm TLLM pairs and test the Teddy/Jenna hypotheses, priorities, wait-time tolerance, comprehension needs, and editing workflow with real people.
