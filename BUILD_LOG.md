@@ -217,3 +217,16 @@ The owner supplied local 301-cue English and translated Mongolian subtitle crops
 | `git diff --check` | Passed before the task commit. |
 
 Browser workflows and live paid translation were not rerun: the production translation code was unchanged, and the new fixture tests cover parsing and continuation grouping only. Human Mongolian fluency, preferred corrections and model comparison remain open. Vite retains the >500 kB chunk warning (about 828 kB JavaScript / 267 kB gzip).
+
+## 2026-10-09 — Jenna persona correction
+
+The owner clarified Jenna's family situation, advanced English, and no-edit workflow. Persona, scenario, story and gap-map documents now distinguish her need for understandable unedited subtitles from the separate reviewer/editing capability. No runtime code or tests changed; the third fictional persona is still awaiting owner details and GitHub issue #22 remains open.
+
+| Command/check | Outcome |
+| --- | --- |
+| `npm run format:check` | Passed. |
+| `npm run check` | Passed: TypeScript, zero-warning ESLint, 108 Vitest tests, production build and Markdown links across 47 files. |
+| `npm run check:build` | Passed: no legacy endpoint, credential/configuration marker, source map or historical HTML in `dist`. |
+| `git diff --check` | Passed before the task commit. |
+
+Browser workflows and live translation were not rerun for a documentation-only correction. The existing >500 kB JavaScript-chunk warning remains. Human quality thresholds, real-person validation and the third persona/scenario remain open.

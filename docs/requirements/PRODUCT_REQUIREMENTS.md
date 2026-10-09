@@ -14,6 +14,8 @@ The core flow is **choose file → select model/language/profile → start → r
 
 Better contextual translation is a product aim, not an unmeasured quality claim. Grouping is heuristic, and text redistribution is approximate. Preserving timecodes does not guarantee that reordered translated phrases coincide perfectly with speech.
 
+The owner clarified that Jenna, the family-viewing proto-persona, will not correct cues in the web app. She expects the unedited translation to be understandable enough for her parents to follow the plot. Editing remains available for other reviewers; it cannot be counted as evidence that Jenna's need is met. A human-viewing quality threshold and model comparison remain open.
+
 ## 2. Scope
 
 Core: React/TypeScript/Vite/Ant Design; English UTF-8 SRT up to 5 MiB; balanced i/b/u markup without attributes; NMT/TLLM; joined speech; local formatting/review/edit/download; job progress/cancellation/retry; official gateway; tests/docs/security/course evidence. Adult 20 CPS or Children 17 CPS must be chosen explicitly. Initial browser targets are current desktop Chrome, Edge, Firefox and Safari; test evidence names the browsers actually checked.

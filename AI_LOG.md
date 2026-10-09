@@ -32,3 +32,4 @@ Short, professor-readable record of AI-assisted work. Detailed evidence, command
 - 2026-10-09 — Published the verified refactor branch as PR #5, linked completed work to GitHub issues and commits, and created open issues for unresolved production, quality, recovery and review work.
 - 2026-10-09 — Restored the course-required FOR/WHO/THAT/UNLIKE product vision to the README without changing application behavior.
 - 2026-10-09 — Recorded the owner's mixed English-to-Mongolian subtitle review and added original demo cues for the reported language-quality patterns, without copying movie dialogue or changing translation logic.
+- 2026-10-09 — Corrected Jenna's fictional persona and stories: she needs understandable unedited subtitles for family movie night, not an editing workflow; real-user validation remains open.

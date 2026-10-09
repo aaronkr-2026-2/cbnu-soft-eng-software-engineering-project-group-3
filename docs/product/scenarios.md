@@ -1,6 +1,6 @@
 # Two use scenarios
 
-Updated: 2026-10-08. These are **proposed narratives**, not observed sessions. Each names the persona, objective, steps, problem and possible way forward as requested in the Features, Scenarios & Stories lecture. They deliberately avoid implementation details.
+Updated: 2026-10-09. These are **proposed narratives**, not observed sessions. Each names the persona, objective, steps, problem and possible way forward as requested in the Features, Scenarios & Stories lecture. They deliberately avoid implementation details.
 
 ## Teddy — understanding a difficult scene
 
@@ -10,16 +10,16 @@ If a request stalls or the wording looks plausible but wrong, Teddy needs to kno
 
 ## Jenna — preparing family movie night
 
-Jenna has a movie and an English SRT before her family's weekly viewing. Her parents cannot follow English dialogue, so she wants subtitles in their mother tongue that preserve enough of the plot to include them. She translates the file, reviews important lines beside the originals, and corrects mistakes she can recognize before downloading the SRT for movie night.
+Jenna has a movie and an English SRT before her family's weekly viewing. She understands English at an advanced level, but her parents cannot follow English dialogue. She uploads the file, translates it into the family's mother tongue and downloads the result for movie night. She does not correct subtitle errors in the web app.
 
-Automatic wording may be awkward, and a correct phrase may land in the wrong time slot after redistribution. Jenna needs to see uncertainty and edit the lines that matter without losing the source timing. How long she can review, what errors she can reliably repair, and whether her parents can follow the result are **TBD by real-user review**.
+Automatic wording may be awkward, and a correct phrase may land in the wrong time slot after redistribution. Jenna needs the unedited output to be good enough for her parents to follow the plot. Whether current NMT or TLLM output meets that expectation is **TBD by human viewing**; her ability to edit is not an assumed workaround.
 
 | Required scenario element | Teddy | Jenna |
 | --- | --- | --- |
 | Name and persona | Difficult scene; Teddy | Family movie night; Jenna |
 | Objective | Understand difficult dialogue. | Help parents follow the plot. |
-| Involved steps | Find SRT → translate → inspect difficult lines → download. | Find SRT → translate → review/edit key lines → download. |
+| Involved steps | Find SRT → translate → inspect difficult lines → download. | Find SRT → translate → download for movie night. |
 | Problem | Language barrier plus dislike of wasted time. | Parents' English barrier plus imperfect automatic output. |
-| Way forward | Progress, recovery and contextual cue review. | Paired review, warnings and local edits. |
+| Way forward | Progress, recovery and contextual cue review. | Coherent, understandable output without manual repair; quality still unverified. |
 
-The lecture asks for an additional role and scenario in its homework. The owner chose to leave that role **TBD**, so this file does not claim full role coverage.
+The lecture asks for an additional role and scenario in its homework. The owner plans to supply that fictional role; its details remain **TBD**, so this file does not claim full role coverage.
