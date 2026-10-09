@@ -1,6 +1,6 @@
 # Two proto-personas
 
-Updated: 2026-10-09. Teddy and Jenna came from the project owner, not interviews. Teddy is the **provisional primary** because the current vision centers a tech-savvy movie viewer; Jenna is the **provisional secondary**. The owner has not confirmed that ordering. A real-person analogue and user validation remain **TBD**. These cards follow the lecture's personal / daily role / skills / relevance structure without inventing unrelated biography.
+Updated: 2026-10-09. Teddy and Jenna are fictional target-audience sketches supplied by the developer, not interview-derived profiles. Teddy is the **provisional primary** because the current vision centers a tech-savvy movie viewer; Jenna is the **provisional secondary**. The owner has not confirmed that ordering. These cards follow the lecture's personal / daily role / skills / relevance structure without inventing unrelated biography.
 
 | Aspect | Teddy | Jenna |
 | --- | --- | --- |
@@ -9,6 +9,4 @@ Updated: 2026-10-09. Teddy and Jenna came from the project owner, not interviews
 | Education / skills | High-school student, tech-savvy, conversational English learned largely through movies; finds films, subtitles and information online. | Advanced English; can find a movie and English SRT and upload the file. Formal education is not relevant to this use. |
 | Relevance | Science-fiction and historical dialogue can exceed his English; he dislikes slow internet and wasted time. | Her parents do not understand English. She needs translated subtitles good enough for them to follow the plot, without correcting errors in the web app herself. |
 
-Their intended uses appear in [one scenario each](scenarios.md). Neither persona has a verified target language, device, acceptable wait time, quality threshold or real-user check. The owner plans to supply the lecture's additional fictional role; its details remain **TBD** and no third persona has been invented.
-
-Validation needed: show each card to a person resembling the intended user, record what they corrected, then revise the stories and priorities. This has not happened yet.
+These are the fictional personas the developer envisions as the app's target audience. Their proposed uses appear in [one scenario each](scenarios.md).

@@ -522,3 +522,15 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** TBD - human review required. Updated Jenna's card and scenario directly from the owner's corrections. US-03 now states her unedited-quality need; US-06/US-08 describe a generic, still-unvalidated reviewer rather than claiming Jenna reviews or edits. The gap map and product requirements distinguish an available edit feature from proof that her family can follow the unedited result. Project state and open questions record the distinction and the planned third fictional role. `npm run format:check`, `npm run check` (typecheck, zero-warning lint, 108 tests, production build and 47 Markdown links), `npm run check:build` and whitespace validation passed. Browser/live provider checks were not rerun for docs-only changes; the existing bundle warning remains.
 
 **Something the AI got wrong that I had to catch:** The earlier persona/story draft assumed Jenna would fix important subtitle errors herself; the owner corrected that assumption. Further human reflection is TBD - human review required. Her preferred target language, device, wait tolerance and acceptable quality threshold remain unknown.
+
+## Fictional persona framing — 2026-10-09
+
+**Tool(s) used:** ChatGPT/Codex; local persona, project-state and documentation inspection; repository verification commands.
+
+**What I asked for:** Replace the persona document's closing unknowns and validation checklist with the simple statement that Teddy and Jenna are fictional personas representing the developer's view of the app's target audience.
+
+**What I kept as-is:** TBD - human review required. Teddy and Jenna's cards and linked scenarios remain unchanged. No third persona, interview, real-user correction or GitHub issue closure is claimed.
+
+**What I changed or rejected, and why:** TBD - human review required. Shortened the persona document's introduction and closing text to foreground developer-envisioned fictional profiles. Kept the real-user course-evidence gap in the product index, open questions, project state and issue #22 rather than treating these fictional cards as validated. `npm run format:check`, `npm run check` (typecheck, zero-warning lint, 108 tests, build and 47 documentation links), `npm run check:build` and whitespace validation passed. No browser/live translation run was needed for this docs-only wording change; the existing bundle-size warning remains.
+
+**Something the AI got wrong that I had to catch:** TBD - human review required. The previous ending overemphasized a validation to-do inside a document the owner intends as fictional target-audience sketches.

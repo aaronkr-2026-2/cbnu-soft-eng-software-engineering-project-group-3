@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 2026-10-09 — owner corrected Jenna's persona and unedited-quality need
+Last updated: 2026-10-09 — persona cards framed as developer-envisioned fictional audience
 
 ## Confirmed product
 
@@ -64,7 +64,7 @@ No reproducing deadlock was found in the inspected sequential flow, but the loca
 
 `AGENTS.md` is canonical. `docs/requirements/REQUIREMENTS_REVISION_PROMPT.md` is the extracted executable memo; `docs/audits/REQUIREMENTS_REVISION_AUDIT.md` records the gap analysis and course check. The short `AI_LOG.md` links detailed course-format evidence in `docs/AI_DETAILED_LOG.md`. Every completed file-changing prompt requires documentation, verification and a local commit; a remote push requires an explicit request.
 
-`docs/product/` contains the source-checked current-feature inventory and the lecture-aligned, provisional persona → scenario → story → feature → gap/creep-audit trail described below. Teddy and Jenna were supplied by the project owner and have not been interviewed or validated. Real-user validation, revisions based on that evidence, and human translation/timing review remain required; creating these documents alone does not complete the Week 4 milestone.
+`docs/product/` contains the source-checked current-feature inventory and the lecture-aligned, provisional persona → scenario → story → feature → gap/creep-audit trail described below. The persona file now simply presents Teddy and Jenna as fictional target-audience sketches envisioned by the developer, rather than ending with a validation checklist. They have not been interviewed or validated. The separate real-user course-evidence gap remains open in the product index, open questions and GitHub issue #22; creating these documents alone does not complete the Week 4 milestone.
 
 The owner clarified that Jenna is in her early thirties, lives with her family, organizes weekly movie night and has advanced English. Her parents do not understand English; she will not fix web-app errors and needs the downloaded translation to convey the plot without manual repair. Her occupation and formal education are not relevant to this consumer workflow. The persona/scenario and story trace now put her need on unedited translation quality; paired review/editing belong to a separate hypothetical reviewer. This is owner-authored fictional-persona clarification, not interview validation. Teddy and the planned third persona still await owner details. GitHub issue #22 remains open.
 

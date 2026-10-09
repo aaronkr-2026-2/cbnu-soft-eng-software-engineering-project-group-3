@@ -230,3 +230,7 @@ The owner clarified Jenna's family situation, advanced English, and no-edit work
 | `git diff --check` | Passed before the task commit. |
 
 Browser workflows and live translation were not rerun for a documentation-only correction. The existing >500 kB JavaScript-chunk warning remains. Human quality thresholds, real-person validation and the third persona/scenario remain open.
+
+## 2026-10-09 — Fictional persona wording
+
+The persona document now states that Teddy and Jenna are fictional profiles of the audience the developer envisions. Its closing validation checklist was removed; the course's real-person evidence gap remains recorded elsewhere. No app behavior changed. `npm run format:check`, `npm run check` (typecheck, zero-warning lint, 108 Vitest tests, production build, 47 Markdown link checks), `npm run check:build` and `git diff --check` passed. Browser/live provider checks were not rerun. The existing >500 kB bundle warning remains.
