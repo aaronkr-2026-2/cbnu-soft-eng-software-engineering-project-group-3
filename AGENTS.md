@@ -67,6 +67,8 @@ Before changing anything, read:
 
 ## Current priority
 
+Issue tracking note (2026-10-09): the owner closed #17–#22 as `not planned` because these follow-ups are not currently feasible. Do not treat that status as completed work or automatically reopen the issues. The production allowance, abuse controls and other safety gates below remain prerequisites if the relevant features are later pursued or publicly enabled.
+
 1. Reconcile actual repository state with `PROJECT_STATE.md`.
 2. Preserve/tag/deploy the standalone MVP as the before-state.
 3. Configure and verify the Vercel NMT/TLLM gateway, owner allowance, Firewall rate limit and Google budget/quota controls before enabling public translation.

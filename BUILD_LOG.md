@@ -238,3 +238,9 @@ The persona document now states that Teddy and Jenna are fictional profiles of t
 ## 2026-10-09 — Embedded persona scenarios
 
 Following the owner's clarification of the lecture's allowed format, the two short scenarios now live under Teddy and Jenna in `docs/product/personas.md`; `docs/product/scenarios.md` was removed. Product links, the Week 4 current-state note and project state were updated. No application behavior changed. `npm run format:check`, `npm run check` (typecheck, zero-warning lint, 108 Vitest tests, production build and local Markdown links across 46 files), `npm run check:build` and `git diff --check` passed. Browser/live translation checks were not rerun for this document move; the existing >500 kB bundle warning remains.
+
+## 2026-10-09 — GitHub follow-ups closed as not planned
+
+At the owner's request, issues #17–#22 were closed as not planned, not completed. A read-only GitHub check found all six closed with that reason and no open issues. Documentation now preserves their unmet outcomes, especially the public-gateway spending and abuse-control prerequisite. No application code changed.
+
+`npm run format:check`, `npm run check` (typecheck, zero-warning lint, 108 Vitest tests, production build and local links across 46 Markdown files), `npm run check:build` and `git diff --check` passed. Browser and live provider checks were not rerun for this issue/documentation update. The existing >500 kB bundle warning remains.

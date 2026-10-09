@@ -1,6 +1,6 @@
 # Feature ↔ story ↔ issue gap map
 
-Updated: 2026-10-09. This is the lecture's **keep / orphan / backlog** check. Every listed product feature has a proposed story, but stories and priorities are not real-user validated. Issue references are related **milestone issues**, not a one-ticket-per-story claim; [the issue backlog](../planning/BACKLOG.md) distinguishes completed implementation from open evidence.
+Updated: 2026-10-09. This is the lecture's **keep / orphan / backlog** check. Every listed product feature has a proposed story, but stories and priorities are not real-user validated. Issue references are related **milestone issues**, not a one-ticket-per-story claim; [the issue backlog](../planning/BACKLOG.md) distinguishes implemented work from #17–#22, which were closed as not planned with their gaps unresolved.
 
 | Feature | Story | Map decision | Implementation / evidence gap | Issue |
 | --- | --- | --- | --- | --- |
@@ -20,6 +20,6 @@ Updated: 2026-10-09. This is the lecture's **keep / orphan / backlog** check. Ev
 
 - **Orphan product features:** none among PF-01–11. F-25/F-26 were [removed from the user-feature taxonomy](creep-audit.md), not from code. Theme remains a hypothesis-backed feature, not proof of user demand.
 - **Unbuilt story outcomes:** US-05 reload recovery; US-10 controlled end-to-end production translation. US-03 human quality/timing validation and US-02 TLLM pair coverage are evidence gaps, not missing code paths.
-- **Issue trace:** retrospective milestone issues identify implementing commits; open issues track evidence or partial outcomes. Splitting the provisional US-02/US-05 epics into story-sized implementation tickets remains future planning, not claimed here.
+- **Issue trace:** retrospective milestone issues identify implementing commits; #17–#22 are closed as not planned, not completed. Splitting the provisional US-02/US-05 epics into story-sized implementation tickets would require a future owner decision, not an active backlog claim.
 
 The missing third role and real-person corrections are separate homework gaps; see the [persona/scenario cards](personas.md). The [creep audit](creep-audit.md) records the actual feature-list merge/cut and its limit.

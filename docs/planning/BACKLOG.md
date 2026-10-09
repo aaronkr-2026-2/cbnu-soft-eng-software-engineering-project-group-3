@@ -1,6 +1,6 @@
-# GitHub issue backlog and commit evidence
+# GitHub issue history and commit evidence
 
-Updated: 2026-10-09. [GitHub issues](https://github.com/aaronkr-2026-2/cbnu-soft-eng-software-engineering-project-group-3/issues) are the live status source. The completed-task issues below were created **retrospectively** from Git history and AI/build logs; their creation dates are not implementation dates. Issue #2 already existed. A closed implementation issue does not claim human validation, deployment quality, or completion of a larger course milestone.
+Updated: 2026-10-09. [GitHub issues](https://github.com/aaronkr-2026-2/cbnu-soft-eng-software-engineering-project-group-3/issues) are the live status source. The completed-task issues below were created **retrospectively** from Git history and AI/build logs; their creation dates are not implementation dates. Issue #2 already existed. A closed implementation issue does not claim human validation, deployment quality, or completion of a larger course milestone. At the owner's request, all six remaining open follow-ups were closed as **not planned**, not completed, on 2026-10-09.
 
 ## Implemented work
 
@@ -21,15 +21,15 @@ Updated: 2026-10-09. [GitHub issues](https://github.com/aaronkr-2026-2/cbnu-soft
 
 The issue bodies link full commit IDs and define what was actually completed. The last three branch changes are proposed together in [PR #5](https://github.com/aaronkr-2026-2/cbnu-soft-eng-software-engineering-project-group-3/pull/5); GitHub issue/PR state records their merge status.
 
-## Open follow-up
+## Closed as not planned — unresolved outcomes
 
-| Priority | Issue | Outcome still needed |
+| Former priority | Issue | Outcome not delivered by closure |
 | --- | --- | --- |
 | P0 | [#18 Production allowance and abuse controls](https://github.com/aaronkr-2026-2/cbnu-soft-eng-software-engineering-project-group-3/issues/18) | Owner decisions, enforcement, Vercel Firewall and Google budget/quota evidence. |
 | P1 | [#17 Live NMT/TLLM and human timing review](https://github.com/aaronkr-2026-2/cbnu-soft-eng-software-engineering-project-group-3/issues/17) | Controlled provider smoke and observed subtitle quality. |
 | P1 | [#19 Reload recovery](https://github.com/aaronkr-2026-2/cbnu-soft-eng-software-engineering-project-group-3/issues/19) | Browser-local checkpoint and safe restore. |
-| P1 | [#22 Persona/story validation](https://github.com/aaronkr-2026-2/cbnu-soft-eng-software-engineering-project-group-3/issues/22) | Real-person corrections; third role remains owner-chosen TBD. |
+| P1 | [#22 Persona/story validation](https://github.com/aaronkr-2026-2/cbnu-soft-eng-software-engineering-project-group-3/issues/22) | Real-person corrections; the third fictional role remains TBD. |
 | P1 | [#20 Upstream limits](https://github.com/aaronkr-2026-2/cbnu-soft-eng-software-engineering-project-group-3/issues/20) | Server-side provider deadline and bounded response. |
 | P2 | [#21 Peer and browser review](https://github.com/aaronkr-2026-2/cbnu-soft-eng-software-engineering-project-group-3/issues/21) | External review and named non-Chromium browser evidence. |
 
-These are milestone-sized issues, not a claim that every provisional user story has its own implementation ticket. [The product gap map](../product/gap-map.md) relates current features to these issues and retains the missing human evidence.
+These were milestone-sized issues, not a claim that every provisional user story has its own implementation ticket. There are no open issues in this repository after the closure. Closing them as not planned does **not** satisfy their acceptance criteria, remove product/course gaps, or waive the production safety gate for an owner-funded public gateway. [The product gap map](../product/gap-map.md) retains the missing evidence.

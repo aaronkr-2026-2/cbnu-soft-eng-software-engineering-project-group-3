@@ -546,3 +546,15 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** TBD - human review required. Moved and condensed the two proposed scenarios into `docs/product/personas.md`, removed `docs/product/scenarios.md`, and redirected the product index, story and gap-map links. Updated the Week 4 current-state note and project state without rewriting historical logs as if the old structure had never existed. `npm run format:check`, `npm run check` (typecheck, zero-warning lint, 108 tests, production build and 46 Markdown links), `npm run check:build` and whitespace validation passed. Browser/live provider checks were not rerun for a docs-only change; the existing bundle warning remains.
 
 **Something the AI got wrong that I had to catch:** The previous documentation split treated scenarios as requiring their own file; the owner clarified the lecturer allows embedding them under the personas. Further human reflection is TBD - human review required.
+
+## Close remaining follow-ups as not planned — 2026-10-09
+
+**Tool(s) used:** ChatGPT/Codex; GitHub CLI and read-only GitHub issue verification; local Git, repository documentation and automated checks.
+
+**What I asked for:** The owner first asked to delete all open issues, then chose to close them as not planned after GitHub denied issue deletion at the available WRITE permission level.
+
+**What I kept as-is:** TBD - human review required. Application code, tests, secrets, historical issue/commit evidence and the six issues' unmet acceptance criteria were not changed or presented as completed.
+
+**What I changed or rejected, and why:** TBD - human review required. Closed issues #17–#22 with GitHub's `not planned` reason and a comment on each explaining that the requested work remains undone. Verified all six are closed with that reason and the open-issue list is empty. Updated the backlog, gap map, open questions, project state and navigation to reflect their status; kept the production owner-allowance and abuse-control gate as a prerequisite. `npm run format:check`, `npm run check` (typecheck, zero-warning lint, 108 tests, build and links across 46 Markdown files), `npm run check:build` and `git diff --check` passed. The existing >500 kB bundle warning remains; no live provider or browser test was needed for issue/documentation changes.
+
+**Something the AI got wrong that I had to catch:** TBD - human review required. Deletion was attempted but GitHub denied authorization; no issue was deleted. Closing as not planned is the owner's later instruction, not evidence of delivered quality, recovery, safety or course validation.
