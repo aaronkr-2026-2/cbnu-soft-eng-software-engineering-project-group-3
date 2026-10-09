@@ -1,6 +1,6 @@
 # Week 4: Provisional personas and user stories
 
-Historical snapshot: the counts and gap statuses below describe the initial 2026-10-08 retrofit. The [current product set](../product/README.md) was later aligned to the correct Chapter 3 lecture and now includes a separate scenarios file, feature list, creep audit and one additional provisional story. No human validation is implied by either version.
+Historical snapshot: the counts and gap statuses below describe the initial 2026-10-08 retrofit. The [current product set](../product/README.md) was later aligned to the correct Chapter 3 lecture and now includes short scenarios beneath each persona, a feature list, creep audit and one additional provisional story. No human validation is implied by either version.
 
 Record status: retrospective documentation completed 2026-10-08. The personas were supplied as hypotheses by the project owner; no interviews, observations, or real-user validation are claimed.
 

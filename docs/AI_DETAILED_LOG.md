@@ -534,3 +534,15 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** TBD - human review required. Shortened the persona document's introduction and closing text to foreground developer-envisioned fictional profiles. Kept the real-user course-evidence gap in the product index, open questions, project state and issue #22 rather than treating these fictional cards as validated. `npm run format:check`, `npm run check` (typecheck, zero-warning lint, 108 tests, build and 47 documentation links), `npm run check:build` and whitespace validation passed. No browser/live translation run was needed for this docs-only wording change; the existing bundle-size warning remains.
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. The previous ending overemphasized a validation to-do inside a document the owner intends as fictional target-audience sketches.
+
+## Embed short scenarios under each persona — 2026-10-09
+
+**Tool(s) used:** ChatGPT/Codex; local product/document-link inspection; TypeScript, ESLint, Vitest, Vite, Prettier and documentation/build checks.
+
+**What I asked for:** The owner clarified that the lecturer permits a small scenario section beneath each persona in one file, so a separate scenarios document is unnecessary.
+
+**What I kept as-is:** TBD - human review required. Teddy and Jenna remain fictional target-audience sketches; their goals, the no-edit Jenna workflow, existing story/feature IDs, application behavior and the separate course-evidence gap remain. No third persona, interview or GitHub issue closure is claimed.
+
+**What I changed or rejected, and why:** TBD - human review required. Moved and condensed the two proposed scenarios into `docs/product/personas.md`, removed `docs/product/scenarios.md`, and redirected the product index, story and gap-map links. Updated the Week 4 current-state note and project state without rewriting historical logs as if the old structure had never existed. `npm run format:check`, `npm run check` (typecheck, zero-warning lint, 108 tests, production build and 46 Markdown links), `npm run check:build` and whitespace validation passed. Browser/live provider checks were not rerun for a docs-only change; the existing bundle warning remains.
+
+**Something the AI got wrong that I had to catch:** The previous documentation split treated scenarios as requiring their own file; the owner clarified the lecturer allows embedding them under the personas. Further human reflection is TBD - human review required.

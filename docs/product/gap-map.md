@@ -22,4 +22,4 @@ Updated: 2026-10-09. This is the lecture's **keep / orphan / backlog** check. Ev
 - **Unbuilt story outcomes:** US-05 reload recovery; US-10 controlled end-to-end production translation. US-03 human quality/timing validation and US-02 TLLM pair coverage are evidence gaps, not missing code paths.
 - **Issue trace:** retrospective milestone issues identify implementing commits; open issues track evidence or partial outcomes. Splitting the provisional US-02/US-05 epics into story-sized implementation tickets remains future planning, not claimed here.
 
-The missing third role and real-person corrections are separate homework gaps; see [personas](personas.md) and [scenarios](scenarios.md). The [creep audit](creep-audit.md) records the actual feature-list merge/cut and its limit.
+The missing third role and real-person corrections are separate homework gaps; see the [persona/scenario cards](personas.md). The [creep audit](creep-audit.md) records the actual feature-list merge/cut and its limit.

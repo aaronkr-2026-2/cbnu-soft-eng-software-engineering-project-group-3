@@ -234,3 +234,7 @@ Browser workflows and live translation were not rerun for a documentation-only c
 ## 2026-10-09 — Fictional persona wording
 
 The persona document now states that Teddy and Jenna are fictional profiles of the audience the developer envisions. Its closing validation checklist was removed; the course's real-person evidence gap remains recorded elsewhere. No app behavior changed. `npm run format:check`, `npm run check` (typecheck, zero-warning lint, 108 Vitest tests, production build, 47 Markdown link checks), `npm run check:build` and `git diff --check` passed. Browser/live provider checks were not rerun. The existing >500 kB bundle warning remains.
+
+## 2026-10-09 — Embedded persona scenarios
+
+Following the owner's clarification of the lecture's allowed format, the two short scenarios now live under Teddy and Jenna in `docs/product/personas.md`; `docs/product/scenarios.md` was removed. Product links, the Week 4 current-state note and project state were updated. No application behavior changed. `npm run format:check`, `npm run check` (typecheck, zero-warning lint, 108 Vitest tests, production build and local Markdown links across 46 files), `npm run check:build` and `git diff --check` passed. Browser/live translation checks were not rerun for this document move; the existing >500 kB bundle warning remains.

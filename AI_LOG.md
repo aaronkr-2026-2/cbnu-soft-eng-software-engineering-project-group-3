@@ -34,3 +34,4 @@ Short, professor-readable record of AI-assisted work. Detailed evidence, command
 - 2026-10-09 — Recorded the owner's mixed English-to-Mongolian subtitle review and added original demo cues for the reported language-quality patterns, without copying movie dialogue or changing translation logic.
 - 2026-10-09 — Corrected Jenna's fictional persona and stories: she needs understandable unedited subtitles for family movie night, not an editing workflow; real-user validation remains open.
 - 2026-10-09 — Reworded the persona document to present Teddy and Jenna as the developer's fictional target audience, removing its closing validation checklist while keeping the course evidence gap elsewhere.
+- 2026-10-09 — Combined each fictional persona with a short scenario in one document and removed the separate scenarios file, updating product links without changing app behavior.

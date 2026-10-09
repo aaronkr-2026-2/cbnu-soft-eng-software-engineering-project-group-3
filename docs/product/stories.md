@@ -1,6 +1,6 @@
 # Prioritized user stories
 
-Updated: 2026-10-09. Eleven **provisional** stories derive from the owner-supplied [personas](personas.md), their [scenarios](scenarios.md), and confirmed product requests. Priorities have not been validated with real users. Each row states role, action and reason; detailed technical acceptance stays in the [requirements](../requirements/PRODUCT_REQUIREMENTS.md).
+Updated: 2026-10-09. Eleven **provisional** stories derive from the owner-supplied [personas and their scenarios](personas.md) and confirmed product requests. Priorities have not been validated with real users. Each row states role, action and reason; detailed technical acceptance stays in the [requirements](../requirements/PRODUCT_REQUIREMENTS.md).
 
 | ID | Priority | One role, action and reason | Check / current gap |
 | --- | --- | --- | --- |

@@ -1,11 +1,11 @@
 # Product discovery record
 
-The correct Chapter 3 lecture asks for **personas → scenarios → stories → features**, then a feature/story gap and creep audit. These files are separate so the trace is easy to review:
+The correct Chapter 3 lecture asks for **personas → scenarios → stories → features**, then a feature/story gap and creep audit. Each short scenario now sits under its persona; the other records stay separate so the trace is easy to review:
 
 | Step | Document |
 | --- | --- |
 | What exists | [Current app inventory](features-now.md) |
-| Who and when | [Two proto-personas](personas.md) · [one scenario each](scenarios.md) |
+| Who and when | [Two fictional personas with a short scenario each](personas.md) |
 | What they want | [Eleven provisional stories](stories.md) |
 | What the product does | [Eleven feature cards](features.md) |
 | What fits or is missing | [Feature ↔ story ↔ issue map](gap-map.md) · [creep audit](creep-audit.md) |
