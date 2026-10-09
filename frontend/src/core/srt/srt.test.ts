@@ -31,9 +31,9 @@ describe('baseline characterization (historical HTML remains unchanged)', () => 
 describe('cue-preserving SRT domain', () => {
   it('round trips cue indexes, timestamps, markup, and multiline text', () =>
     expect(serializeSrt(parseSrt(source))).toBe(source));
-  it('parses the longer original demonstration fixture without loss', () => {
+  it('parses the original demonstration fixture and quality-review cases without loss', () => {
     const cues = parseSrt(demonstrationFixture);
-    expect(cues).toHaveLength(43);
+    expect(cues).toHaveLength(51);
     expect(serializeSrt(cues)).toBe(demonstrationFixture);
   });
   it('normalizes BOM and CRLF while preserving Unicode', () => {

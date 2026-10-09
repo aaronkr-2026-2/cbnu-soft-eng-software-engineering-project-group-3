@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 2026-10-09 — README product vision restored
+Last updated: 2026-10-09 — owner subtitle-quality review and original demo cases
 
 ## Confirmed product
 
@@ -26,7 +26,7 @@ Both official Cloud Translation models use the owner's server-side gateway. The 
 - Cost estimates show the selected engine's whole file and remaining work. NMT counts prepared input; TLLM assumes output length equals input and labels that assumption. Credits and final billing are unknown. No guaranteed cost ceiling is claimed.
 - A shared gateway core proxies official NMT/TLLM only, validates request shape/size and sanitizes failure categories. The local Node adapter remains behind Vite's development proxy; same-origin Vercel Functions now expose the production language and translation routes. TLLM input is capped at 30,000 code points. Production fails closed until `TRANSLATION_GATEWAY_ENABLED=true`. Routine tests mock Google. Requests are currently sequential; concurrency is not part of this revision.
 
-The 43-cue original `examples/demo.srt` remains available. Dedicated regression fixtures exercise continuation gathering, annotations, output distribution and large lists. Complete downloaded movie subtitles remain local manual inputs rather than repository fixtures.
+The original fictional `examples/demo.srt` now has 51 cues: its previous 43 plus eight original cases inspired by the owner's English → Mongolian spot check. Dedicated regression fixtures exercise continuation gathering, annotations, output distribution and large lists. Complete downloaded movie subtitles remain local manual inputs rather than repository fixtures.
 
 ## Corrected previous records
 
@@ -46,7 +46,9 @@ The responsive feedback revision passed formatting, typecheck, zero-warning lint
 
 The folder/refactor audit is recorded in `docs/audits/CODE_AUDIT_2026-10-08.md`. Its final typecheck/lint/108 Vitest tests/build, documentation-link check and 15 mocked Chromium workflows passed after local socket permission was granted. The README uses a screenshot from a mocked browser run, not live provider evidence. The lecture-alignment documentation change requires its own current verification, recorded in `BUILD_LOG.md`.
 
-The owner budget/allowance, Vercel Firewall rate limit, exhaustion behavior, the project's actual Google quota settings, live grouped-subtitle language/timing review and controlled paid-translation smoke evidence remain outstanding. The enablement switch and existing Google cooldown are not a production allowance or spending control. Current desktop compatibility targets exceed the browsers actually tested. A bundle-size warning remains documented with build evidence.
+The owner budget/allowance, Vercel Firewall rate limit, exhaustion behavior, the project's actual Google quota settings, controlled model-labelled grouped-subtitle language/timing review and paid-translation smoke evidence remain outstanding. The enablement switch and existing Google cooldown are not a production allowance or spending control. Current desktop compatibility targets exceed the browsers actually tested. A bundle-size warning remains documented with build evidence.
+
+The owner supplied a local 301-cue English movie-subtitle crop and translated Mongolian file for a small qualitative review on 2026-10-09. Cue IDs and timecodes match; the owner rated cues 56, 132, 151 and 189 positively, 207 roughly 4/5, and flagged native phrasing at 77, nuance at 246 and speaking perspective around 251. The note mentioning “213” alongside 251 is ambiguous because source cue 213 is a music-description cue. Model identity, manual-edit history, audio alignment and preferred corrections were not established. See [the dated spot check](docs/audits/MONGOLIAN_SUBTITLE_REVIEW_2026-10-09.md); no production translation logic changed.
 
 No reproducing deadlock was found in the inspected sequential flow, but the local gateway's upstream fetch has no separate server-side timeout. Client timeout and the Vercel 30-second Function limit do not create a spending cap or prove every hang impossible. Provider output-size and public rate/allowance enforcement are also open; see the audit rather than treating this refactor as a security certification.
 

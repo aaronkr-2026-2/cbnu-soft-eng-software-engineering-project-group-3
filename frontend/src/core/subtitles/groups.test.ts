@@ -120,14 +120,19 @@ describe('connected speech input', () => {
       'Separate continuation',
     ]);
   });
-  it('keeps the demo fixture parseable and joins its final three cues', () => {
+  it('keeps the demo fixture parseable and joins its continuation examples', () => {
     const demo = parseSrt(readFileSync('examples/demo.srt', 'utf8'));
-    expect(demo).toHaveLength(43);
+    expect(demo).toHaveLength(51);
+    const groups = groupCues(demo);
     expect(
-      groupCues(demo)
-        .at(-1)
-        ?.map((cue) => cue.index),
+      groups.find((group) => group[0]?.index === '41')?.map((cue) => cue.index),
     ).toEqual(['41', '42', '43']);
+    expect(
+      groups.find((group) => group[0]?.index === '45')?.map((cue) => cue.index),
+    ).toEqual(['45', '46']);
+    expect(
+      groups.find((group) => group[0]?.index === '48')?.map((cue) => cue.index),
+    ).toEqual(['48', '49', '50']);
   });
 });
 

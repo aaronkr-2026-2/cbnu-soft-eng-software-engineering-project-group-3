@@ -498,3 +498,15 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** TBD - human review required. Restored the owner's exact six-part product-vision wording after the screenshot so the lecture artifact is visible without displacing the short README opening. Updated project state and short AI log. `npm run format:check`, `npm run check` (typecheck, zero-warning lint, 108 tests, build and 46 documentation links), `npm run check:build` and whitespace validation passed. Browser workflows were not rerun because only documentation changed; the existing bundle warning remains.
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. The earlier README simplification removed this course-required vision; the owner identified the omission. No new user research or translation-quality claim is made.
+
+## Owner's English → Mongolian subtitle spot check — 2026-10-09
+
+**Tool(s) used:** ChatGPT/Codex; read-only comparison of the owner's two local SRT files; repository source/test inspection; TypeScript, ESLint, Vitest, Vite, Prettier and Markdown/build checks.
+
+**What I asked for:** Record the owner's cue-by-cue quality observations from a small real-movie subtitle translation test and put representative problematic cases into the demo SRT.
+
+**What I kept as-is:** TBD - human review required. Production translation behavior, the joined-speech/approximate-redistribution rules, original 43 fictional demo cues, owner-supplied local subtitle files and the credential boundary were not changed. No complete third-party subtitle or verbatim movie dialogue was committed.
+
+**What I changed or rejected, and why:** TBD - human review required. Read-only comparison found matching cue indexes and time strings in all 301 local blocks. Added a dated [quality review](audits/MONGOLIAN_SUBTITLE_REVIEW_2026-10-09.md) separating positive reports (56, 132, 151, 189), roughly 4/5 (207), and concerns (77, 246, 251). Cue 213 is a music-description cue, so its appearance in the owner's note alongside 251 is left ambiguous. Appended eight original fictional demo cues representing sound labels, emotion across a continuation, second-child phrasing, first-person perspective across three cues, and conversational commitment. Updated fixture assertions without changing the translator. `npm run format:check`, `npm run check` (typecheck, zero-warning lint, 108 tests, production build, 47 Markdown files), `npm run check:build` and whitespace validation passed. Browser tests/live paid requests were not rerun because runtime code was unchanged. The existing chunk-size warning remains.
+
+**Something the AI got wrong that I had to catch:** TBD - human review required. The sample does not reveal which Google model was used, whether any result was hand-edited, whether the speaker perspective error originated in provider output or local redistribution, or what correction the owner prefers. No general fluency score or guarantee of unfixability is claimed.

@@ -18,7 +18,7 @@ Resolved decisions are not questions to ask again. Record new decisions in the a
 
 1. Monthly translation budget, public usage allowance and behavior at exhaustion.
 2. Select the exact public allowance, exhaustion behavior and Vercel Firewall rate-limit rule. The production enablement flag must remain off until these and Google budget/quota controls are configured.
-3. Representative target languages and a small original test subtitle for human quality comparison. NMT remains the initial selector value, not a proven winner.
+3. Mongolian now has one owner-reviewed movie-subtitle crop with mixed qualitative results; obtain a licensed/original controlled sample, identify the model/settings, and compare NMT/TLLM before naming a winner. See [the 2026-10-09 spot check](../audits/MONGOLIAN_SUBTITLE_REVIEW_2026-10-09.md).
 4. Acceptance of the actual redistributed timing against movie audio. Which mistakes are unacceptable, and what benchmark passes? A deterministic split cannot guarantee semantic synchronization.
 5. TLLM language/model/location coverage: the current shared picker comes from the NMT catalogue. Which supported pairs will be advertised after live verification?
 6. Inspect and record the project's actual NMT/TLLM per-minute quota settings and same-project usage. The 2026-10-01 full-file run reported `rate_limited` after two application requests; the automatic cooldown recovers safely but does not establish the account-level cause or a public allowance.
@@ -33,6 +33,8 @@ No key or billing values need to be pasted into a conversation. The ignored loca
 10. Complete the human kept/rejected/mistakes reflections in the linked detailed AI log and rehearse explaining actual source files.
 11. Sync this refactor commit into the personal fork when ready; verify remote CI and the Vercel frontend/Function deployment at that exact commit. The earlier public language-route check does not verify this commit or paid translation. Decide which additional desktop browsers to verify.
 12. Language-specific readability profiles beyond the English-derived default remain open. Do not claim universal grammatical accuracy.
+
+The owner's cue-77 native-counting concern, cue-246 nuance concern and cue-251 speaking-perspective concern need preferred human corrections and, for cue 251, a comparison of joined provider output with local redistribution. The review note's “213” reference is ambiguous; source cue 213 is a music description.
 
 ## Conditional questions — not active blockers
 

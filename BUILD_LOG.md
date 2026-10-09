@@ -204,3 +204,16 @@ The root README again contains the owner's exact lecture-required FOR/WHO/THAT/U
 | `git diff --check` | Passed before log updates; repeat on the staged diff. |
 
 Browser workflows were not rerun for this documentation-only change. The existing >500 kB JavaScript-chunk warning remains. No paid provider call or live translation-quality review was performed.
+
+## 2026-10-09 — English → Mongolian spot check and demo cases
+
+The owner supplied local 301-cue English and translated Mongolian subtitle crops and reported mixed language-quality observations. Read-only comparison found matching cue indexes and exact time strings in all 301 blocks. The model/settings, manual-edit history and movie-audio alignment were not verified. The files remain outside Git; the demo gained eight original fictional cues modeling the reported categories, not movie excerpts.
+
+| Command/check | Outcome |
+| --- | --- |
+| `npm run format:check` | Passed. |
+| `npm run check` | Passed: TypeScript, zero-warning ESLint, 108 Vitest tests across nine files, production build and local Markdown links across 47 files. |
+| `npm run check:build` | Passed: no legacy endpoint, credential/configuration marker, source map or historical HTML in `dist`. |
+| `git diff --check` | Passed before the task commit. |
+
+Browser workflows and live paid translation were not rerun: the production translation code was unchanged, and the new fixture tests cover parsing and continuation grouping only. Human Mongolian fluency, preferred corrections and model comparison remain open. Vite retains the >500 kB chunk warning (about 828 kB JavaScript / 267 kB gzip).
