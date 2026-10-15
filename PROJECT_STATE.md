@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 2026-10-09 — six follow-up issues closed as not planned
+Last updated: 2026-10-16 — architecture document restructured to the course format
 
 ## Confirmed product
 
@@ -65,6 +65,8 @@ The owner has not scheduled the six closed follow-ups. The following conditions 
 5. Keep Statistics/metadata/lives/telemetry conditional. Country/city acquisition, retention and notice remain open. Cloud subtitle storage/reuse and durable persisted jobs remain deferred.
 
 ## Records and workflow
+
+On 2026-10-16, `docs/ARCHITECTURE.md` was restructured to follow the professor's example architecture document: numbered project overview, technology stack, system architecture with a code map, main feature flows, data management (no database), API design, security, deployment, architecture decisions, future improvements and an architecture-changes history. It embeds Mermaid system and deployment diagrams. Separate `architecture.png` and `deployment.png` image files from the example assignment have not been created. No application behavior changed.
 
 `AGENTS.md` is canonical. `docs/requirements/REQUIREMENTS_REVISION_PROMPT.md` is the extracted executable memo; `docs/audits/REQUIREMENTS_REVISION_AUDIT.md` records the gap analysis and course check. The short `AI_LOG.md` links detailed course-format evidence in `docs/AI_DETAILED_LOG.md`. Every completed file-changing prompt requires documentation, verification and a local commit; a remote push requires an explicit request.
 
