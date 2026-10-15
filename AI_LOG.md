@@ -36,3 +36,4 @@ Short, professor-readable record of AI-assisted work. Detailed evidence, command
 - 2026-10-09 — Reworded the persona document to present Teddy and Jenna as the developer's fictional target audience, removing its closing validation checklist while keeping the course evidence gap elsewhere.
 - 2026-10-09 — Combined each fictional persona with a short scenario in one document and removed the separate scenarios file, updating product links without changing app behavior.
 - 2026-10-09 — Closed the six remaining GitHub issues (#17–#22) as not planned at the owner's request; their unmet quality, safety, recovery and course-evidence gaps remain documented.
+- 2026-10-16 — Rewrote `docs/ARCHITECTURE.md` in the professor's example architecture-document format, with a code map, feature flows, API table and Mermaid system/deployment diagrams, without changing application behavior.

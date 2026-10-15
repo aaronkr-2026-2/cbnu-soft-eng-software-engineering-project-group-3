@@ -244,3 +244,17 @@ Following the owner's clarification of the lecture's allowed format, the two sho
 At the owner's request, issues #17–#22 were closed as not planned, not completed. A read-only GitHub check found all six closed with that reason and no open issues. Documentation now preserves their unmet outcomes, especially the public-gateway spending and abuse-control prerequisite. No application code changed.
 
 `npm run format:check`, `npm run check` (typecheck, zero-warning lint, 108 Vitest tests, production build and local links across 46 Markdown files), `npm run check:build` and `git diff --check` passed. Browser and live provider checks were not rerun for this issue/documentation update. The existing >500 kB bundle warning remains.
+
+## 2026-10-16 — Architecture document in the course format
+
+Windows 11, Node 22.23.3 / npm 10.9.9 (CI uses Node 24). `docs/ARCHITECTURE.md` now follows the professor's example structure, with a code map, feature flows, API table and two Mermaid diagrams. No application code changed. The fresh Windows clone had first checked out CRLF line endings, which failed the `demo.srt` round-trip test and Prettier; repo-local `core.autocrlf=false` restored LF files identical to `HEAD` before these results.
+
+| Command/check | Outcome |
+| --- | --- |
+| `npm run format:check` | Passed. |
+| `npm run check` | Passed: TypeScript, zero-warning ESLint, 108 Vitest tests across nine files, production build and local Markdown links across 46 files. |
+| `npm run check:build` | Passed: no legacy endpoint, credential marker, source map or historical HTML in `dist`. |
+| Mermaid render (Chromium, Mermaid 11.4.1) | Both architecture-document diagrams rendered without parse errors. |
+| `git diff --check` | Passed before the task commit. |
+
+Browser workflows were last run on this machine before the change (15/15 passed) and were not rerun for this documentation-only change. The existing >500 kB bundle warning remains. No paid provider call was made.
