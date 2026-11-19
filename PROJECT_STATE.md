@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 2026-11-19 — picker options hidden under Reduce Motion fixed
+Last updated: 2026-11-19 — dark-mode overscroll bars removed
 
 ## Confirmed product
 
@@ -16,6 +16,7 @@ Both official Cloud Translation models use the owner's server-side gateway. The 
 - The header's REVIEWERS GUIDE link sits immediately left of the theme switch and opens `/#reviewers-guide`. The guide explains the audience, English-only workflow, NMT/TLLM, reading profiles, batching, review/edit/download and the owner's Mongolian group notes. Hash navigation supports direct links and browser history while keeping the translator, loaded file, settings, translations and unsaved edits mounted; reloading still loses session work. The guide uses the shared theme and returns to the translator without a reset.
 - At the owner's explicit request, `frontend/public/examples/devil-wears-prada-2-review.en.srt` supplies the local English crop (LF line endings; cue text, indexes and times unchanged) as a static test download: 461 cues ending at 00:22:33,185. It is a narrow exception to the earlier local-only movie-sample policy, not visitor-file storage or telemetry. The guide disclaims copyright ownership; redistribution rights have not been established. Google currently lists Mongolian as experimental for TLLM and supported for NMT (language documentation checked 2026-11-05). No model-quality superiority is claimed.
 - Reduce Motion users get Ant Design motion turned off through the `motion` theme token. The earlier global CSS override shortened every animation/transition, which left Select dropdowns positioned off-screen in Safari, Firefox and Chrome, so pickers appeared to have no options (reported 2026-11-19 on the live site; fixed locally and covered by an E2E test).
+- The page itself no longer bounces (`overscroll-behavior: none` on `html`/`body`); only the sidebar and preview panes scroll. Theme colors live on the app container, so a page-level bounce previously showed white bars above and below the dark theme. This also blocks mobile pull-to-refresh, which would otherwise reload away unsaved session work.
 - Desktop controls use a responsive 240-384 px sidebar before switching to the stacked mobile layout. Major flex/grid children, cards and feedback surfaces can shrink without horizontal overflow; the language-load Alert keeps its message readable and stacks its retry action below the text.
 - English UTF-8 SRT up to 5 MiB; balanced i/b/u markup; strict import errors; original source identity/times preserved. The header brand confirms before resetting loaded work. Help has X and OK; repository/theme controls remain compact.
 - Long loaded filenames stay within the Ant Design upload card, clamp to three visible lines and expose the complete name in a tooltip.

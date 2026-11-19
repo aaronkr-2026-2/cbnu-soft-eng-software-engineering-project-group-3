@@ -315,3 +315,14 @@ Removed `speakerSegments()` (only a unit test called it after joined speech move
 | `npm run test:e2e` | Passed all 18 mocked Chromium workflows, including the new reduced-motion picker test. |
 
 The owner's Mac reported `reduceMotion=1`. Not yet deployed: the live site keeps the bug until this commit reaches `main` and Vercel redeploys.
+
+## 2026-11-19 — Dark-mode overscroll bars
+
+| Command/check | Outcome |
+| --- | --- |
+| Live-site inspection (Playwright WebKit and Chromium, dark scheme, 1280 and 390 px) | `html`/`body` backgrounds were transparent (browser canvas white); only `.app` was dark. The document did not overflow; `.sidebar-controls` and `.content` were the scroll containers. |
+| Fixed local build (same engines/widths) | `overscroll-behavior: none` computed on the root in all four cases. |
+| `npm run format:check`, `npm run check`, `npm run check:build` | Passed: typecheck, zero-warning lint, 108 Vitest tests, build, 47 Markdown files' links and the build scan. |
+| `npm run test:e2e` | Passed all 18 mocked Chromium workflows. |
+
+Headless browsers cannot reproduce trackpad elastic scrolling, so the visual result still needs a manual check in Safari after deployment.

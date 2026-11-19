@@ -41,3 +41,4 @@ Short, professor-readable record of AI-assisted work. Detailed evidence, command
 - 2026-11-05 — Added a reviewer guide beside the theme switch with the supplied test subtitle, clarified group-based quality notes, and verified navigation preserves translation work and edits.
 - 2026-11-19 — Confirmed Prettier, ESLint and TypeScript checks were clean with no formatting changes, then removed one unused subtitle helper and one orphaned CSS rule without changing app behavior.
 - 2026-11-19 — Fixed picker dropdowns that opened off-screen for visitors with macOS Reduce Motion on, by replacing a global CSS animation override with Ant Design's motion setting and adding a browser test.
+- 2026-11-19 — Stopped the page-level bounce scroll that showed white bars above and below the dark theme; the app's own panes still scroll normally.

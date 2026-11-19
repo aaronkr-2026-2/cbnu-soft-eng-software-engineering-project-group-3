@@ -618,3 +618,15 @@ Use the exact entry structure required by the course guide. Add an entry at ever
 **What I changed or rejected, and why:** TBD - human review required. Root cause: the global `@media (prefers-reduced-motion: reduce)` rule in `styles.css` (present since `9ec58bc`) forced `0.01ms` animation/transition durations on every element, which left Ant Design popups at their pre-alignment position (`-1000vw, -1000vh`). Deleting only that rule at runtime fixed placement in Chromium and WebKit; the owner's Mac has Reduce Motion enabled, which Safari and Firefox honor. Removed the rule and set Ant Design's documented `motion` token to `false` when the OS prefers reduced motion (`frontend/src/app/theme.ts`, `frontend/src/app/App.tsx`); the app has no animations of its own that relied on the rule. Added an E2E test that emulates reduced motion and requires each picker's option to be in the viewport; it failed before the fix and passes after. Documented the rule in `docs/guides/UI_COMPONENT_GUIDE.md`. All checks and 18 E2E workflows passed.
 
 **Something the AI got wrong that I had to catch:** TBD - human review required. Firefox could not be launched inside the sandbox, so the Firefox diagnosis rests on its shared OS preference and the Chromium/WebKit evidence. The first local probe had no gateway and silently produced no output until the languages endpoint was stubbed. The reduced-motion preference is read once at page load, like the initial theme; changing the OS setting takes effect after reload.
+
+## Dark-mode overscroll bars — 2026-11-19
+
+**Tool(s) used:** Claude Code (Claude Opus 5.5); Playwright WebKit and Chromium inspection of the live site and a local production build; TypeScript, ESLint, Vitest, Vite, Prettier and Playwright.
+
+**What I asked for:** In dark mode, bounce scrolling showed white bars at the top and bottom of the page; fix it with CSS.
+
+**What I kept as-is:** TBD - human review required. Technical record: theme colors, layout, and the sidebar/preview pane scrolling are unchanged; panes can still bounce within their own dark backgrounds.
+
+**What I changed or rejected, and why:** TBD - human review required. Cause: theme colors are custom properties on `.app`, so `html`/`body` stay transparent and the browser's white canvas shows when the whole page rubber-bands after a pane reaches its end. Added `overscroll-behavior: none` to `html, body` in `frontend/src/app/styles.css`. Rejected a `prefers-color-scheme` canvas color because the in-app theme switch can differ from the OS setting; matching the canvas to the switch would need a JavaScript change, which the CSS-only request did not ask for. Side effect: mobile pull-to-refresh is blocked, which also prevents accidental reloads that would lose unsaved session work. All checks and 18 E2E workflows passed.
+
+**Something the AI got wrong that I had to catch:** TBD - human review required. Headless browsers cannot reproduce macOS trackpad elastic scrolling, so the fix was verified as an applied computed style plus root-cause inspection, not by observing the bounce; a manual Safari check is still needed. `overscroll-behavior` requires Safari 16 or later.

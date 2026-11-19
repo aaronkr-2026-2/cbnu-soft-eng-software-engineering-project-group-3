@@ -1,6 +1,12 @@
 * {
   box-sizing: border-box;
 }
+html,
+body {
+  /* Panes scroll inside the app shell; a page bounce would reveal the
+     browser's white canvas behind the dark theme. */
+  overscroll-behavior: none;
+}
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
