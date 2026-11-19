@@ -1,0 +1,1187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SRT Translator Beta</title>
+<style>
+  /* ============================================================
+     Design tokens
+     ============================================================ */
+  :root {
+    --bg:            #f6f7f9;
+    --surface:       #ffffff;
+    --ink:           #191c22;
+    --ink-soft:      #5a6272;
+    --line:          #e3e6ec;
+
+    --status-wait:   #eef0f4;   /* gray  – waiting              */
+    --status-wait-b: #d6dae2;
+    --status-busy:   #eaf1ff;   /* blue  – currently translating*/
+    --status-busy-b: #2f6bff;
+    --status-done:   #eafaf0;   /* green – written to output    */
+    --status-done-b: #1fa45b;
+
+    --accent:        #2f6bff;
+    --green:         #1fa45b;
+    --green-dark:    #17824a;
+    --red:           #d64545;
+
+    --mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    --radius: 10px;
+    --sidebar-w: 20%;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ============================================================
+     Header
+     ============================================================ */
+  header {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 20px;
+    height: 52px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+  header .logo-dot {
+    width: 10px; height: 10px;
+    border-radius: 3px;
+    background: linear-gradient(135deg, var(--accent), var(--green));
+  }
+  header h1 {
+    font-size: 15px;
+    font-weight: 650;
+    letter-spacing: .01em;
+  }
+  header h1 .beta {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--accent);
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    padding: 1px 5px;
+    margin-left: 6px;
+    vertical-align: 2px;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+  /* thin live progress strip under the header */
+  #headerProgress {
+    flex: 0 0 auto;
+    height: 3px;
+    background: var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  #headerProgressFill {
+    position: absolute; inset: 0 auto 0 0;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--green));
+    transition: width .25s ease;
+  }
+
+  /* ============================================================
+     Layout: 20% sidebar / 80% main
+     ============================================================ */
+  #layout {
+    flex: 1 1 auto;
+    display: flex;
+    min-height: 0;
+  }
+
+  /* ---------------- Sidebar ---------------- */
+  aside {
+    flex: 0 0 var(--sidebar-w);
+    max-width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--line);
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+  }
+
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 7px;
+  }
+
+  /* file picker */
+  .file-drop {
+    position: relative;
+    border: 1.5px dashed var(--status-wait-b);
+    border-radius: var(--radius);
+    padding: 14px 12px;
+    text-align: center;
+    font-size: 13px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  .file-drop:hover, .file-drop:focus-within { border-color: var(--accent); background: #fbfcff; }
+  .file-drop input[type=file] {
+    position: absolute; inset: 0;
+    opacity: 0; cursor: pointer; width: 100%;
+  }
+  .file-drop .fname {
+    display: block;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink);
+    margin-top: 4px;
+    word-break: break-all;
+  }
+  .file-drop.has-file { border-style: solid; border-color: var(--green); background: var(--status-done); }
+
+  /* searchable dropdown */
+  .combo { position: relative; }
+  .combo input[type=text] {
+    width: 100%;
+    padding: 9px 11px;
+    font-size: 13px;
+    font-family: var(--sans);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--ink);
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .combo input[type=text]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(47,107,255,.12);
+  }
+  .combo-list {
+    position: absolute;
+    top: calc(100% + 4px); left: 0; right: 0;
+    max-height: 230px;
+    overflow-y: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 28px rgba(20,24,35,.12);
+    z-index: 30;
+    display: none;
+  }
+  .combo-list.open { display: block; }
+  .combo-list button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 8px 11px;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: 13px;
+    color: var(--ink);
+    text-align: left;
+    cursor: pointer;
+  }
+  .combo-list button:hover, .combo-list button.active { background: var(--status-busy); }
+  .combo-list button .code {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+  }
+  .combo-list .empty {
+    padding: 10px 11px;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  /* engine select */
+  .select {
+    width: 100%;
+    padding: 9px 34px 9px 11px;
+    font-size: 13px;
+    font-family: var(--sans);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background-color: var(--surface);
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%235a6272' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    outline: none;
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(47,107,255,.12);
+  }
+
+  /* buttons */
+  .btn {
+    width: 100%;
+    padding: 11px 12px;
+    font-size: 13.5px;
+    font-weight: 650;
+    font-family: var(--sans);
+    border: 0;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background .15s, transform .05s, opacity .15s;
+  }
+  .btn:active:not(:disabled) { transform: translateY(1px); }
+  .btn:disabled { cursor: not-allowed; opacity: .45; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: #2458d8; }
+  .btn-download { background: var(--green); color: #fff; display: none; }
+  .btn-download.enabled { display: block; }
+  .btn-download:hover:not(:disabled) { background: var(--green-dark); }
+
+  /* progress */
+  .progress-box {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 12px;
+  }
+  .progress-count {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .progress-pct {
+    font-size: 26px;
+    font-weight: 700;
+    font-family: var(--mono);
+    margin-top: 2px;
+  }
+  .progress-bar {
+    margin-top: 8px;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--status-wait);
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--green));
+    transition: width .25s ease;
+  }
+
+  /* error banner */
+  .error-box {
+    display: none;
+    background: #fdeeee;
+    border: 1px solid #f2c7c7;
+    color: #8f2727;
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    font-size: 12.5px;
+    line-height: 1.45;
+  }
+  .error-box.visible { display: block; }
+
+  .sidebar-note {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin-top: auto;
+  }
+
+  /* ---------------- Main content ---------------- */
+  main {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .col-headers {
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    padding: 12px 20px 8px;
+  }
+  .col-headers h2 {
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+  }
+  #subtitleRows {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 4px 20px 24px;
+    scroll-behavior: smooth;
+  }
+  .placeholder {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+  .placeholder .big { font-size: 34px; }
+  .placeholder p { font-size: 13.5px; max-width: 380px; line-height: 1.5; }
+
+  /* paired card rows keep both columns perfectly aligned */
+  .sub-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 10px;
+  }
+  .card {
+    background: var(--status-wait);
+    border: 1px solid var(--status-wait-b);
+    border-left-width: 4px;
+    border-radius: var(--radius);
+    padding: 10px 13px;
+    transition: background .2s, border-color .2s;
+    min-height: 64px;
+  }
+  .card .meta {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 5px;
+  }
+  .card .idx {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .card .time {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-soft);
+    letter-spacing: .01em;
+  }
+  .card .text {
+    font-size: 13.5px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .card.translated-side .text:empty::before {
+    content: "—";
+    color: var(--status-wait-b);
+  }
+
+  /* status colors */
+  .card.status-waiting     { background: var(--status-wait); border-color: var(--status-wait-b); }
+  .card.status-translating { background: var(--status-busy); border-color: var(--status-busy-b); }
+  .card.status-done        { background: var(--status-done); border-color: var(--status-done-b); }
+  .card.status-translating .idx { color: var(--status-busy-b); }
+  .card.status-done .idx        { color: var(--status-done-b); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+    #subtitleRows { scroll-behavior: auto; }
+  }
+  @media (max-width: 900px) {
+    :root { --sidebar-w: 260px; }
+    .sub-row, .col-headers { grid-template-columns: 1fr; }
+    .col-headers h2:last-child { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-dot" aria-hidden="true"></div>
+  <h1>SRT Translator <span class="beta">Beta</span></h1>
+</header>
+<div id="headerProgress"><div id="headerProgressFill"></div></div>
+
+<div id="layout">
+
+  <!-- ======================= Sidebar ======================= -->
+  <aside>
+    <div class="field">
+      <label for="srtFile">Subtitle (.srt)</label>
+      <div class="file-drop" id="fileDrop">
+        <span id="fileDropText">Choose or drop an .srt file</span>
+        <span class="fname" id="fileName"></span>
+        <input type="file" id="srtFile" accept=".srt" aria-label="Subtitle file">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="langSearch">Language to translate to</label>
+      <div class="combo" id="langCombo">
+        <input type="text" id="langSearch" placeholder="Search languages…"
+               autocomplete="off" role="combobox" aria-expanded="false" aria-controls="langList">
+        <div class="combo-list" id="langList" role="listbox"></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="engineSelect">Translation engine</label>
+      <select id="engineSelect" class="select">
+        <option value="google-translate" selected>Google Translate</option>
+        <option value="google-gemini">Google Gemini</option>
+      </select>
+    </div>
+
+    <button class="btn btn-primary" id="translateBtn" disabled>Translate</button>
+
+    <div class="field">
+      <label>Progress</label>
+      <div class="progress-box">
+        <div class="progress-count" id="progressCount">0 / 0 translated</div>
+        <div class="progress-pct" id="progressPct">0%</div>
+        <div class="progress-bar"><div class="progress-bar-fill" id="progressFill"></div></div>
+      </div>
+    </div>
+
+    <button class="btn btn-download" id="downloadBtn" disabled>Download translated subtitle</button>
+
+    <div class="error-box" id="errorBox" role="alert"></div>
+
+    <p class="sidebar-note">
+      Blocks that belong to one spoken sentence are merged, translated together,
+      then split back across the original timing blocks.
+    </p>
+  </aside>
+
+  <!-- ======================= Main ======================= -->
+  <main>
+    <div class="col-headers" id="colHeaders" hidden>
+      <h2>Original · English</h2>
+      <h2 id="targetColHeader">Translation</h2>
+    </div>
+    <div id="subtitleRows">
+      <div class="placeholder" id="placeholder">
+        <div class="big">🎬</div>
+        <p>Pick an English <strong>.srt</strong> file and a target language in the sidebar,
+           then press <strong>Translate</strong> to watch each sentence translate live.</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+"use strict";
+
+/* ================================================================
+   Utils — small shared helpers
+   ================================================================ */
+const Utils = {
+  /** Remove HTML-style formatting tags (<i>, <b>, <font …>) for text analysis. */
+  stripTags(text) {
+    return text.replace(/<[^>]*>/g, "");
+  },
+
+  /** Collapse all whitespace (incl. newlines) into single spaces and trim. */
+  normalizeWhitespace(text) {
+    return text.replace(/\s+/g, " ").trim();
+  },
+
+  /** Count words in a string (whitespace-separated tokens). */
+  countWords(text) {
+    const t = text.trim();
+    return t ? t.split(/\s+/).length : 0;
+  },
+
+  /** First visible (non-whitespace, non-tag) character of a subtitle text. */
+  firstVisibleChar(text) {
+    const clean = this.stripTags(text).trimStart();
+    return clean.charAt(0);
+  },
+
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+};
+
+/* ================================================================
+   SRTParser — parse and serialize SubRip files
+   ================================================================ */
+const SRTParser = {
+  TIMECODE_RE: /^(\d{1,2}:\d{2}:\d{2}[,.]\d{1,3})\s*-->\s*(\d{1,2}:\d{2}:\d{2}[,.]\d{1,3})/,
+
+  /**
+   * Parse raw SRT text into entries: { index, start, end, text }.
+   * Throws Error with a user-friendly message on invalid input.
+   */
+  parse(raw) {
+    if (!raw || !raw.trim()) {
+      throw new Error("The subtitle file is empty.");
+    }
+    // Normalize BOM + line endings, split into blank-line separated blocks
+    const text = raw.replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n");
+    const blocks = text.split(/\n{2,}/);
+    const entries = [];
+
+    for (const block of blocks) {
+      const lines = block.split("\n").map(l => l.trim()).filter((l, i, arr) => l !== "" || i > 0);
+      const nonEmpty = lines.filter(l => l !== "");
+      if (nonEmpty.length === 0) continue;
+
+      // Locate the timecode line (usually line 2, but be tolerant)
+      let tcLine = -1;
+      for (let i = 0; i < nonEmpty.length; i++) {
+        if (this.TIMECODE_RE.test(nonEmpty[i])) { tcLine = i; break; }
+      }
+      if (tcLine === -1) continue; // skip malformed block gracefully
+
+      const match = nonEmpty[tcLine].match(this.TIMECODE_RE);
+      const index = tcLine > 0 && /^\d+$/.test(nonEmpty[tcLine - 1])
+        ? parseInt(nonEmpty[tcLine - 1], 10)
+        : entries.length + 1;
+      const textLines = nonEmpty.slice(tcLine + 1);
+
+      entries.push({
+        index,
+        start: match[1].replace(".", ","),
+        end:   match[2].replace(".", ","),
+        text:  textLines.join("\n")
+      });
+    }
+
+    if (entries.length === 0) {
+      throw new Error("No valid subtitle entries were found. Please check that this is a standard SRT file.");
+    }
+    return entries;
+  },
+
+  /** Serialize entries (with .translatedText) back into a valid SRT string. */
+  serialize(entries) {
+    return entries.map((e, i) =>
+      `${i + 1}\n${e.start} --> ${e.end}\n${(e.translatedText ?? e.text).trim()}`
+    ).join("\n\n") + "\n";
+  }
+};
+
+/* ================================================================
+   SentenceGrouper — merge subtitle blocks that form one sentence
+   ================================================================ */
+const SentenceGrouper = {
+  /** Continuation test: lowercase first letter OR leading period(s). */
+  isContinuation(text) {
+    const clean = Utils.stripTags(text).trimStart();
+    if (!clean) return false;
+    if (/^[a-z]/.test(clean)) return true;   // Rule 1 — lowercase continuation
+    if (/^\.+/.test(clean))  return true;    // Rule 2 — ellipsis continuation
+    return false;
+  },
+
+  /**
+   * Clean one block's text before merging:
+   *  - strip leading ellipsis (2+ periods) on continuation blocks
+   *  - flatten line breaks, collapse spaces
+   */
+  cleanBlockText(text, isContinuationBlock) {
+    let t = text;
+    if (isContinuationBlock) {
+      const stripped = Utils.stripTags(t).trimStart();
+      if (/^\.{2,}/.test(stripped)) {
+        // Remove leading periods (2 or more) and any whitespace after them.
+        t = t.replace(/^(\s|<[^>]*>)*\.{2,}\s*/, m => m.replace(/\.{2,}\s*$/, ""));
+        t = t.replace(/^\s*\.{2,}\s*/, ""); // safety net for plain text
+      }
+    }
+    return Utils.normalizeWhitespace(t);
+  },
+
+  /**
+   * Gather all blocks belonging to the sentence that starts at startIdx.
+   * @returns {{ indices:number[], mergedText:string,
+   *             cleanedSentence:string, wordCounts:number[] }}
+   */
+  gatherSentenceBlocks(entries, startIdx) {
+    const indices = [startIdx];
+    const cleanedParts = [SentenceGrouper.cleanBlockText(entries[startIdx].text, false)];
+
+    let next = startIdx + 1;
+    while (next < entries.length && SentenceGrouper.isContinuation(entries[next].text)) {
+      indices.push(next);
+      cleanedParts.push(SentenceGrouper.cleanBlockText(entries[next].text, true));
+      next++;
+    }
+
+    const cleanedSentence = Utils.normalizeWhitespace(cleanedParts.join(" "));
+    return {
+      indices,
+      mergedText: indices.map(i => entries[i].text).join("\n"),
+      cleanedSentence,
+      wordCounts: cleanedParts.map(Utils.countWords)
+    };
+  }
+};
+
+/* ================================================================
+   TranslationService — provider-agnostic translation layer.
+   Add new providers (DeepL, Gemini, …) by implementing translate().
+   ================================================================ */
+class GoogleTranslateProvider {
+  constructor({ timeoutMs = 15000, maxRetries = 2 } = {}) {
+    this.timeoutMs = timeoutMs;
+    this.maxRetries = maxRetries;
+  }
+
+  /** Translate `text` from English into `targetLang` (ISO code). */
+  async translate(text, targetLang) {
+    let lastError;
+    for (let attempt = 0; attempt <= this.maxRetries; attempt++) {
+      try {
+        return await this._request(text, targetLang);
+      } catch (err) {
+        lastError = err;
+        if (attempt < this.maxRetries) await Utils.sleep(400 * (attempt + 1));
+      }
+    }
+    throw lastError;
+  }
+
+  async _request(text, targetLang) {
+    const url =
+      "https://translate.googleapis.com/translate_a/single" +
+      `?client=gtx&sl=en&tl=${encodeURIComponent(targetLang)}&dt=t&q=${encodeURIComponent(text)}`;
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), this.timeoutMs);
+
+    let response;
+    try {
+      response = await fetch(url, { signal: controller.signal });
+    } catch (err) {
+      throw err.name === "AbortError"
+        ? new Error("Translation request timed out.")
+        : new Error("Network error while contacting Google Translate.");
+    } finally {
+      clearTimeout(timer);
+    }
+
+    if (response.status === 400) throw new Error("Unsupported target language.");
+    if (!response.ok) throw new Error(`Google Translate returned an error (HTTP ${response.status}).`);
+
+    const data = await response.json();
+    if (!Array.isArray(data) || !Array.isArray(data[0])) {
+      throw new Error("Unexpected response from Google Translate.");
+    }
+    // data[0] is a list of [translatedSegment, originalSegment, …]
+    return data[0].map(seg => seg?.[0] ?? "").join("");
+  }
+}
+
+const TranslationService = {
+  // Registered engines. "google-gemini" currently proxies to the
+  // Google Translate provider — swap in a real Gemini provider here
+  // later without touching the rest of the app.
+  providers: {
+    "google-translate": new GoogleTranslateProvider(),
+    "google-gemini":    new GoogleTranslateProvider()
+  },
+  activeEngine: "google-translate",
+
+  setEngine(name) {
+    if (this.providers[name]) this.activeEngine = name;
+  },
+
+  translate(text, targetLang) {
+    return this.providers[this.activeEngine].translate(text, targetLang);
+  }
+};
+
+/* ================================================================
+   WordSplitter — distribute a translated sentence back across
+   the original blocks, proportional to original word counts.
+   ================================================================ */
+const WordSplitter = {
+  /**
+   * @param {string}   translated  full translated sentence
+   * @param {number[]} wordCounts  original per-block word counts
+   * @returns {string[]} one text chunk per original block
+   */
+  split(translated, wordCounts) {
+    const clean = Utils.normalizeWhitespace(translated);
+    if (wordCounts.length === 1) return [clean];
+
+    const words = clean ? clean.split(/\s+/) : [];
+    const totalOriginal = wordCounts.reduce((a, b) => a + b, 0) || wordCounts.length;
+    const chunks = [];
+    let cursor = 0;
+
+    for (let i = 0; i < wordCounts.length; i++) {
+      const remainingBlocks = wordCounts.length - i - 1;
+      let take;
+      if (i === wordCounts.length - 1) {
+        take = words.length - cursor; // last block takes the remainder
+      } else {
+        take = Math.round(words.length * (wordCounts[i] / totalOriginal));
+        // keep at least 1 word per block while leaving enough for the rest
+        take = Math.max(1, Math.min(take, words.length - cursor - remainingBlocks));
+        if (take < 0) take = 0;
+      }
+      chunks.push(words.slice(cursor, cursor + take).join(" "));
+      cursor += take;
+    }
+    return chunks;
+  }
+};
+
+/* ================================================================
+   TextFormatter — formats translated block text before it is
+   written into the output subtitle:
+     1. every "- <Capital>" dialogue marker after the first one
+        starts a new line
+     2. lines longer than 6 words are wrapped (break before the
+        7th word, then every 6 words)
+   ================================================================ */
+const TextFormatter = {
+  MAX_WORDS_PER_LINE: 6,
+
+  format(text) {
+    if (!text) return text;
+    // Rule 1 — dialogue breaks. \p{Lu} matches any Unicode uppercase
+    // letter, so this also works for Cyrillic, Greek, etc.
+    // The first "- X" (at the start of the text) has no preceding
+    // whitespace, so it is naturally left untouched.
+    const withDialogueBreaks = text.replace(/\s+(-\s*)(?=\p{Lu})/gu, "\n$1");
+    // Rule 2 — wrap each resulting line at 6 words.
+    return withDialogueBreaks
+      .split("\n")
+      .map(line => TextFormatter.wrapLine(line))
+      .join("\n");
+  },
+
+  wrapLine(line) {
+    const words = line.trim().split(/\s+/).filter(Boolean);
+    if (words.length <= TextFormatter.MAX_WORDS_PER_LINE) return words.join(" ");
+    const wrapped = [];
+    for (let i = 0; i < words.length; i += TextFormatter.MAX_WORDS_PER_LINE) {
+      wrapped.push(words.slice(i, i + TextFormatter.MAX_WORDS_PER_LINE).join(" "));
+    }
+    return wrapped.join("\n");
+  }
+};
+
+/* ================================================================
+   ProgressManager — sidebar + header progress indicators
+   ================================================================ */
+const ProgressManager = {
+  total: 0,
+  done: 0,
+  els: {},
+
+  init(total) {
+    this.total = total;
+    this.done = 0;
+    this.els = {
+      count: document.getElementById("progressCount"),
+      pct:   document.getElementById("progressPct"),
+      fill:  document.getElementById("progressFill"),
+      headerFill: document.getElementById("headerProgressFill")
+    };
+    this.render();
+  },
+
+  addCompleted(n) {
+    this.done = Math.min(this.total, this.done + n);
+    this.render();
+  },
+
+  render() {
+    const pct = this.total ? Math.round((this.done / this.total) * 100) : 0;
+    this.els.count.textContent = `${this.done} / ${this.total} translated`;
+    this.els.pct.textContent = `${pct}%`;
+    this.els.fill.style.width = `${pct}%`;
+    this.els.headerFill.style.width = `${pct}%`;
+  }
+};
+
+/* ================================================================
+   UIRenderer — subtitle cards, statuses, live updates
+   ================================================================ */
+const UIRenderer = {
+  container: null,
+  rows: [],   // { original: HTMLElement, translated: HTMLElement }
+
+  renderEntries(entries) {
+    this.container = document.getElementById("subtitleRows");
+    this.container.innerHTML = "";
+    this.rows = [];
+    document.getElementById("colHeaders").hidden = false;
+
+    const frag = document.createDocumentFragment();
+    entries.forEach(entry => {
+      const row = document.createElement("div");
+      row.className = "sub-row";
+      const original   = this._card(entry, entry.text, false);
+      const translated = this._card(entry, "", true);
+      row.append(original, translated);
+      frag.appendChild(row);
+      this.rows.push({ original, translated });
+    });
+    this.container.appendChild(frag);
+  },
+
+  _card(entry, text, isTranslatedSide) {
+    const card = document.createElement("div");
+    card.className = "card status-waiting" + (isTranslatedSide ? " translated-side" : "");
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    const idx = document.createElement("span");
+    idx.className = "idx";
+    idx.textContent = entry.index;
+    const time = document.createElement("span");
+    time.className = "time";
+    time.textContent = `${entry.start} --> ${entry.end}`;
+    meta.append(idx, time);
+    const body = document.createElement("div");
+    body.className = "text";
+    body.textContent = text;
+    card.append(meta, body);
+    return card;
+  },
+
+  setStatus(i, status) {
+    for (const side of ["original", "translated"]) {
+      const el = this.rows[i][side];
+      el.classList.remove("status-waiting", "status-translating", "status-done");
+      el.classList.add(`status-${status}`);
+    }
+  },
+
+  setTranslatedText(i, text) {
+    this.rows[i].translated.querySelector(".text").textContent = text;
+  },
+
+  scrollToRow(i) {
+    const el = this.rows[i]?.original;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const box = this.container.getBoundingClientRect();
+    if (rect.top < box.top || rect.bottom > box.bottom) {
+      el.scrollIntoView({ block: "center" });
+    }
+  },
+
+  setTargetHeader(langName) {
+    document.getElementById("targetColHeader").textContent = `Translation · ${langName}`;
+  },
+
+  showError(message) {
+    const box = document.getElementById("errorBox");
+    box.textContent = message;
+    box.classList.add("visible");
+  },
+
+  clearError() {
+    document.getElementById("errorBox").classList.remove("visible");
+  }
+};
+
+/* ================================================================
+   DownloadGenerator — build and save the translated .srt
+   ================================================================ */
+const DownloadGenerator = {
+  download(entries, originalFileName, langCode) {
+    const srt = SRTParser.serialize(entries);
+    const base = (originalFileName || "subtitle").replace(/\.srt$/i, "");
+    const blob = new Blob([srt], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${base}.${langCode}.srt`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+};
+
+/* ================================================================
+   Languages — Google Translate targets from English
+   ================================================================ */
+const LANGUAGES = [
+  ["af","Afrikaans"],["sq","Albanian"],["am","Amharic"],["ar","Arabic"],["hy","Armenian"],
+  ["as","Assamese"],["ay","Aymara"],["az","Azerbaijani"],["bm","Bambara"],["eu","Basque"],
+  ["be","Belarusian"],["bn","Bengali"],["bho","Bhojpuri"],["bs","Bosnian"],["bg","Bulgarian"],
+  ["ca","Catalan"],["ceb","Cebuano"],["zh-CN","Chinese (Simplified)"],["zh-TW","Chinese (Traditional)"],
+  ["co","Corsican"],["hr","Croatian"],["cs","Czech"],["da","Danish"],["dv","Dhivehi"],
+  ["doi","Dogri"],["nl","Dutch"],["eo","Esperanto"],["et","Estonian"],["ee","Ewe"],
+  ["fil","Filipino (Tagalog)"],["fi","Finnish"],["fr","French"],["fy","Frisian"],["gl","Galician"],
+  ["ka","Georgian"],["de","German"],["el","Greek"],["gn","Guarani"],["gu","Gujarati"],
+  ["ht","Haitian Creole"],["ha","Hausa"],["haw","Hawaiian"],["iw","Hebrew"],["hi","Hindi"],
+  ["hmn","Hmong"],["hu","Hungarian"],["is","Icelandic"],["ig","Igbo"],["ilo","Ilocano"],
+  ["id","Indonesian"],["ga","Irish"],["it","Italian"],["ja","Japanese"],["jw","Javanese"],
+  ["kn","Kannada"],["kk","Kazakh"],["km","Khmer"],["rw","Kinyarwanda"],["gom","Konkani"],
+  ["ko","Korean"],["kri","Krio"],["ku","Kurdish (Kurmanji)"],["ckb","Kurdish (Sorani)"],
+  ["ky","Kyrgyz"],["lo","Lao"],["la","Latin"],["lv","Latvian"],["ln","Lingala"],
+  ["lt","Lithuanian"],["lg","Luganda"],["lb","Luxembourgish"],["mk","Macedonian"],
+  ["mai","Maithili"],["mg","Malagasy"],["ms","Malay"],["ml","Malayalam"],["mt","Maltese"],
+  ["mi","Maori"],["mr","Marathi"],["mni-Mtei","Meiteilon (Manipuri)"],["lus","Mizo"],
+  ["mn","Mongolian"],["my","Myanmar (Burmese)"],["ne","Nepali"],["no","Norwegian"],
+  ["ny","Nyanja (Chichewa)"],["or","Odia (Oriya)"],["om","Oromo"],["ps","Pashto"],
+  ["fa","Persian"],["pl","Polish"],["pt","Portuguese"],["pa","Punjabi"],["qu","Quechua"],
+  ["ro","Romanian"],["ru","Russian"],["sm","Samoan"],["sa","Sanskrit"],["gd","Scots Gaelic"],
+  ["nso","Sepedi"],["sr","Serbian"],["st","Sesotho"],["sn","Shona"],["sd","Sindhi"],
+  ["si","Sinhala"],["sk","Slovak"],["sl","Slovenian"],["so","Somali"],["es","Spanish"],
+  ["su","Sundanese"],["sw","Swahili"],["sv","Swedish"],["tl","Tagalog"],["tg","Tajik"],
+  ["ta","Tamil"],["tt","Tatar"],["te","Telugu"],["th","Thai"],["ti","Tigrinya"],
+  ["ts","Tsonga"],["tr","Turkish"],["tk","Turkmen"],["ak","Twi (Akan)"],["uk","Ukrainian"],
+  ["ur","Urdu"],["ug","Uyghur"],["uz","Uzbek"],["vi","Vietnamese"],["cy","Welsh"],
+  ["xh","Xhosa"],["yi","Yiddish"],["yo","Yoruba"],["zu","Zulu"]
+];
+
+/* ================================================================
+   LanguageCombo — searchable dropdown
+   ================================================================ */
+const LanguageCombo = {
+  selected: null, // { code, name }
+  onSelect: null,
+
+  init(onSelect) {
+    this.onSelect = onSelect;
+    this.input = document.getElementById("langSearch");
+    this.list = document.getElementById("langList");
+
+    this.input.addEventListener("input", () => {
+      this.selected = null;
+      this.onSelect(null);
+      this.renderList(this.input.value);
+      this.open();
+    });
+    this.input.addEventListener("focus", () => { this.renderList(this.input.value); this.open(); });
+    this.input.addEventListener("keydown", e => this.handleKeys(e));
+    document.addEventListener("click", e => {
+      if (!document.getElementById("langCombo").contains(e.target)) this.close();
+    });
+    this.renderList("");
+  },
+
+  renderList(query) {
+    const q = query.trim().toLowerCase();
+    const matches = LANGUAGES.filter(([code, name]) =>
+      !q || name.toLowerCase().includes(q) || code.toLowerCase().includes(q)
+    );
+    this.list.innerHTML = "";
+    if (matches.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = "No matching language";
+      this.list.appendChild(empty);
+      return;
+    }
+    matches.forEach(([code, name], i) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.setAttribute("role", "option");
+      if (i === 0) btn.classList.add("active");
+      const label = document.createElement("span");
+      label.textContent = name;
+      const codeEl = document.createElement("span");
+      codeEl.className = "code";
+      codeEl.textContent = code;
+      btn.append(label, codeEl);
+      btn.addEventListener("click", () => this.select(code, name));
+      this.list.appendChild(btn);
+    });
+  },
+
+  handleKeys(e) {
+    const options = [...this.list.querySelectorAll("button")];
+    if (options.length === 0) return;
+    let idx = options.findIndex(o => o.classList.contains("active"));
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      this.open();
+      options[idx]?.classList.remove("active");
+      idx = e.key === "ArrowDown" ? Math.min(idx + 1, options.length - 1) : Math.max(idx - 1, 0);
+      options[idx].classList.add("active");
+      options[idx].scrollIntoView({ block: "nearest" });
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      options[Math.max(idx, 0)]?.click();
+    } else if (e.key === "Escape") {
+      this.close();
+    }
+  },
+
+  select(code, name) {
+    this.selected = { code, name };
+    this.input.value = name;
+    this.close();
+    this.onSelect(this.selected);
+  },
+
+  open()  { this.list.classList.add("open");  this.input.setAttribute("aria-expanded", "true"); },
+  close() { this.list.classList.remove("open"); this.input.setAttribute("aria-expanded", "false"); }
+};
+
+/* ================================================================
+   App — orchestrates the whole pipeline
+   ================================================================ */
+const App = {
+  entries: [],
+  fileName: "",
+  targetLang: null,
+  translating: false,
+  finished: false,
+
+  init() {
+    this.fileInput = document.getElementById("srtFile");
+    this.translateBtn = document.getElementById("translateBtn");
+    this.downloadBtn = document.getElementById("downloadBtn");
+
+    this.engineSelect = document.getElementById("engineSelect");
+    this.engineSelect.addEventListener("change", () =>
+      TranslationService.setEngine(this.engineSelect.value));
+    TranslationService.setEngine(this.engineSelect.value);
+
+    this.fileInput.addEventListener("change", () => this.handleFile());
+    this.translateBtn.addEventListener("click", () => this.startTranslation());
+    this.downloadBtn.addEventListener("click", () =>
+      DownloadGenerator.download(this.entries, this.fileName, this.targetLang.code));
+
+    LanguageCombo.init(lang => {
+      this.targetLang = lang;
+      this.resetOutputState();
+      this.updateControls();
+    });
+
+    ProgressManager.init(0);
+  },
+
+  async handleFile() {
+    UIRenderer.clearError();
+    const file = this.fileInput.files[0];
+    if (!file) return;
+
+    if (!/\.srt$/i.test(file.name)) {
+      UIRenderer.showError("Please choose a file with the .srt extension.");
+      return;
+    }
+
+    try {
+      const raw = await file.text();
+      this.entries = SRTParser.parse(raw);
+      this.fileName = file.name;
+      this.resetOutputState();
+
+      document.getElementById("fileDrop").classList.add("has-file");
+      document.getElementById("fileDropText").textContent = "Subtitle loaded";
+      document.getElementById("fileName").textContent =
+        `${file.name} · ${this.entries.length} blocks`;
+
+      UIRenderer.renderEntries(this.entries);
+      ProgressManager.init(this.entries.length);
+    } catch (err) {
+      this.entries = [];
+      UIRenderer.showError(err.message);
+    }
+    this.updateControls();
+  },
+
+  resetOutputState() {
+    this.finished = false;
+    this.entries.forEach(e => delete e.translatedText);
+    this.downloadBtn.classList.remove("enabled");
+    this.downloadBtn.disabled = true;
+  },
+
+  updateControls() {
+    this.translateBtn.disabled =
+      this.translating || this.entries.length === 0 || !this.targetLang;
+    this.translateBtn.textContent = this.translating ? "Translating…" : "Translate";
+    if (this.targetLang) UIRenderer.setTargetHeader(this.targetLang.name);
+  },
+
+  async startTranslation() {
+    if (this.translating || !this.entries.length || !this.targetLang) return;
+
+    this.translating = true;
+    this.finished = false;
+    UIRenderer.clearError();
+    this.resetOutputState();
+    UIRenderer.renderEntries(this.entries);   // reset card states for re-runs
+    ProgressManager.init(this.entries.length);
+    this.updateControls();
+
+    const lang = this.targetLang;
+    let i = 0;
+
+    try {
+      // Sequential pipeline: gather → translate → split → write → update UI
+      while (i < this.entries.length) {
+        const group = SentenceGrouper.gatherSentenceBlocks(this.entries, i);
+
+        group.indices.forEach(idx => UIRenderer.setStatus(idx, "translating"));
+        UIRenderer.scrollToRow(group.indices[0]);
+
+        let chunks;
+        if (group.cleanedSentence === "") {
+          // Nothing translatable (e.g. pure formatting) — pass through as-is.
+          chunks = group.indices.map(idx => this.entries[idx].text);
+        } else {
+          const translated = await TranslationService.translate(group.cleanedSentence, lang.code);
+          chunks = WordSplitter.split(translated, group.wordCounts)
+            .map(chunk => TextFormatter.format(chunk));
+        }
+
+        group.indices.forEach((idx, k) => {
+          this.entries[idx].translatedText = chunks[k] || "";
+          UIRenderer.setTranslatedText(idx, chunks[k] || "");
+          UIRenderer.setStatus(idx, "done");
+        });
+
+        ProgressManager.addCompleted(group.indices.length);
+        i = group.indices[group.indices.length - 1] + 1;
+
+        // Yield to the browser so the UI stays responsive, and be polite to the API.
+        await Utils.sleep(120);
+      }
+
+      this.finished = true;
+      this.downloadBtn.textContent = `Download ${lang.name} translated subtitle`;
+      this.downloadBtn.classList.add("enabled");
+      this.downloadBtn.disabled = false;
+    } catch (err) {
+      UIRenderer.showError(
+        `Translation stopped at block ${this.entries[i]?.index ?? "?"}: ${err.message} ` +
+        "Check your connection and press Translate to retry."
+      );
+    } finally {
+      this.translating = false;
+      this.updateControls();
+    }
+  }
+};
+
+App.init();
+</script>
+</body>
+</html>

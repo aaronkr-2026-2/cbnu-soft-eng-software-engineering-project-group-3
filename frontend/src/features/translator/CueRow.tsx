@@ -1,0 +1,220 @@
+import { memo, useState } from 'react';
+import { Alert, Button, Card, Flex, Input, Tag } from 'antd';
+import { EditOutlined } from '@ant-design/icons';
+import type { Cue } from '../../core/srt/srt';
+import { textRuns } from '../../core/srt/markup';
+import { quality, type Profile } from '../../core/subtitles/subtitles';
+
+function SubtitleText({ text }: { text: string }) {
+  return (
+    <div className="subtitle-text">
+      {textRuns(text).map((run, index) => (
+        <span
+          key={index}
+          style={{
+            fontStyle: run.marks.includes('i') ? 'italic' : undefined,
+            fontWeight: run.marks.includes('b') ? 700 : undefined,
+            textDecoration: run.marks.includes('u') ? 'underline' : undefined,
+          }}
+        >
+          {run.text}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+interface Props {
+  cue: Cue;
+  translation?: string;
+  edited: boolean;
+  active: boolean;
+  failed: boolean;
+  failureMessage?: string;
+  redistributed?: boolean;
+  profile?: Profile;
+  group: number;
+  groupStart: boolean;
+  onSave: (id: string, value: string) => void;
+  onEditingChange: (editing: boolean) => void;
+}
+
+export const CueRow = memo(function CueRow({
+  cue,
+  translation,
+  edited,
+  active,
+  failed,
+  failureMessage,
+  redistributed,
+  profile,
+  group,
+  groupStart,
+  onSave,
+  onEditingChange,
+}: Props) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState('');
+  const [error, setError] = useState('');
+  const report =
+    translation !== undefined && profile
+      ? quality(translation, cue, profile)
+      : undefined;
+  const status = edited
+    ? 'Edited'
+    : translation !== undefined
+      ? 'Translated'
+      : active
+        ? 'Translating'
+        : failed
+          ? 'Failed'
+          : 'Waiting';
+  return (
+    <section
+      id={cue.id}
+      className={`cue-row ${groupStart ? 'group-start' : ''}`}
+      aria-label={`Cue ${cue.index}`}
+    >
+      {groupStart && <div className="group-label">Group {group}</div>}
+      <Flex className="cue-pair" gap={12} align="stretch">
+        <Card
+          size="small"
+          className="cue-card original-card"
+          tabIndex={0}
+          aria-label={`Original cue ${cue.index}`}
+        >
+          <Flex
+            className="cue-meta"
+            justify="space-between"
+            align="center"
+            wrap
+          >
+            <strong>#{cue.index}</strong>
+            <span>
+              {cue.start} → {cue.end}
+            </span>
+          </Flex>
+          <SubtitleText text={cue.text} />
+        </Card>
+        <Card
+          size="small"
+          className={`cue-card translated-card ${editing ? 'is-editing' : ''}`}
+          tabIndex={0}
+          aria-label={`Translation cue ${cue.index}`}
+        >
+          <Flex
+            className="cue-meta"
+            justify="space-between"
+            align="center"
+            wrap
+          >
+            <Tag
+              color={
+                edited
+                  ? 'purple'
+                  : translation !== undefined
+                    ? 'green'
+                    : active
+                      ? 'blue'
+                      : failed
+                        ? 'red'
+                        : undefined
+              }
+            >
+              {status}
+            </Tag>
+            {translation !== undefined && !editing && (
+              <Button
+                size="small"
+                icon={<EditOutlined aria-hidden="true" />}
+                aria-label={`Edit cue ${cue.index}`}
+                onClick={() => {
+                  setDraft(translation);
+                  setError('');
+                  setEditing(true);
+                  onEditingChange(true);
+                }}
+              >
+                Edit
+              </Button>
+            )}
+          </Flex>
+          <div className="cue-meta">
+            #{cue.index} · {cue.start} → {cue.end}
+          </div>
+          {editing ? (
+            <div className="edit-form">
+              <Input.TextArea
+                aria-label={`Edit translation ${cue.index}`}
+                value={draft}
+                autoSize={{ minRows: 2, maxRows: 8 }}
+                onChange={(event) => setDraft(event.target.value)}
+              />
+              {error && <div role="alert">{error}</div>}
+              <Button
+                type="primary"
+                size="small"
+                onClick={() => {
+                  try {
+                    onSave(cue.id, draft);
+                    setEditing(false);
+                    onEditingChange(false);
+                  } catch (failure) {
+                    setError(
+                      failure instanceof Error
+                        ? failure.message
+                        : 'Invalid subtitle text.',
+                    );
+                  }
+                }}
+              >
+                Save
+              </Button>
+              <Button
+                size="small"
+                onClick={() => {
+                  setEditing(false);
+                  onEditingChange(false);
+                }}
+              >
+                Cancel edit
+              </Button>
+            </div>
+          ) : translation !== undefined ? (
+            <SubtitleText text={translation} />
+          ) : (
+            <p className="waiting-text">
+              {active
+                ? 'Translating this batch…'
+                : 'Translation will appear here.'}
+            </p>
+          )}
+          {translation !== undefined && redistributed && !edited && (
+            <p className="help-text">
+              Joined speech was redistributed across these time slots. Review
+              the wording and timing.
+            </p>
+          )}
+          {!!report?.warnings.length && (
+            <div className="quality-warning">
+              <strong>Needs review</strong>
+              <ul>
+                {report.warnings.map((warning) => (
+                  <li key={warning}>{warning}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </Card>
+      </Flex>
+      {failureMessage && (
+        <Alert
+          className="cue-error"
+          type="error"
+          title={failureMessage}
+          showIcon
+        />
+      )}
+    </section>
+  );
+});
