@@ -39,3 +39,4 @@ Short, professor-readable record of AI-assisted work. Detailed evidence, command
 - 2026-10-16 — Rewrote `docs/ARCHITECTURE.md` in the professor's example architecture-document format, with a code map, feature flows, API table and Mermaid system/deployment diagrams, without changing application behavior.
 - 2026-10-29 — Audited public source, Git history and build output for secrets and personal information; recorded retained identity disclosures, six development dependency findings and production-control gaps in SECURITY_AUDIT.md.
 - 2026-11-05 — Added a reviewer guide beside the theme switch with the supplied test subtitle, clarified group-based quality notes, and verified navigation preserves translation work and edits.
+- 2026-11-19 — Confirmed Prettier, ESLint and TypeScript checks were clean with no formatting changes, then removed one unused subtitle helper and one orphaned CSS rule without changing app behavior.

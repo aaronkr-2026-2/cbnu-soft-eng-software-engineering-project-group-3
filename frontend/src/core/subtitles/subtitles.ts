@@ -1,4 +1,4 @@
-import { groupCues, sourceSections } from './groups';
+import { groupCues } from './groups';
 import type { Cue } from '../srt/srt';
 import { normalizeMarkup, plainText, sliceMarkup } from '../srt/markup';
 
@@ -13,10 +13,6 @@ export interface Quality {
 const segmenter = new Intl.Segmenter(undefined, { granularity: 'grapheme' });
 export function graphemes(text: string): number {
   return [...segmenter.segment(text)].length;
-}
-
-export function speakerSegments(text: string): string[] {
-  return sourceSections(text).map((section) => section.text);
 }
 
 export function continuationGroups(cues: Cue[]): number[] {

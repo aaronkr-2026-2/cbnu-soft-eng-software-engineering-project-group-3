@@ -291,3 +291,15 @@ macOS, temporary standard Node 24.22.1 / npm 11.19.1, locked dependencies restor
 | `npm run check:docs`, `git diff --check` | Rechecked after documentation/log updates before the local task commit. |
 
 The guide is `/#reviewers-guide`; no router, gateway, provider or subtitle algorithm changed. Keeping the inactive workspace measured, inert and transparent preserves virtualized draft forms. The owner clarified that quality ratings identify groups, not cues; Group 213/cue 251 remains an explicitly disclosed mismatch in this sample. The owner requested this static crop despite the earlier local-only sample rule; no copyright ownership or redistribution license is asserted. The existing >500 kB bundle warning, production-control prerequisites and live language/timing evidence remain open. No paid translation, public deployment or push was performed.
+
+## 2026-11-19 — Formatter/linter verification and dead-code cleanup
+
+| Command/check | Outcome |
+| --- | --- |
+| `npm run format:check`, `prettier --write` (same paths) | Passed before and after the cleanup; the write run changed no files. |
+| `npx eslint . --max-warnings 0`, `npx tsc --noEmit` | Passed before and after the cleanup. |
+| `npm run check` | Passed: typecheck, zero-warning lint, 108 Vitest tests across nine files, production build and local links across 47 Markdown files. |
+| `npm run check:build` | Passed. |
+| `npm run test:e2e` | Passed all 17 mocked Chromium workflows after installing the missing local Playwright Chromium headless shell (v1243). |
+
+Removed `speakerSegments()` (only a unit test called it after joined speech moved batching to `speechUnits()`) and the `.eyebrow` CSS rule (unused since its two spans were removed). The speaker-boundary assertion now calls `sourceSections()` directly. The existing >500 kB bundle warning remains.

@@ -158,12 +158,6 @@ a {
   display: flex;
   flex-direction: column;
 }
-.eyebrow {
-  color: var(--muted);
-  letter-spacing: 1.6px;
-  font-size: 10px;
-  font-weight: 650;
-}
 .sidebar-controls {
   min-height: 0;
   flex: 1 1 auto;

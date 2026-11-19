@@ -1,6 +1,6 @@
 # Project State
 
-Last updated: 2026-11-05 — reviewer guide and downloadable test crop
+Last updated: 2026-11-19 — formatter/linter verification and dead-code cleanup
 
 ## Confirmed product
 
@@ -34,7 +34,7 @@ The original fictional `examples/demo.srt` has 51 cues: its previous 43 plus eig
 
 The React port previously grouped cues only on screen while sending separate strings. The voice memo explicitly restored real joined provider input for both models. ADR-006 supersedes ADR-005's marked-TLLM-only proposal. Arbitrary cue markers are not a Google-guaranteed alignment mechanism, and source-word ratios are not restored.
 
-README, architecture and migration plans no longer instruct visitor keys or describe the already implemented local gateway as future work. The README again includes the course-required FOR/WHO/THAT/UNLIKE product-vision statement after its brief public introduction and screenshot. Historical ADR-002/003/005 and previous log entries remain labelled history. The empty `TranslationProvider.clear()` hook left by the visitor-key design was removed; no active Gemini/visitor-key/Firebase/Statistics implementation was found to delete. `GEMINI.md` and `CLAUDE.md` are coding-assistant pointers, not runtime features.
+README, architecture and migration plans no longer instruct visitor keys or describe the already implemented local gateway as future work. The README again includes the course-required FOR/WHO/THAT/UNLIKE product-vision statement after its brief public introduction and screenshot. Historical ADR-002/003/005 and previous log entries remain labelled history. The empty `TranslationProvider.clear()` hook left by the visitor-key design was removed; no active Gemini/visitor-key/Firebase/Statistics implementation was found to delete. A 2026-11-19 sweep removed `speakerSegments()` (unused in production since joined speech replaced per-cue speaker inputs; its test now checks `sourceSections()` directly) and the orphaned `.eyebrow` CSS rule; no other unreachable code, unused locals or unused dependencies were found. `GEMINI.md` and `CLAUDE.md` are coding-assistant pointers, not runtime features.
 
 ## Evidence and remaining limits
 

@@ -6,8 +6,8 @@ import {
   formatTranslation,
   graphemes,
   quality,
-  speakerSegments,
 } from './subtitles';
+import { sourceSections } from './groups';
 
 const cue = parseSrt('1\n00:00:01,000 --> 00:00:03,000\nHello.')[0];
 describe('subtitle presentation and quality', () => {
@@ -35,10 +35,11 @@ describe('subtitle presentation and quality', () => {
     expect(quality('x'.repeat(34), cue, 'children').capacity).toBe(34);
   });
   it('detects source speaker boundaries through markup and preserves caseless translations', () => {
-    expect(speakerSegments('<i>- Hello. - Goodbye.</i>')).toEqual([
-      '<i>- Hello.</i>',
-      '<i>- Goodbye.</i>',
-    ]);
+    expect(
+      sourceSections('<i>- Hello. - Goodbye.</i>').map(
+        (section) => section.text,
+      ),
+    ).toEqual(['<i>- Hello.</i>', '<i>- Goodbye.</i>']);
     expect(formatTranslation(['- こんにちは', '- さようなら'], 'ja')).toBe(
       '- こんにちは\n- さようなら',
     );
