@@ -175,6 +175,22 @@ test('invalid input is visible and cannot start a job', async ({ page }) => {
   ).toBeDisabled();
 });
 
+test('reduced motion keeps picker options on screen', async ({ page }) => {
+  // A global reduced-motion CSS override once left Ant Design popups parked
+  // off-screen, so every picker looked empty to Reduce Motion users.
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('./');
+  for (const [field, option] of [
+    ['#engine', 'TLLM · higher-quality translation model'],
+    ['#language', 'Mongolian (mn)'],
+    ['#profile', 'Adult · 20 characters/second'],
+  ]) {
+    await page.locator(field).click();
+    await expect(page.getByTitle(option, { exact: true })).toBeInViewport();
+    await page.keyboard.press('Escape');
+  }
+});
+
 test('reviewer navigation keeps translation, edits and theme in the same session', async ({
   page,
 }) => {

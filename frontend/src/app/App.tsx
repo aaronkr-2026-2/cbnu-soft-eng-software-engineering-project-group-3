@@ -648,9 +648,12 @@ export default function App() {
   const [dark, setDark] = useState(
     () => window.matchMedia('(prefers-color-scheme: dark)').matches,
   );
+  const [reducedMotion] = useState(
+    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  );
   const [workspace, setWorkspace] = useState(0);
   return (
-    <ConfigProvider theme={appTheme(dark)}>
+    <ConfigProvider theme={appTheme(dark, reducedMotion)}>
       <Translator
         key={workspace}
         dark={dark}

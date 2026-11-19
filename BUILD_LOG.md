@@ -303,3 +303,15 @@ The guide is `/#reviewers-guide`; no router, gateway, provider or subtitle algor
 | `npm run test:e2e` | Passed all 17 mocked Chromium workflows after installing the missing local Playwright Chromium headless shell (v1243). |
 
 Removed `speakerSegments()` (only a unit test called it after joined speech moved batching to `speechUnits()`) and the `.eyebrow` CSS rule (unused since its two spans were removed). The speaker-boundary assertion now calls `sourceSections()` directly. The existing >500 kB bundle warning remains.
+
+## 2026-11-19 — Picker options hidden under Reduce Motion
+
+| Command/check | Outcome |
+| --- | --- |
+| Live-site probe (Playwright Chromium and WebKit, `reducedMotion: 'reduce'`) | Reproduced: the language dropdown rendered with all options but at `-1000vw, -1000vh` (off-screen). With motion allowed, or with only the app's reduced-motion CSS rule deleted, it rendered under the field. Firefox could not launch in the local sandbox. |
+| New E2E test before the fix | Failed as expected: option present with viewport ratio 0. |
+| Fixed local build probe (Chromium and WebKit, motion on and off) | Dropdown rendered under the field in all four cases; WebKit screenshot inspected. |
+| `npm run format:check`, `npm run check`, `npm run check:build` | Passed: typecheck, zero-warning lint, 108 Vitest tests, build, 47 Markdown files' links and the build scan. |
+| `npm run test:e2e` | Passed all 18 mocked Chromium workflows, including the new reduced-motion picker test. |
+
+The owner's Mac reported `reduceMotion=1`. Not yet deployed: the live site keeps the bug until this commit reaches `main` and Vercel redeploys.

@@ -45,3 +45,5 @@ Before adding a `div` solely for layout or a new general-purpose styled panel, c
 Use an 8 px spacing base with 8/16/24/32 px for close relationships, card/layout spacing, major controls and scroll-end breathing room. The 24 px sidebar gap replaces the earlier isolated 20 px rule. This is a project scale informed by [Ant Design layout guidance](https://ant.design/docs/spec/layout/), not a universal requirement that every element have identical padding. Keep the deliberately narrow preview gutter.
 
 Initialize theme from the OS at page load and retain the user's explicit switch choice for that mounted session. Do not add a decorative switch dependency when existing icons/Tooltip communicate its purpose.
+
+Honor the OS reduced-motion preference through the `motion` theme token (read at page load), not a global CSS rule that shortens `animation-duration`/`transition-duration`. Such a rule left Ant Design popups parked off-screen, so every picker looked empty to Reduce Motion users; an end-to-end test now guards this.
